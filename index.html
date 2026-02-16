@@ -135,7 +135,7 @@ td{padding:12px 8px;border-bottom:1px solid #f5f5f5;white-space:nowrap}tr:hover 
 
 <!-- TAB1: 대시보드 -->
 <div class="tc on" id="t1">
-  <div class="mu fi" id="mu1"><div style="font-size:36px;margin-bottom:8px;position:relative"><i class="fas fa-wand-magic-sparkles"></i></div><div style="font-size:16px;font-weight:700;margin-bottom:4px;position:relative">마스터 업로드</div><div style="font-size:12px;opacity:.65;position:relative">아무 파일이나 던지세요</div><div class="mu-tags"><span class="mu-tag">Excel</span><span class="mu-tag">PDF</span><span class="mu-tag">Word</span><span class="mu-tag">CSV</span><span class="mu-tag">TXT</span></div><input type="file" id="fi1" multiple></div>
+  <div class="mu fi" id="mu1"><div style="font-size:36px;margin-bottom:8px;position:relative"><i class="fas fa-wand-magic-sparkles"></i></div><div style="font-size:16px;font-weight:700;margin-bottom:4px;position:relative">마스터 업로드</div><div style="font-size:12px;opacity:.65;position:relative">아무 파일이나 던지세요</div><div class="mu-tags"><span class="mu-tag">Excel</span><span class="mu-tag">PDF</span><span class="mu-tag">Word</span><span class="mu-tag">CSV</span><span class="mu-tag">TXT</span><span class="mu-tag">Image</span><span class="mu-tag" style="background:rgba(255,215,0,.25);color:#FFD700">ALL</span></div><input type="file" id="fi1" multiple></div>
   <div id="us1" style="display:none;align-items:center;gap:8px;background:#E8F8E8;padding:14px 18px;border-radius:var(--rs);margin-bottom:16px;font-size:14px;font-weight:600;color:var(--gn)"><i class="fas fa-check-circle"></i><span id="um1"></span></div>
   <div style="font-size:16px;font-weight:700;margin-bottom:14px"><i class="fas fa-calendar-alt" style="color:var(--rd);margin-right:8px"></i>세무 캘린더</div>
   <!-- 달력형 캘린더 -->
@@ -247,7 +247,11 @@ td{padding:12px 8px;border-bottom:1px solid #f5f5f5;white-space:nowrap}tr:hover 
 
   <!-- 증빙 누락 감지 -->
   <div class="cd fi d4" id="mismatch-box" style="display:none;border-left:4px solid var(--rd)">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><div style="width:36px;height:36px;border-radius:10px;background:#FFEBEE;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--rd)"><i class="fas fa-triangle-exclamation"></i></div><div style="font-size:15px;font-weight:700;color:var(--rd)">⚠️ 증빙 누락 감지</div></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <div style="width:36px;height:36px;border-radius:10px;background:#FFEBEE;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--rd)"><i class="fas fa-triangle-exclamation"></i></div>
+      <div style="flex:1"><div style="font-size:15px;font-weight:700;color:var(--rd)" id="mismatch-title">증빙 누락 감지</div></div>
+      <button id="mismatch-detail-btn" onclick="toggleMismatchDetail()" style="padding:5px 12px;background:#f5f5f5;border:1px solid #ddd;border-radius:var(--rs);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;color:#888;display:none"><i class="fas fa-eye" style="margin-right:4px"></i>자세히 보기</button>
+    </div>
     <div id="mismatch-list" style="font-size:12px;color:#555;line-height:1.8"></div>
   </div>
 
@@ -331,12 +335,18 @@ td{padding:12px 8px;border-bottom:1px solid #f5f5f5;white-space:nowrap}tr:hover 
 </div>
   <div class="us fi" id="mu2" style="transition:all .2s"><div style="font-size:28px;color:var(--gd);margin-bottom:6px"><i class="fas fa-file-circle-plus"></i></div><div style="font-size:14px;font-weight:600;color:#555">파일 추가</div><div style="font-size:12px;color:#aaa">클릭 또는 파일을 여기로 드래그</div><input type="file" id="fi2" multiple></div>
   <div class="xb" id="xb" style="display:none"><button class="xbtn x-xl" onclick="exXL()"><i class="fas fa-file-excel"></i> 엑셀</button><button class="xbtn x-pdf" onclick="exPDF()"><i class="fas fa-file-pdf"></i> PDF</button><button class="xbtn x-csv" onclick="exCSV()"><i class="fas fa-file-csv"></i> CSV</button><button class="xbtn" style="background:var(--pr);color:#fff" onclick="exClientReport()"><i class="fas fa-file-circle-check"></i> 고객리포트</button></div>
-  <div id="fl"></div>
+  <div id="fl-wrap" style="display:none;margin-bottom:12px">
+    <div id="fl-header" onclick="toggleFileList()" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:#fff;border-radius:var(--rs);box-shadow:var(--sh);font-size:13px;font-weight:700;color:var(--nv);user-select:none;transition:all .2s">
+      <span><i class="fas fa-folder-open" style="color:var(--gd);margin-right:8px"></i><span id="fl-title">업로드 파일</span></span>
+      <i class="fas fa-chevron-down" id="fl-chevron" style="transition:transform .3s;font-size:12px;color:var(--sub)"></i>
+    </div>
+    <div id="fl" style="display:none;padding-top:8px;transition:all .3s"></div>
+  </div>
   <div class="it fi d2"><button class="ib on" onclick="swI(this,'bank')">통장</button><button class="ib" onclick="swI(this,'tax')">세금계산서</button><button class="ib" onclick="swI(this,'card')">카드</button><button class="ib" onclick="swI(this,'all')">전체</button></div>
   <div class="ip on" id="p-bank"><div class="cd"><div class="tw"><table id="tb-bk" style="table-layout:auto"><thead><tr><th style="width:70px">거래일</th><th>적요/거래처</th><th style="width:100px;text-align:right">입금</th><th style="width:100px;text-align:right">출금</th><th style="width:100px;text-align:right">잔액</th></tr></thead><tbody></tbody></table></div><div class="empty" id="em-bk"><i class="fas fa-building-columns"></i>통장 업로드 (NH농협·신한·토스·카카오)</div></div></div>
   <div class="ip" id="p-tax"><div class="cd"><div class="tw"><table id="tb-tx" style="table-layout:auto"><thead><tr><th style="width:65px">작성일</th><th style="width:42px">구분</th><th>발행 상호명</th><th>품목명</th><th style="width:105px">사업자번호</th><th style="width:95px;text-align:right">공급가액</th><th style="width:70px;text-align:right">세액</th><th style="width:45px">공제</th></tr></thead><tbody></tbody></table></div><div class="empty" id="em-tx"><i class="fas fa-file-invoice"></i>세금계산서 업로드 (홈택스 XLS)</div></div></div>
-  <div class="ip" id="p-card"><div class="cd"><div class="tw"><table id="tb-cd" style="table-layout:auto"><thead><tr><th style="width:70px">거래일</th><th>가맹점(상호명)</th><th style="width:100px;text-align:right">결제금액</th><th style="width:60px">매출/매입</th></tr></thead><tbody></tbody></table></div><div class="empty" id="em-cd"><i class="fas fa-credit-card"></i>카드 업로드 (카카오뱅크 내역)</div></div></div>
-  <div class="ip" id="p-all"><div class="cd"><div class="tw"><table id="tb-al"><thead><tr><th style="width:70px">분류</th><th style="width:50px">유형</th><th style="width:85px">날짜</th><th>내용</th><th style="width:100px;text-align:right">입금(매출)</th><th style="width:100px;text-align:right">출금(매입)</th></tr></thead><tbody></tbody></table></div><div class="empty" id="em-al"><i class="fas fa-inbox"></i>데이터 업로드</div></div></div>
+  <div class="ip" id="p-card"><div class="cd"><div class="tw"><table id="tb-cd" style="table-layout:auto"><thead><tr><th style="width:70px">거래일</th><th>가맹점(상호명)</th><th>내용</th><th style="width:100px;text-align:right">결제금액</th><th style="width:60px">매출/매입</th></tr></thead><tbody></tbody></table></div><div class="empty" id="em-cd"><i class="fas fa-credit-card"></i>카드 업로드 (카카오뱅크 내역)</div></div></div>
+  <div class="ip" id="p-all"><div class="cd"><div class="tw"><table id="tb-al"><thead><tr><th style="width:70px">분류</th><th style="width:50px">유형</th><th style="width:85px">날짜</th><th>내용</th><th>품목명</th><th style="width:100px;text-align:right">입금(매출)</th><th style="width:100px;text-align:right">출금(매입)</th></tr></thead><tbody></tbody></table></div><div class="empty" id="em-al"><i class="fas fa-inbox"></i>데이터 업로드</div></div></div>
   <div style="font-size:16px;font-weight:700;margin:28px 0 14px"><i class="fas fa-chart-pie" style="margin-right:8px"></i>매출처별 비중</div>
   <div class="cd"><div class="cw"><canvas id="donut"></canvas></div><div class="empty" id="em-ch" style="display:none"><i class="fas fa-chart-pie"></i>매출 데이터 필요</div></div>
 
@@ -1521,7 +1531,7 @@ function rfMoney(){renderMoney();showToast('✅ 최신 정보 갱신 완료')}
 // === PARSE ENGINE ===
 async function mp(file){
   var ext=file.name.split('.').pop().toLowerCase();
-  var ft=ext==='xlsx'||ext==='xls'?'excel':ext==='csv'||ext==='tsv'?'csv':ext==='pdf'?'pdf':ext==='doc'||ext==='docx'?'word':(ext==='png'||ext==='jpg'||ext==='jpeg'||ext==='gif'||ext==='webp'||ext==='heic')?'image':'text';
+  var ft=ext==='xlsx'||ext==='xls'?'excel':ext==='csv'||ext==='tsv'?'csv':ext==='pdf'?'pdf':ext==='doc'||ext==='docx'?'word':(ext==='png'||ext==='jpg'||ext==='jpeg'||ext==='gif'||ext==='webp'||ext==='heic'||ext==='bmp'||ext==='tiff'||ext==='tif'||ext==='svg'||ext==='avif')?'image':(file.type&&file.type.startsWith('image/'))?'image':'text';
   try{
     var rows=[];
     if(ft==='image'){
@@ -1642,7 +1652,7 @@ for(var di=headerIdx+1;di<allRows.length;di++){
 }
 res(results);
 }catch(err){rej(err)}};r.readAsArrayBuffer(f)})}
-function pCSV(txt){var ls=txt.trim().split('\n');if(ls.length<2)return[];var sp=ls[0].indexOf('\t')>-1?'\t':',';var hd=ls[0].split(sp).map(function(h){return h.trim().replace(/"/g,'')});return ls.slice(1).map(function(l){var v=l.split(sp).map(function(x){return x.trim().replace(/"/g,'')});var row={};hd.forEach(function(h,i){row[h]=v[i]||''});var fd=function(kws){return hd.find(function(h){return kws.some(function(k){return h.indexOf(k)>-1})})};return{date:row[fd(['일자','날짜'])]||'',desc:row[fd(['상호','거래처','가맹점','적요','내용'])]||'',inAmt:toN(row[fd(['공급가액','금액','입금','매출'])]),outAmt:toN(row[fd(['출금','지출','매입'])]),tax:toN(row[fd(['세액'])]),balance:toN(row[fd(['잔액'])]),type:row[fd(['구분'])]||'',deductible:row[fd(['공제'])]||'-',bizNo:row[fd(['사업자등록번호','사업자번호'])]||''}}).filter(function(r){return r.inAmt||r.outAmt||r.tax})}
+function pCSV(txt){var ls=txt.trim().split('\n');if(ls.length<2)return[];var sp=ls[0].indexOf('\t')>-1?'\t':',';var hd=ls[0].split(sp).map(function(h){return h.trim().replace(/"/g,'')});return ls.slice(1).map(function(l){var v=l.split(sp).map(function(x){return x.trim().replace(/"/g,'')});var row={};hd.forEach(function(h,i){row[h]=v[i]||''});var fd=function(kws){return hd.find(function(h){return kws.some(function(k){return h.indexOf(k)>-1})})};return{date:row[fd(['일자','날짜'])]||'',desc:row[fd(['상호','거래처','가맹점','적요','내용'])]||'',inAmt:toN(row[fd(['공급가액','금액','입금','매출'])]),outAmt:toN(row[fd(['출금','지출','매입'])]),tax:toN(row[fd(['세액'])]),balance:toN(row[fd(['잔액'])]),type:row[fd(['구분'])]||'',deductible:row[fd(['공제'])]||'-',bizNo:row[fd(['사업자등록번호','사업자번호'])]||'',item:row[fd(['품목명','품명','품목','내용','적요'])]||''}}).filter(function(r){return r.inAmt||r.outAmt||r.tax})}
 async function pPDF(f){var buf=await f.arrayBuffer();var pdf=await pdfjsLib.getDocument({data:buf}).promise;var t='';for(var i=1;i<=pdf.numPages;i++){var pg=await pdf.getPage(i);var c=await pg.getTextContent();t+=c.items.map(function(x){return x.str}).join(' ')+'\n'}return t}
 async function pWord(f){var buf=await f.arrayBuffer();return(await mammoth.extractRawText({arrayBuffer:buf})).value}
 function rTxt(f){return new Promise(function(res,rej){var r=new FileReader;r.onload=function(e){res(e.target.result)};r.onerror=function(){rej(new Error('읽기실패'))};r.readAsText(f,'UTF-8')})}
@@ -1671,7 +1681,7 @@ function apR(fn,ft,cat,rows){
     if(!s&&!p){s=r.inAmt>0&&!r.outAmt} // fallback
     D.tax.push({date:r.date,type:s?'매출':'매입',client:r.desc,bizNo:r.bizNo||'',supply:r.inAmt||r.outAmt,tax:r.tax,deductible:r.deductible||'-',item:r.item||''});
   });
-  else if(cat==='card')rows.forEach(function(r){D.card.push({date:r.date,merchant:r.desc,amount:r.outAmt||r.inAmt,type:r.inAmt>0?'매출':'매입'})});
+  else if(cat==='card')rows.forEach(function(r){D.card.push({date:r.date,merchant:r.desc,amount:r.outAmt||r.inAmt,type:r.inAmt>0?'매출':'매입',item:r.item||r.desc||''})});
   else rows.forEach(function(r){D.etc.push({date:r.date,desc:r.desc,amount:r.inAmt||r.outAmt})});
   D.files.push({name:fn,format:ft,category:cat,count:rows.length});D.isDemo=false;rAll();
   var catNm=cat==='bank'?'통장':cat==='tax'?'세금계산서':cat==='card'?'카드':'기타';
@@ -1743,9 +1753,9 @@ function resetAll(){if(!confirm('모든 데이터를 초기화하시겠습니까
 // === EXPORT ===
 function exXL(){
   var wb=XLSX.utils.book_new();
-  if(D.tax.length){var ws=XLSX.utils.json_to_sheet(D.tax.map(function(r){return{날짜:r.date,구분:r.type,거래처:r.client,사업자번호:r.bizNo||'',공급가액:r.supply,세액:r.tax,공제여부:r.deductible}}));XLSX.utils.book_append_sheet(wb,ws,'세금계산서')}
+  if(D.tax.length){var ws=XLSX.utils.json_to_sheet(D.tax.map(function(r){return{날짜:r.date,구분:r.type,거래처:r.client,품목명:r.item||'',사업자번호:r.bizNo||'',공급가액:r.supply,세액:r.tax,공제여부:r.deductible}}));XLSX.utils.book_append_sheet(wb,ws,'세금계산서')}
   if(D.bank.length){var ws2=XLSX.utils.json_to_sheet(D.bank.map(function(r){return{날짜:r.date,적요:r.desc,입금:r.inAmt,출금:r.outAmt,잔액:r.balance}}));XLSX.utils.book_append_sheet(wb,ws2,'통장')}
-  if(D.card.length){var ws3=XLSX.utils.json_to_sheet(D.card.map(function(r){return{날짜:r.date,가맹점:r.merchant,금액:r.amount,구분:r.type}}));XLSX.utils.book_append_sheet(wb,ws3,'카드')}
+  if(D.card.length){var ws3=XLSX.utils.json_to_sheet(D.card.map(function(r){return{날짜:r.date,가맹점:r.merchant,내용:r.item||'',금액:r.amount,구분:r.type}}));XLSX.utils.book_append_sheet(wb,ws3,'카드')}
   // 요약 시트
   var st=D.tax.filter(function(r){return r.type==='매출'}),et=D.tax.filter(function(r){return r.type==='매입'});
   var ts=st.reduce(function(a,r){return a+r.supply},0),te=et.reduce(function(a,r){return a+r.supply},0);
@@ -1759,7 +1769,7 @@ function exCSV(){
   var all=[];
   D.tax.forEach(function(r){all.push([r.date,r.type==='매출'?'세금계산서(매출)':'세금계산서(매입)',r.client,r.supply,r.tax,r.deductible])});
   D.bank.forEach(function(r){all.push([r.date,'통장',r.desc,r.inAmt,r.outAmt,''])});
-  D.card.forEach(function(r){all.push([r.date,'카드',r.merchant,r.type==='매출'?r.amount:0,r.type==='매입'?r.amount:0,''])});
+  D.card.forEach(function(r){all.push([r.date,'카드',r.merchant+(r.item?' ('+r.item+')':''),r.type==='매출'?r.amount:0,r.type==='매입'?r.amount:0,''])});
   var csv='날짜,분류,내용,입금/공급가액,출금/세액,비고\n'+all.map(function(r){return r.join(',')}).join('\n');
   var blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
   var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='YJ_장부_'+new Date().toISOString().slice(0,10)+'.csv';a.click()
@@ -2046,23 +2056,23 @@ function rTbls(){
   document.getElementById('em-bk').style.display=D.bank.length?'none':'block';
   document.querySelector('#tb-tx tbody').innerHTML=D.tax.map(function(r,i){return'<tr data-idx="'+i+'" style="border-bottom:1px solid #f0f0f0"><td style="white-space:nowrap">'+fD(r.date)+'</td><td><span class="badge '+(r.type==='매출'?'b-bl':'b-rd')+'">'+r.type+'</span></td><td style="font-size:12px;font-weight:600;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+r.client+'</td><td style="font-size:11px;color:#555;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(r.item||'<span style="color:#ccc">-</span>')+'</td><td style="font-family:monospace;font-size:10px;color:#999">'+(r.bizNo||'-')+'</td><td class="am" style="font-weight:700">'+fm(r.supply)+'</td><td class="am" style="font-weight:700">'+fm(r.tax)+'</td><td><span class="badge '+(r.deductible==='공제'?'b-gn':r.deductible==='불공제'?'b-rd':'b-gy')+'">'+r.deductible+'</span></td></tr>'}).join('')+(D.tax.length?'<tr style="background:#f8f9fa;border-top:2px solid #333;font-weight:800"><td colspan="5" style="text-align:right;padding:10px">합계 (매출 '+D.tax.filter(function(r){return r.type==='매출'}).length+'건 / 매입 '+D.tax.filter(function(r){return r.type==='매입'}).length+'건)</td><td class="am pos" style="font-size:13px">'+fm(D.tax.reduce(function(a,r){return a+r.supply},0))+'</td><td class="am" style="font-size:13px">'+fm(D.tax.reduce(function(a,r){return a+r.tax},0))+'</td><td></td></tr>':'');
   document.getElementById('em-tx').style.display=D.tax.length?'none':'block';
-  document.querySelector('#tb-cd tbody').innerHTML=D.card.map(function(r){return'<tr><td>'+fD(r.date)+'</td><td>'+r.merchant+'</td><td class="am neg">'+fm(r.amount)+'</td><td><span class="badge b-rd">'+r.type+'</span></td></tr>'}).join('');
+  document.querySelector('#tb-cd tbody').innerHTML=D.card.map(function(r){return'<tr><td>'+fD(r.date)+'</td><td>'+r.merchant+'</td><td style="font-size:11px;color:#555;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(r.item||'<span style="color:#ccc">-</span>')+'</td><td class="am neg">'+fm(r.amount)+'</td><td><span class="badge b-rd">'+r.type+'</span></td></tr>'}).join('');
   document.getElementById('em-cd').style.display=D.card.length?'none':'block';
   var all=[];
-  D.bank.forEach(function(r){all.push({c:'통장',cc:'b-bl',tp:r.inAmt?'입금':'출금',d:r.date,n:r.desc,i:r.inAmt,o:r.outAmt})});
-  D.tax.forEach(function(r){all.push({c:'세금계산서',cc:'b-or',tp:r.type,d:r.date,n:r.client+' ('+(r.bizNo||'-')+')',i:r.type==='매출'?(r.supply+r.tax):0,o:r.type==='매입'?(r.supply+r.tax):0})});
+  D.bank.forEach(function(r){all.push({c:'통장',cc:'b-bl',tp:r.inAmt?'입금':'출금',d:r.date,n:r.desc,it:'',i:r.inAmt,o:r.outAmt})});
+  D.tax.forEach(function(r){all.push({c:'세금계산서',cc:'b-or',tp:r.type,d:r.date,n:r.client+' ('+(r.bizNo||'-')+')',it:r.item||'',i:r.type==='매출'?(r.supply+r.tax):0,o:r.type==='매입'?(r.supply+r.tax):0})});
   D.card.forEach(function(r){
     var isIn=r.type==='매출';
-    all.push({c:'카드',cc:'b-pr',tp:isIn?'매출':'매입',d:r.date,n:r.merchant||r.desc||'',i:isIn?r.amount:0,o:isIn?0:r.amount});
+    all.push({c:'카드',cc:'b-pr',tp:isIn?'매출':'매입',d:r.date,n:r.merchant||r.desc||'',it:r.item||'',i:isIn?r.amount:0,o:isIn?0:r.amount});
   });
-  D.etc.forEach(function(r){if(r.amount)all.push({c:'기타',cc:'b-gy',tp:r.type||'기타',d:r.date,n:r.desc||'',i:r.type==='매출'?r.amount:0,o:r.type!=='매출'?r.amount:0})});
+  D.etc.forEach(function(r){if(r.amount)all.push({c:'기타',cc:'b-gy',tp:r.type||'기타',d:r.date,n:r.desc||'',it:'',i:r.type==='매출'?r.amount:0,o:r.type!=='매출'?r.amount:0})});
   all.sort(function(a,b){return new Date(b.d)-new Date(a.d)});
   var totalIn=all.reduce(function(a,r){return a+(r.i||0)},0);
   var totalOut=all.reduce(function(a,r){return a+(r.o||0)},0);
   document.querySelector('#tb-al tbody').innerHTML=all.map(function(r){
     var tpClass=r.tp==='매출'||r.tp==='입금'?'b-bl':'b-rd';
-    return'<tr style="border-bottom:1px solid #f0f0f0"><td><span class="badge '+r.cc+'">'+r.c+'</span></td><td><span class="badge '+tpClass+'" style="font-size:10px">'+r.tp+'</span></td><td style="font-size:12px;white-space:nowrap">'+fD(r.d)+'</td><td style="font-size:12px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+r.n+'</td><td class="am pos" style="font-size:13px;font-weight:700">'+(r.i?fm(r.i):'')+'</td><td class="am neg" style="font-size:13px;font-weight:700">'+(r.o?fm(r.o):'')+'</td></tr>'
-  }).join('')+'<tr style="background:#f8f9fa;border-top:2px solid #333;font-weight:800"><td colspan="4" style="text-align:right;padding:10px;font-size:13px">합계</td><td class="am pos" style="font-size:14px;color:#1565C0">'+fm(totalIn)+'</td><td class="am neg" style="font-size:14px;color:#C62828">'+fm(totalOut)+'</td></tr>';
+    return'<tr style="border-bottom:1px solid #f0f0f0"><td><span class="badge '+r.cc+'">'+r.c+'</span></td><td><span class="badge '+tpClass+'" style="font-size:10px">'+r.tp+'</span></td><td style="font-size:12px;white-space:nowrap">'+fD(r.d)+'</td><td style="font-size:12px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+r.n+'</td><td style="font-size:11px;color:#555;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(r.it||'<span style="color:#ccc">-</span>')+'</td><td class="am pos" style="font-size:13px;font-weight:700">'+(r.i?fm(r.i):'')+'</td><td class="am neg" style="font-size:13px;font-weight:700">'+(r.o?fm(r.o):'')+'</td></tr>'
+  }).join('')+'<tr style="background:#f8f9fa;border-top:2px solid #333;font-weight:800"><td colspan="5" style="text-align:right;padding:10px;font-size:13px">합계</td><td class="am pos" style="font-size:14px;color:#1565C0">'+fm(totalIn)+'</td><td class="am neg" style="font-size:14px;color:#C62828">'+fm(totalOut)+'</td></tr>';
   document.getElementById('em-al').style.display=all.length?'none':'block';
 }
 var dc=null;
@@ -2074,13 +2084,23 @@ function rChart(){
   dc=new Chart(cv.getContext('2d'),{type:'doughnut',data:{labels:lb,datasets:[{data:vl,backgroundColor:['#3498DB','#2ECC71','#F39C12','#E74C3C','#9B59B6','#1ABC9C','#34495E'],borderWidth:0}]},options:{cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{family:'Pretendard',size:12},padding:16}}},responsive:true,maintainAspectRatio:true}})
 }
 function rFL(){
-  var c=document.getElementById('fl'),rb=document.getElementById('rb'),xb=document.getElementById('xb');
-  if(!D.files.length){c.innerHTML='';rb.style.display='none';xb.style.display='none';return}
-  rb.style.display='inline-flex';xb.style.display='flex';
-  var ic={excel:'fa-file-excel',csv:'fa-file-csv',pdf:'fa-file-pdf',word:'fa-file-word',text:'fa-file-lines'};
-  var bg={excel:'#E8F5E9',csv:'#FFF3E0',pdf:'#FFEBEE',word:'#E3F2FD',text:'#F3E5F5'};
+  var c=document.getElementById('fl'),rb=document.getElementById('rb'),xb=document.getElementById('xb'),wrap=document.getElementById('fl-wrap');
+  if(!D.files.length){c.innerHTML='';rb.style.display='none';xb.style.display='none';wrap.style.display='none';return}
+  rb.style.display='inline-flex';xb.style.display='flex';wrap.style.display='block';
+  document.getElementById('fl-title').textContent='업로드 파일 ('+D.files.length+'개)';
+  var ic={excel:'fa-file-excel',csv:'fa-file-csv',pdf:'fa-file-pdf',word:'fa-file-word',text:'fa-file-lines',image:'fa-file-image'};
+  var bg={excel:'#E8F5E9',csv:'#FFF3E0',pdf:'#FFEBEE',word:'#E3F2FD',text:'#F3E5F5',image:'#FFF8E1'};
   var cb={bank:'b-bl',tax:'b-or',card:'b-pr',etc:'b-gy'};var cl={bank:'통장',tax:'세금계산서',card:'카드',etc:'기타'};
   c.innerHTML=D.files.map(function(f,i){return'<div class="lg"><div class="lg-ic" style="background:'+(bg[f.format]||'#ECEFF1')+'"><i class="fas '+(ic[f.format]||'fa-file')+'"></i></div><div style="flex:1;min-width:0"><div style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+f.name+'</div><div style="font-size:11px;color:#999">'+f.count+'건 · '+f.format.toUpperCase()+'</div><span class="badge '+(cb[f.category]||'b-gy')+'">'+(cl[f.category]||'기타')+'</span></div><button class="lg-rm" onclick="rmF('+i+')"><i class="fas fa-xmark"></i></button></div>'}).join('')}
+var flOpen=false;
+function toggleFileList(){
+  flOpen=!flOpen;
+  document.getElementById('fl').style.display=flOpen?'block':'none';
+  document.getElementById('fl-chevron').style.transform=flOpen?'rotate(180deg)':'rotate(0deg)';
+  try{localStorage.setItem('yjtax_fl_open',flOpen?'1':'0')}catch(e){}
+}
+// 초기 상태 복원
+try{if(localStorage.getItem('yjtax_fl_open')==='1'){flOpen=true;document.getElementById('fl').style.display='block';document.getElementById('fl-chevron').style.transform='rotate(180deg)'}}catch(e){}
 function rmF(i){D.files.splice(i,1);if(!D.files.length)resetAll();else rFL()}
 function uUI(){
   if(!D.isDemo){document.getElementById('mu1').style.display='none';document.getElementById('us1').style.display='flex';document.getElementById('um1').textContent=D.files.length+'개 파일 · '+(D.bank.length+D.tax.length+D.card.length+D.etc.length)+'건 로드'}
@@ -3282,6 +3302,8 @@ function renderTrend(){
 }
 
 // === 증빙 누락 감지 ===
+var mmDone=[];var mmShowAll=false;
+try{mmDone=JSON.parse(localStorage.getItem('yjtax_mismatch_done')||'[]')}catch(e){mmDone=[]}
 function checkMismatch(){
   var issues=[];
   // 통장 입금 vs 세금계산서 매출 대사
@@ -3303,9 +3325,49 @@ function checkMismatch(){
   D.tax.filter(function(r){return r.deductible==='불공제'}).forEach(function(r){
     issues.push({type:'불공제',icon:'fa-ban',color:'var(--pr)',text:r.client+' 매입 '+fm(r.supply)+'원 → <b>불공제</b> 처리됨. 사업용카드/세금계산서 확보 검토'});
   });
+  // ID 부여
+  issues.forEach(function(issue,idx){issue.id='mm-'+idx+'-'+issue.type.replace(/[^a-zA-Z가-힣]/g,'')});
   var box=document.getElementById('mismatch-box');
-  if(issues.length){box.style.display='block';document.getElementById('mismatch-list').innerHTML=issues.map(function(i){return'<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 0"><i class="fas '+i.icon+'" style="color:'+i.color+';margin-top:2px"></i><span>'+i.text+'</span></div>'}).join('')}
-  else box.style.display='none';
+  if(issues.length){
+    box.style.display='block';
+    var doneCount=issues.filter(function(i){return mmDone.indexOf(i.id)>-1}).length;
+    var activeCount=issues.length-doneCount;
+    document.getElementById('mismatch-title').innerHTML='⚠️ 증빙 누락 감지 <span style="font-size:12px;font-weight:500;color:#888">('+issues.length+'건'+(doneCount?' · '+doneCount+'건 완료':'')+')</span>';
+    // 자세히 보기 버튼
+    var detailBtn=document.getElementById('mismatch-detail-btn');
+    detailBtn.style.display=doneCount?'inline-flex':'none';
+    detailBtn.innerHTML=mmShowAll?'<i class="fas fa-eye-slash" style="margin-right:4px"></i>간략히 보기':'<i class="fas fa-eye" style="margin-right:4px"></i>자세히 보기 ('+doneCount+')';
+    document.getElementById('mismatch-list').innerHTML=issues.map(function(i){
+      var isDone=mmDone.indexOf(i.id)>-1;
+      if(isDone&&!mmShowAll)return'';
+      return'<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5;'+(isDone?'opacity:.4;text-decoration:line-through;':'')+'" id="'+i.id+'">'+
+        '<i class="fas '+i.icon+'" style="color:'+i.color+';margin-top:3px;flex-shrink:0"></i>'+
+        '<span style="flex:1;line-height:1.6">'+i.text+'</span>'+
+        '<label style="flex-shrink:0;display:flex;align-items:center;cursor:pointer;margin-left:8px">'+
+          '<input type="checkbox" '+(isDone?'checked':'')+' onchange="toggleMismatch(\''+i.id+'\')" style="width:18px;height:18px;accent-color:var(--gn);cursor:pointer">'+
+        '</label>'+
+      '</div>';
+    }).join('');
+    // 완료 항목만 있으면 숨기기
+    if(activeCount===0&&!mmShowAll)box.style.display='none';
+  }else box.style.display='none';
+}
+function toggleMismatch(id){
+  var idx=mmDone.indexOf(id);
+  if(idx>-1)mmDone.splice(idx,1);
+  else mmDone.push(id);
+  try{localStorage.setItem('yjtax_mismatch_done',JSON.stringify(mmDone))}catch(e){}
+  // 체크 시 fade out 후 재렌더링
+  var el=document.getElementById(id);
+  if(el&&mmDone.indexOf(id)>-1){
+    el.style.transition='opacity .3s, transform .3s';
+    el.style.opacity='0';el.style.transform='translateX(20px)';
+    setTimeout(function(){checkMismatch()},350);
+  }else checkMismatch();
+}
+function toggleMismatchDetail(){
+  mmShowAll=!mmShowAll;
+  checkMismatch();
 }
 
 // === 거래처 관리 ===
