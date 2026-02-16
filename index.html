@@ -151,7 +151,7 @@ td{padding:12px 8px;border-bottom:1px solid #f5f5f5;white-space:nowrap}tr:hover 
   </div>
   <!-- D-Day 카드 (캘린더 아래) -->
   <div class="dg fi d1" id="ddg"></div>
-  <div class="kg"><div class="kp fi d2"><div class="kp-l">💰 순수익</div><div class="kp-v" id="k-pr" style="color:var(--gn)">0원</div><div class="kp-s">매출-매입</div></div><div class="kp fi d2"><div class="kp-l">📈 매출</div><div class="kp-v" id="k-sl" style="color:var(--bl)">0원</div><div class="kp-s">공급가액</div></div><div class="kp fi d2"><div class="kp-l">📉 매입</div><div class="kp-v" id="k-ex" style="color:var(--rd)">0원</div><div class="kp-s">비용합계</div></div></div>
+  <div class="kg"><div class="kp fi d2"><div class="kp-l">💰 순수익</div><div class="kp-v" id="k-pr" style="color:var(--gn)">0원</div><div class="kp-s">매출-매입(VAT포함)</div></div><div class="kp fi d2"><div class="kp-l">📈 매출</div><div class="kp-v" id="k-sl" style="color:var(--bl)">0원</div><div class="kp-s">VAT 포함</div></div><div class="kp fi d2"><div class="kp-l">📉 매입</div><div class="kp-v" id="k-ex" style="color:var(--rd)">0원</div><div class="kp-s">VAT 포함</div></div></div>
   <!-- 종합 경비 현황 -->
   <div class="fi d2" style="background:#FAFAFA;border:2px solid #E0E0E0;border-radius:var(--r);padding:16px;margin-bottom:14px">
     <div style="font-size:13px;font-weight:700;margin-bottom:12px"><i class="fas fa-chart-pie" style="color:var(--pr);margin-right:6px"></i>경비 현황 (혼용카드 주의)</div>
@@ -1887,9 +1887,11 @@ function uKPI(){
   var pfNdTx=D.proof.filter(function(r){return r.deductible==='불공제'}).reduce(function(a,r){return a+(r.tax||0)},0);
   var pfExpTotal=D.proof.reduce(function(a,r){return a+(r.total||0)},0);
   dTx+=pfDedTx;ndTx+=pfNdTx;te+=pfExpTotal;
-  var vat=sTx-dTx,pr=ts-te;
+  var vat=sTx-dTx;
+  var eTx=et.reduce(function(a,r){return a+r.tax},0);
+  var tsVat=ts+sTx,teVat=te+eTx+pfNdTx+pfDedTx,pr=tsVat-teVat;
   var pe=document.getElementById('k-pr');pe.textContent=fm(pr)+'원';pe.style.color=pr>=0?'var(--gn)':'var(--rd)';
-  document.getElementById('k-sl').textContent=fm(ts)+'원';document.getElementById('k-ex').textContent=fm(te)+'원';
+  document.getElementById('k-sl').textContent=fm(tsVat)+'원';document.getElementById('k-ex').textContent=fm(teVat)+'원';
   document.getElementById('v-a').textContent=fm(vat)+' 원';
   var d='매출세액 '+fm(sTx)+'원 - 공제 '+fm(dTx)+'원';if(ndTx)d+=' / 불공제 '+fm(ndTx)+'원';
   document.getElementById('v-d').textContent=d;
