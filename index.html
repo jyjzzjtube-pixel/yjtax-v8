@@ -99,7 +99,30 @@ td{padding:12px 8px;border-bottom:1px solid #f5f5f5;white-space:nowrap}tr:hover 
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}.fi{animation:fadeUp .35s ease-out both}.d1{animation-delay:.05s}.d2{animation-delay:.1s}.d3{animation-delay:.15s}.d4{animation-delay:.2s}
 @media(max-width:768px){.kp-v{font-size:20px}.vat-a{font-size:32px}.dg{grid-template-columns:1fr 1fr}.cg{grid-template-columns:1fr 1fr}}
 @media(max-width:400px){.nb span{font-size:9px}.nb i{font-size:16px}}
-@media print{.nav,.mu,.hdr::after,.us{display:none!important}.hdr{padding-bottom:20px}.ct{padding-bottom:20px;margin-top:0}.cd{break-inside:avoid;box-shadow:none;border:1px solid #ddd}}
+@media print{.nav,.mu,.hdr::after,.us,.private-section{display:none!important}.hdr{padding-bottom:20px}.ct{padding-bottom:20px;margin-top:0}.cd{break-inside:avoid;box-shadow:none;border:1px solid #ddd}}
+.private-section{background:#1a1a2e;border-radius:var(--r);padding:0;margin-top:20px;overflow:hidden}
+.private-section .prv-header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;cursor:pointer;user-select:none}
+.private-section .prv-header h3{color:#FFD700;font-size:15px;font-weight:800;margin:0}
+.private-section .prv-header .prv-toggle{background:none;border:1px solid rgba(255,215,0,.4);color:#FFD700;padding:6px 14px;border-radius:var(--rs);font-size:11px;font-weight:700;cursor:pointer;font-family:inherit}
+.private-section .prv-body{padding:0 20px 20px;display:none}
+.private-section .prv-body.open{display:block}
+.private-section .prv-notice{font-size:11px;color:#ef5350;background:rgba(239,83,80,.1);padding:8px 12px;border-radius:var(--rs);margin-bottom:14px;text-align:center}
+.private-section table{background:rgba(255,255,255,.05);border-radius:var(--rs);overflow:hidden}
+.private-section th{color:#aaa;border-bottom:1px solid rgba(255,255,255,.1);font-size:11px;padding:10px 8px}
+.private-section td{color:#ddd;border-bottom:1px solid rgba(255,255,255,.06);font-size:12px;padding:10px 8px}
+.private-section tr:hover td{background:rgba(255,255,255,.04)}
+.private-section .prv-memo{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;padding:5px 8px;border-radius:6px;font-size:11px;width:100%;font-family:inherit}
+.private-section .prv-summary{margin-top:16px;padding:16px;background:rgba(255,255,255,.06);border-radius:var(--rs);font-size:13px;line-height:1.8;color:#ccc}
+.private-section .prv-refund{color:#ef5350;font-weight:800}
+.private-section .prv-net{color:#66bb6a;font-weight:800}
+.sub-mgr-form{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.sub-mgr-form input,.sub-mgr-form select{padding:9px 12px;border:2px solid #e0e0e0;border-radius:var(--rs);font-family:inherit;font-size:13px;width:100%}
+.sub-mgr-form select{appearance:auto}
+.sub-item{display:flex;align-items:center;gap:10px;padding:12px 14px;background:#fff;border:1px solid #f0f0f0;border-radius:var(--rs);margin-bottom:8px;font-size:13px}
+.sub-item .sub-warn{font-size:10px;color:#F57C00;font-weight:600;margin-top:3px}
+.sub-summary{background:var(--gdb);border:2px solid var(--gd);border-radius:var(--r);padding:20px;margin-top:16px;font-size:13px;line-height:2}
+.sub-summary .s-val{font-weight:800;font-size:15px}
+.sub-summary .s-good{color:var(--gn)}.sub-summary .s-bad{color:var(--rd)}.sub-summary .s-warn{color:var(--or)}
 </style>
 </head>
 <body>
@@ -252,6 +275,27 @@ td{padding:12px 8px;border-bottom:1px solid #f5f5f5;white-space:nowrap}tr:hover 
     <canvas id="trend-chart" height="200"></canvas>
     <div id="trend-analysis" style="margin-top:12px;font-size:12px;color:#555;line-height:1.7"></div>
   </div>
+
+  <!-- 비공개 실수익 추적기 -->
+  <div class="private-section" id="private-tracker">
+    <div class="prv-header" onclick="togglePrivateSection()">
+      <h3>🔒 비공개 실수익 추적기</h3>
+      <button class="prv-toggle" id="prv-toggle-btn">펼치기 ▼</button>
+    </div>
+    <div class="prv-body" id="prv-body">
+      <div class="prv-notice">🔒 이 영역은 인쇄·리포트에 포함되지 않습니다</div>
+      <div class="tw">
+        <table id="prv-table">
+          <thead>
+            <tr><th style="width:85px">작성일</th><th style="width:50px">구분</th><th>발행 상호명</th><th style="width:85px;text-align:right">세액</th><th style="width:50px;text-align:center">환급</th><th style="width:120px">메모</th></tr>
+          </thead>
+          <tbody id="prv-tbody"></tbody>
+        </table>
+      </div>
+      <div class="prv-summary" id="prv-summary"></div>
+    </div>
+  </div>
+
 </div>
 
 <!-- TAB2: 장부 -->
@@ -692,6 +736,11 @@ td{padding:12px 8px;border-bottom:1px solid #f5f5f5;white-space:nowrap}tr:hover 
       <div style="font-size:12px;font-weight:800;color:#880E4F">신고양식 바로가기</div>
       <div style="font-size:10px;color:#C2185B;margin-top:2px">부가세·종소세·지방세</div>
     </div>
+    <div class="tool-icon" onclick="toggleToolDetail('tl-9')" style="background:linear-gradient(135deg,#E8EAF6,#C5CAE9);border-radius:var(--r);padding:20px 12px;text-align:center;cursor:pointer;transition:transform .15s;border:2px solid transparent" id="ti-9">
+      <div style="font-size:32px;margin-bottom:8px">📋</div>
+      <div style="font-size:12px;font-weight:800;color:#283593">구독 관리</div>
+      <div style="font-size:10px;color:#5C6BC0;margin-top:2px">AI·SaaS 경비</div>
+    </div>
   </div>
 
   <!-- 상세 패널들 -->
@@ -945,6 +994,39 @@ td{padding:12px 8px;border-bottom:1px solid #f5f5f5;white-space:nowrap}tr:hover 
         <div class="tool-item-icon" style="background:#ECEFF1;color:#455A64"><i class="fas fa-file-signature"></i></div>
         <div class="tool-item-info"><div class="tool-item-name">원천세 신고 (매월 10일) <i class="fas fa-external-link-alt" style="font-size:10px;color:#aaa"></i></div><div class="tool-item-desc">근로소득 원천징수 신고서 — 내일사장 급여 관련</div></div>
       </div>
+    </div>
+  </div>
+
+  <!-- tl-9: 구독 관리 (AI·SaaS 경비) -->
+  <div class="tool-detail" id="tl-9" style="display:none">
+    <div class="cd" style="border-left:4px solid #283593">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="font-size:16px;font-weight:800;color:#283593">📋 AI·SaaS 구독 경비 관리</div>
+        <button onclick="toggleToolDetail('tl-9')" style="background:none;border:none;font-size:18px;cursor:pointer;color:#999">✕</button>
+      </div>
+      <div style="font-size:11px;color:#888;margin-bottom:14px">AI 서비스·SaaS 구독료를 등록하고 매입세액공제·경비 인정 현황을 자동 계산합니다</div>
+
+      <div class="sub-mgr-form" id="sub-form">
+        <input type="text" id="sub-name" placeholder="서비스명 (예: ChatGPT Plus)">
+        <input type="text" id="sub-amount" placeholder="월 결제금액 (원)" oninput="fmtInput(this)">
+        <select id="sub-day">
+          <option value="">결제일 선택</option>
+          <script>for(var _i=1;_i<=28;_i++)document.write('<option value="'+_i+'">매월 '+_i+'일</option>')</script>
+        </select>
+        <select id="sub-method">
+          <option value="카드">카드</option>
+          <option value="계좌">계좌이체</option>
+        </select>
+        <select id="sub-category">
+          <option value="지급수수료">지급수수료</option>
+          <option value="광고선전비">광고선전비</option>
+          <option value="소모품비">소모품비</option>
+        </select>
+        <button onclick="addSubscription()" style="padding:9px 16px;background:#283593;color:#fff;border:none;border-radius:var(--rs);font-family:inherit;font-weight:700;font-size:13px;cursor:pointer">+ 등록</button>
+      </div>
+
+      <div id="sub-list"></div>
+      <div class="sub-summary" id="sub-summary" style="display:none"></div>
     </div>
   </div>
 
@@ -1203,7 +1285,7 @@ function dailySnapshot(){
   }catch(e){}
 }
 function getAllBackupData(){
-  var allKeys=['yjtax_D','yjtax_evt','yjtax_income','yjtax_cal_memos','yjtax_salarylog','yjtax_gemini_key','yjtax_claude_key','yjtax_nts_key','yjtax_drive'];
+  var allKeys=['yjtax_D','yjtax_evt','yjtax_income','yjtax_cal_memos','yjtax_salarylog','yjtax_gemini_key','yjtax_claude_key','yjtax_nts_key','yjtax_drive','yjtax_private','yjtax_subscriptions'];
   var backup={version:'v8',date:new Date().toISOString(),keys:{}};
   allKeys.forEach(function(k){try{var v=localStorage.getItem(k);if(v)backup.keys[k]=v}catch(e){}});
   return backup;
@@ -4526,6 +4608,208 @@ function renderSave(){
   try{document.getElementById('sv-vat-part').textContent=fm(vatSaveTotal)+'원'}catch(e){}
   try{document.getElementById('sv-inc-part').textContent=fm(incSaveTotal)+'원'}catch(e){}
 }
+
+// ============================================================
+// 기능 1: 비공개 실수익 추적기
+// ============================================================
+function togglePrivateSection(){
+  var body=document.getElementById('prv-body');
+  var btn=document.getElementById('prv-toggle-btn');
+  if(body.classList.contains('open')){
+    body.classList.remove('open');
+    btn.textContent='펼치기 ▼';
+  } else {
+    body.classList.add('open');
+    btn.textContent='접기 ▲';
+    renderPrivateTracker();
+  }
+}
+
+function getPrivateData(){
+  try{var d=localStorage.getItem('yjtax_private');return d?JSON.parse(d):{}}catch(e){return {}}
+}
+function savePrivateData(data){
+  try{localStorage.setItem('yjtax_private',JSON.stringify(data))}catch(e){}
+}
+
+function renderPrivateTracker(){
+  var taxArr=D.tax||[];
+  if(taxArr.length===0){
+    document.getElementById('prv-tbody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;color:#666">세금계산서 데이터가 없습니다</td></tr>';
+    document.getElementById('prv-summary').innerHTML='';
+    return;
+  }
+  var prvData=getPrivateData();
+  var html='';
+  for(var i=0;i<taxArr.length;i++){
+    var r=taxArr[i];
+    var key='row_'+i;
+    var checked=prvData[key]&&prvData[key].checked?'checked':'';
+    var memo=prvData[key]&&prvData[key].memo?prvData[key].memo:'';
+    var typeColor=r.type==='매출'?'color:#1565C0':'color:#C62828';
+    html+='<tr>';
+    html+='<td>'+r.date+'</td>';
+    html+='<td style="'+typeColor+';font-weight:700">'+r.type+'</td>';
+    html+='<td style="max-width:120px;overflow:hidden;text-overflow:ellipsis" title="'+r.client+'">'+r.client+'</td>';
+    html+='<td class="am" style="color:#FFD700;font-weight:700">'+fm(r.tax)+'</td>';
+    html+='<td style="text-align:center"><input type="checkbox" '+checked+' onchange="onPrivateCheck('+i+',this)" style="accent-color:#ef5350;width:16px;height:16px;cursor:pointer"></td>';
+    html+='<td><input type="text" class="prv-memo" value="'+memo.replace(/"/g,'&quot;')+'" placeholder="메모" onchange="onPrivateMemo('+i+',this)"></td>';
+    html+='</tr>';
+  }
+  document.getElementById('prv-tbody').innerHTML=html;
+  updatePrivateSummary();
+}
+
+function onPrivateCheck(idx,el){
+  var prvData=getPrivateData();
+  var key='row_'+idx;
+  if(!prvData[key])prvData[key]={};
+  prvData[key].checked=el.checked;
+  savePrivateData(prvData);
+  updatePrivateSummary();
+}
+function onPrivateMemo(idx,el){
+  var prvData=getPrivateData();
+  var key='row_'+idx;
+  if(!prvData[key])prvData[key]={};
+  prvData[key].memo=el.value;
+  savePrivateData(prvData);
+}
+
+function updatePrivateSummary(){
+  var taxArr=D.tax||[];
+  var prvData=getPrivateData();
+  var totalSalesTax=0,totalExpTax=0,refundTax=0;
+  for(var i=0;i<taxArr.length;i++){
+    var r=taxArr[i];
+    if(r.type==='매출') totalSalesTax+=r.tax;
+    else totalExpTax+=r.tax;
+    var key='row_'+i;
+    if(prvData[key]&&prvData[key].checked) refundTax+=r.tax;
+  }
+  var bookProfit=totalSalesTax-totalExpTax;
+  var netProfit=bookProfit-refundTax;
+  var el=document.getElementById('prv-summary');
+  el.innerHTML='<div style="font-size:14px;font-weight:800;color:#FFD700;margin-bottom:10px">📊 실수익 분석</div>'+
+    '<div>장부상 세액 차이 (매출세액 - 매입세액): <b style="color:#FFD700">'+fm(bookProfit)+'원</b></div>'+
+    '<div>환급 체크 세액 합계: <span class="prv-refund">'+fm(refundTax)+'원</span></div>'+
+    '<div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.1);font-size:14px">'+
+    '장부상 수익 <b style="color:#FFD700">'+fm(bookProfit)+'원</b> − 환급액 <span class="prv-refund">'+fm(refundTax)+'원</span> = 실제 순수익 <span class="prv-net">'+fm(netProfit)+'원</span></div>';
+}
+
+// ============================================================
+// 기능 2: AI 구독 경비 관리
+// ============================================================
+function getSubscriptions(){
+  try{var d=localStorage.getItem('yjtax_subscriptions');return d?JSON.parse(d):[]}catch(e){return []}
+}
+function saveSubscriptions(arr){
+  try{localStorage.setItem('yjtax_subscriptions',JSON.stringify(arr))}catch(e){}
+}
+
+function addSubscription(){
+  var name=document.getElementById('sub-name').value.trim();
+  var rawAmt=document.getElementById('sub-amount').value.replace(/[^0-9]/g,'');
+  var amount=parseInt(rawAmt)||0;
+  var day=document.getElementById('sub-day').value;
+  var method=document.getElementById('sub-method').value;
+  var category=document.getElementById('sub-category').value;
+  if(!name||!amount){alert('서비스명과 결제금액을 입력하세요');return}
+  if(!day){alert('결제일을 선택하세요');return}
+  var subs=getSubscriptions();
+  subs.push({id:Date.now(),name:name,amount:amount,day:parseInt(day),method:method,category:category,invoice:false});
+  saveSubscriptions(subs);
+  document.getElementById('sub-name').value='';
+  document.getElementById('sub-amount').value='';
+  document.getElementById('sub-day').value='';
+  renderSubscriptions();
+}
+
+function deleteSubscription(id){
+  var subs=getSubscriptions().filter(function(s){return s.id!==id});
+  saveSubscriptions(subs);
+  renderSubscriptions();
+}
+
+function toggleSubInvoice(id){
+  var subs=getSubscriptions();
+  for(var i=0;i<subs.length;i++){
+    if(subs[i].id===id){subs[i].invoice=!subs[i].invoice;break}
+  }
+  saveSubscriptions(subs);
+  renderSubscriptions();
+}
+
+function renderSubscriptions(){
+  var subs=getSubscriptions();
+  var listEl=document.getElementById('sub-list');
+  var sumEl=document.getElementById('sub-summary');
+  if(subs.length===0){
+    listEl.innerHTML='<div style="text-align:center;padding:20px;color:#bbb;font-size:13px"><i class="fas fa-inbox" style="display:block;font-size:28px;margin-bottom:8px;color:#ddd"></i>등록된 구독이 없습니다</div>';
+    sumEl.style.display='none';
+    return;
+  }
+  var html='';
+  var monthTotal=0,yearTotal=0,invoiceTotal=0,noInvoiceTotal=0;
+  for(var i=0;i<subs.length;i++){
+    var s=subs[i];
+    monthTotal+=s.amount;
+    if(s.invoice) invoiceTotal+=s.amount;
+    else noInvoiceTotal+=s.amount;
+    var invoiceIcon=s.invoice?'<span style="color:var(--gn);font-weight:700">✅ 보관</span>':'<span style="color:var(--or);font-weight:700">⚠️ 미보관</span>';
+    html+='<div class="sub-item">';
+    html+='<div style="flex:1;min-width:0">';
+    html+='<div style="font-weight:700;margin-bottom:2px">'+s.name+'</div>';
+    html+='<div style="font-size:11px;color:#888">매월 '+s.day+'일 · '+s.method+' · '+s.category+'</div>';
+    if(!s.invoice) html+='<div class="sub-warn">⚠️ 영수증(인보이스) 없으면 공제 불가</div>';
+    html+='</div>';
+    html+='<div style="text-align:right;white-space:nowrap;margin:0 8px">';
+    html+='<div style="font-weight:800;font-size:14px;color:var(--nv)">'+fm(s.amount)+'원</div>';
+    html+='<div style="margin-top:3px">'+invoiceIcon+'</div>';
+    html+='</div>';
+    html+='<div style="display:flex;flex-direction:column;gap:4px">';
+    html+='<button onclick="toggleSubInvoice('+s.id+')" style="background:none;border:1px solid #ddd;border-radius:6px;padding:4px 8px;font-size:10px;cursor:pointer;font-family:inherit;white-space:nowrap" title="인보이스 보관 토글">📎</button>';
+    html+='<button onclick="deleteSubscription('+s.id+')" style="background:none;border:1px solid #fcc;border-radius:6px;padding:4px 8px;font-size:10px;cursor:pointer;color:var(--rd);font-family:inherit">✕</button>';
+    html+='</div>';
+    html+='</div>';
+  }
+  listEl.innerHTML=html;
+
+  yearTotal=monthTotal*12;
+  var vatDeduct=Math.floor(invoiceTotal*10/110);
+  var vatDeductYear=vatDeduct*12;
+  var expenseYear=yearTotal;
+  var missedVat=Math.floor(noInvoiceTotal*10/110)*12;
+
+  var sh='<div style="font-size:15px;font-weight:800;color:var(--nv);margin-bottom:12px">📊 구독 경비 요약</div>';
+  sh+='<div>💳 월 합계: <span class="s-val">'+fm(monthTotal)+'원</span></div>';
+  sh+='<div>📅 연간 합계: <span class="s-val">'+fm(yearTotal)+'원</span></div>';
+  sh+='<div style="margin-top:8px;padding-top:8px;border-top:1px solid #e0e0e0">✅ 매입세액공제 가능액 (인보이스 보관분, 월): <span class="s-val s-good">'+fm(vatDeduct)+'원</span></div>';
+  sh+='<div>✅ 매입세액공제 가능액 (연간): <span class="s-val s-good">'+fm(vatDeductYear)+'원</span></div>';
+  sh+='<div>📋 종소세 경비 인정액 (연간): <span class="s-val s-good">'+fm(expenseYear)+'원</span></div>';
+  if(noInvoiceTotal>0){
+    sh+='<div style="margin-top:8px;padding-top:8px;border-top:1px solid #e0e0e0">⚠️ 미보관으로 놓치는 공제액 (연간): <span class="s-val s-warn">'+fm(missedVat)+'원</span></div>';
+    sh+='<div style="font-size:11px;color:var(--or);margin-top:4px">→ 인보이스를 보관하면 연간 '+fm(missedVat)+'원 추가 공제 가능!</div>';
+  }
+  sumEl.innerHTML=sh;
+  sumEl.style.display='block';
+}
+
+// 초기 로드 시 구독 목록 렌더링 (도구함 탭 진입 시)
+(function(){
+  var origSw=window.sw;
+  if(origSw){
+    window.sw=function(n,b){
+      origSw(n,b);
+      if(n===6) renderSubscriptions();
+    };
+  }
+})();
+
+// 페이지 로드 시 초기화
+document.addEventListener('DOMContentLoaded',function(){
+  try{renderSubscriptions()}catch(e){}
+});
 </script>
 </body>
 </html>
