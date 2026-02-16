@@ -2160,8 +2160,56 @@ function uUI(){
   document.getElementById('xb').style.display=(D.tax.length||D.bank.length||D.card.length)?'flex':'none';
 }
 
+// === 폴더 재귀 탐색 (드래그 폴더 지원) ===
+function readEntryFiles(entry){
+  return new Promise(function(resolve){
+    if(entry.isFile){
+      entry.file(function(f){resolve([f])},function(){resolve([])});
+    }else if(entry.isDirectory){
+      var reader=entry.createReader();
+      var allEntries=[];
+      (function readAll(){
+        reader.readEntries(function(entries){
+          if(!entries.length){
+            Promise.all(allEntries.map(readEntryFiles)).then(function(arrs){
+              resolve(arrs.reduce(function(a,b){return a.concat(b)},[]))
+            });
+          }else{
+            allEntries=allEntries.concat(Array.from(entries));
+            readAll();
+          }
+        },function(){resolve([])});
+      })();
+    }else resolve([]);
+  });
+}
+function handleDrop(e){
+  e.preventDefault();
+  var items=e.dataTransfer.items;
+  if(items&&items.length){
+    var entries=[];
+    for(var i=0;i<items.length;i++){
+      var entry=items[i].webkitGetAsEntry&&items[i].webkitGetAsEntry();
+      if(entry)entries.push(entry);
+    }
+    if(entries.length){
+      var folderFound=entries.some(function(en){return en.isDirectory});
+      if(folderFound)showToast('📂 폴더 스캔 중...');
+      Promise.all(entries.map(readEntryFiles)).then(function(arrs){
+        var files=arrs.reduce(function(a,b){return a.concat(b)},[]);
+        // 임시파일/숨김파일 제외
+        files=files.filter(function(f){return !f.name.startsWith('~$')&&!f.name.startsWith('.')&&f.size>0});
+        if(folderFound)showToast('📂 '+files.length+'개 파일 발견');
+        files.forEach(mp);
+      });
+      return;
+    }
+  }
+  // 폴백: 일반 파일
+  Array.from(e.dataTransfer.files).forEach(mp);
+}
 // === BIND ===
-function bind(z,f){var ze=document.getElementById(z),fe=document.getElementById(f);ze.addEventListener('click',function(){fe.click()});fe.addEventListener('change',function(e){Array.from(e.target.files).forEach(mp);fe.value=''});ze.addEventListener('dragover',function(e){e.preventDefault();ze.style.borderColor='var(--gd)';ze.style.background='#FFF8E1';ze.style.transform='scale(1.02)'});ze.addEventListener('dragleave',function(){ze.style.borderColor='';ze.style.background='';ze.style.transform=''});ze.addEventListener('drop',function(e){e.preventDefault();ze.style.borderColor='';ze.style.background='';ze.style.transform='';Array.from(e.dataTransfer.files).forEach(mp)})}
+function bind(z,f){var ze=document.getElementById(z),fe=document.getElementById(f);ze.addEventListener('click',function(){fe.click()});fe.addEventListener('change',function(e){Array.from(e.target.files).forEach(mp);fe.value=''});ze.addEventListener('dragover',function(e){e.preventDefault();ze.style.borderColor='var(--gd)';ze.style.background='#FFF8E1';ze.style.transform='scale(1.02)'});ze.addEventListener('dragleave',function(){ze.style.borderColor='';ze.style.background='';ze.style.transform=''});ze.addEventListener('drop',function(e){ze.style.borderColor='';ze.style.background='';ze.style.transform='';handleDrop(e)})}
 bind('mu1','fi1');bind('mu2','fi2');
 document.getElementById('mo').addEventListener('click',function(e){if(e.target===this){this.classList.remove('show');resetModal();pn={f:null,r:null,t:''}}});
 
