@@ -107,7 +107,7 @@ td{padding:12px 8px;border-bottom:1px solid #f5f5f5;white-space:nowrap}tr:hover 
 .private-section .prv-body{padding:0 20px 20px;display:none}
 .private-section .prv-body.open{display:block}
 .private-section .prv-notice{font-size:11px;color:#ef5350;background:rgba(239,83,80,.1);padding:8px 12px;border-radius:var(--rs);margin-bottom:14px;text-align:center}
-.private-section table{background:rgba(255,255,255,.05);border-radius:var(--rs);overflow:hidden}
+.private-section table{background:rgba(255,255,255,.05);border-radius:var(--rs);overflow:hidden;table-layout:auto}
 .private-section th{color:#aaa;border-bottom:1px solid rgba(255,255,255,.1);font-size:11px;padding:10px 8px}
 .private-section td{color:#ddd;border-bottom:1px solid rgba(255,255,255,.06);font-size:12px;padding:10px 8px}
 .private-section tr:hover td{background:rgba(255,255,255,.04)}
@@ -287,7 +287,7 @@ td{padding:12px 8px;border-bottom:1px solid #f5f5f5;white-space:nowrap}tr:hover 
       <div class="tw">
         <table id="prv-table">
           <thead>
-            <tr><th style="width:85px">작성일</th><th style="width:50px">구분</th><th>발행 상호명</th><th style="width:90px;text-align:right">공급가액</th><th style="width:80px;text-align:right">세액</th><th style="width:100px;text-align:right">환급액</th><th style="width:110px">메모</th></tr>
+            <tr><th style="width:80px">작성일</th><th style="width:70px">구분</th><th>상호명</th><th style="width:90px;text-align:right">공급가액</th><th style="width:80px;text-align:right">세액</th><th style="width:100px;text-align:right">대리매출액</th><th style="min-width:140px">메모</th></tr>
           </thead>
           <tbody id="prv-tbody"></tbody>
         </table>
@@ -4651,15 +4651,22 @@ function renderPrivateTracker(){
     var refund=prvData[key]&&prvData[key].refund?prvData[key].refund:0;
     var refundVal=refund?fm(refund):'';
     var memo=prvData[key]&&prvData[key].memo?prvData[key].memo:'';
-    var typeColor=r.type==='매출'?'color:#1565C0':'color:#C62828';
+    var hasRefund=refund>0;
+    var typeLabel,typeStyle;
+    if(r.type==='매출'){
+      if(hasRefund){typeLabel='대리매출';typeStyle='color:#FF8A65;font-weight:700;font-size:11px'}
+      else{typeLabel='매출';typeStyle='color:#64B5F6;font-weight:700'}
+    } else {
+      typeLabel='매입';typeStyle='color:#ef5350;font-weight:700';
+    }
     html+='<tr>';
-    html+='<td>'+r.date+'</td>';
-    html+='<td style="'+typeColor+';font-weight:700">'+r.type+'</td>';
-    html+='<td style="max-width:120px;overflow:hidden;text-overflow:ellipsis" title="'+r.client+'">'+r.client+'</td>';
+    html+='<td style="font-size:11px">'+r.date+'</td>';
+    html+='<td style="'+typeStyle+'">'+typeLabel+'</td>';
+    html+='<td style="max-width:130px;overflow:hidden;text-overflow:ellipsis;font-size:12px" title="'+r.client+'">'+r.client+'</td>';
     html+='<td class="am" style="color:#ccc">'+fm(r.supply)+'</td>';
     html+='<td class="am" style="color:#FFD700;font-weight:700">'+fm(r.tax)+'</td>';
-    html+='<td><input type="text" class="prv-memo" value="'+refundVal+'" placeholder="0" style="text-align:right;width:90px" oninput="fmtInput(this)" onchange="onPrivateRefund('+i+',this)" data-max="'+r.tax+'"></td>';
-    html+='<td><input type="text" class="prv-memo" value="'+memo.replace(/"/g,'&quot;')+'" placeholder="메모" onchange="onPrivateMemo('+i+',this)"></td>';
+    html+='<td><input type="text" class="prv-memo" value="'+refundVal+'" placeholder="0" style="text-align:right;width:90px" oninput="fmtInput(this)" onchange="onPrivateRefund('+i+',this)" data-max="'+(r.supply+r.tax)+'"></td>';
+    html+='<td><input type="text" class="prv-memo" value="'+memo.replace(/"/g,'&quot;')+'" placeholder="메모" onchange="onPrivateMemo('+i+',this)" style="width:100%"></td>';
     html+='</tr>';
   }
   document.getElementById('prv-tbody').innerHTML=html;
@@ -4673,17 +4680,17 @@ function onPrivateRefund(idx,el){
   var key=prvRowKey(r);
   var raw=el.value.replace(/[^0-9]/g,'');
   var val=parseInt(raw)||0;
-  var maxTax=parseInt(el.getAttribute('data-max'))||0;
-  if(val>maxTax){
-    alert('환급액('+fm(val)+'원)이 세액('+fm(maxTax)+'원)을 초과할 수 없습니다.');
-    val=maxTax;
+  var maxAmt=parseInt(el.getAttribute('data-max'))||0;
+  if(val>maxAmt){
+    alert('대리매출액('+fm(val)+'원)이 해당 거래 총액('+fm(maxAmt)+'원)을 초과할 수 없습니다.');
+    val=maxAmt;
     el.value=fm(val);
   }
   var prvData=getPrivateData();
   if(!prvData[key])prvData[key]={};
   prvData[key].refund=val;
   savePrivateData(prvData);
-  updatePrivateSummary();
+  renderPrivateTracker();
 }
 function onPrivateMemo(idx,el){
   var taxArr=D.tax||[];
@@ -4699,25 +4706,28 @@ function onPrivateMemo(idx,el){
 function updatePrivateSummary(){
   var taxArr=D.tax||[];
   var prvData=getPrivateData();
-  var salesSupply=0,expSupply=0,totalTax=0,refundTotal=0;
+  var salesSupply=0,expSupply=0,salesTax=0,expTax=0,proxyTotal=0;
   for(var i=0;i<taxArr.length;i++){
     var r=taxArr[i];
-    if(r.type==='매출') salesSupply+=r.supply;
-    else expSupply+=r.supply;
-    totalTax+=r.tax;
+    if(r.type==='매출'){salesSupply+=r.supply;salesTax+=r.tax}
+    else{expSupply+=r.supply;expTax+=r.tax}
     var key=prvRowKey(r);
-    if(prvData[key]&&prvData[key].refund) refundTotal+=prvData[key].refund;
+    if(prvData[key]&&prvData[key].refund) proxyTotal+=prvData[key].refund;
   }
   var bookProfit=salesSupply-expSupply;
-  var netProfit=bookProfit-refundTotal;
+  var netProfit=bookProfit-proxyTotal;
   var el=document.getElementById('prv-summary');
-  el.innerHTML='<div style="font-size:14px;font-weight:800;color:#FFD700;margin-bottom:10px">📊 실수익 분석</div>'+
-    '<div>매출 공급가액 합계: <b style="color:#64B5F6">'+fm(salesSupply)+'원</b></div>'+
-    '<div>매입 공급가액 합계: <b style="color:#ef9a9a">'+fm(expSupply)+'원</b></div>'+
-    '<div>세액 합계: <b style="color:#FFD700">'+fm(totalTax)+'원</b></div>'+
-    '<div>환급액 합계 (직접 입력): <span class="prv-refund">'+fm(refundTotal)+'원</span></div>'+
-    '<div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.1);font-size:14px">'+
-    '장부상 수익 <b style="color:#FFD700">'+fm(bookProfit)+'원</b> − 환급액 <span class="prv-refund">'+fm(refundTotal)+'원</span> = 실제 순수익 <span class="prv-net">'+fm(netProfit)+'원</span></div>';
+  el.innerHTML='<div style="font-size:14px;font-weight:800;color:#FFD700;margin-bottom:12px">📊 실수익 분석</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;margin-bottom:12px">'+
+    '<div>총매출 (공급가액): <b style="color:#64B5F6">'+fm(salesSupply)+'원</b></div>'+
+    '<div>매출세액: <b style="color:#64B5F6">'+fm(salesTax)+'원</b></div>'+
+    '<div>총매입 (공급가액): <b style="color:#ef9a9a">'+fm(expSupply)+'원</b></div>'+
+    '<div>매입세액: <b style="color:#ef9a9a">'+fm(expTax)+'원</b></div>'+
+    '</div>'+
+    '<div style="padding:10px 0;border-top:1px solid rgba(255,255,255,.1);border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:10px">'+
+    '👤 다른 사람 매출 잡아준 금액: <span class="prv-refund" style="font-size:15px">'+fm(proxyTotal)+'원</span></div>'+
+    '<div style="font-size:15px;line-height:2">'+
+    '장부상 수익 <b style="color:#FFD700">'+fm(bookProfit)+'원</b> − 대리매출 <span class="prv-refund">'+fm(proxyTotal)+'원</span> = 실제 순수익 <span class="prv-net">'+fm(netProfit)+'원</span></div>';
 }
 
 // ============================================================
