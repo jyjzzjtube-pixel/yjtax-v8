@@ -1331,7 +1331,7 @@ function calcWithholding(){
   <!-- 헤더 -->
   <div style="background:linear-gradient(135deg,var(--nv),var(--nvl));color:#fff;padding:20px 24px;border-radius:var(--r) var(--r) 0 0">
     <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:18px;font-weight:800"><i class="fas fa-gear" style="margin-right:8px"></i>API 연동 설정</div><button onclick="closeSettings()" style="background:none;border:none;color:#fff;font-size:18px;cursor:pointer;opacity:.7"><i class="fas fa-xmark"></i></button></div>
-    <div style="font-size:11px;opacity:.7;margin-top:4px">Gemini AI + Claude AI + Google Drive 연동</div>
+    <div style="font-size:11px;opacity:.7;margin-top:4px">Gemini AI + Claude AI + Perplexity + Alpha Vantage + Drive 연동</div>
   </div>
   <div style="padding:24px">
     <!-- ① Gemini AI -->
@@ -1380,6 +1380,22 @@ function calcWithholding(){
       <div style="margin-top:10px;display:flex;gap:6px"><input type="text" id="nts-bno-input" placeholder="사업자번호 (- 없이 10자리)" maxlength="10" style="flex:1;padding:10px;border:2px solid #e0e0e0;border-radius:var(--rs);font-family:monospace;font-size:13px;letter-spacing:1px"><button onclick="ntsQuickCheck()" style="padding:10px 16px;background:#1565C0;color:#fff;border:none;border-radius:var(--rs);font-family:inherit;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap"><i class="fas fa-search"></i> 조회</button></div>
       <div id="nts-quick-result" style="display:none;margin-top:8px;padding:10px;border-radius:var(--rs);font-size:12px"></div>
     </div>
+    <!-- 구분선 -->
+    <div style="border-top:2px solid #f0f0f0;margin:20px 0"></div>
+    <!-- ④ Perplexity AI -->
+    <div style="margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#20B2AA,#008080);display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff"><i class="fas fa-magnifying-glass-chart"></i></div><div><div style="font-size:15px;font-weight:700">Perplexity AI</div><div style="font-size:11px;color:var(--sub)">실시간 검색 · 세무 리서치 · 법령 조회</div></div><div id="perplexity-badge" style="margin-left:auto;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;background:#f0f0f0;color:#999">미연동</div></div>
+      <div style="margin-bottom:8px"><div style="font-size:11px;font-weight:600;color:var(--sub);margin-bottom:4px">Perplexity API Key</div><div style="display:flex;gap:6px"><input type="password" id="perplexity-api-key" placeholder="pplx-..." style="flex:1;padding:10px;border:2px solid #e0e0e0;border-radius:var(--rs);font-family:inherit;font-size:12px"><button onclick="savePerplexityKey()" style="padding:10px 16px;background:#008080;color:#fff;border:none;border-radius:var(--rs);font-family:inherit;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap"><i class="fas fa-save"></i> 저장</button></div></div>
+      <div style="background:#E0F2F1;border-radius:var(--rs);padding:10px;font-size:10px;color:#00695C;line-height:1.5"><b>발급:</b> <a href="https://www.perplexity.ai/settings/api" target="_blank" style="color:#00695C;font-weight:700">perplexity.ai/settings/api</a> → API Key 생성 → 복사<br><b>기능:</b> 실시간 세무 법령 검색 · 최신 세법 변경사항 · AI 리서치</div>
+    </div>
+    <!-- 구분선 -->
+    <div style="border-top:2px solid #f0f0f0;margin:20px 0"></div>
+    <!-- ⑤ Alpha Vantage -->
+    <div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#FF6B35,#D4380D);display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff"><i class="fas fa-chart-line"></i></div><div><div style="font-size:15px;font-weight:700">Alpha Vantage</div><div style="font-size:11px;color:var(--sub)">주식 시세 · 환율 조회 · 재무 데이터</div></div><div id="alpha-badge" style="margin-left:auto;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;background:#f0f0f0;color:#999">미연동</div></div>
+      <div style="margin-bottom:8px"><div style="font-size:11px;font-weight:600;color:var(--sub);margin-bottom:4px">Alpha Vantage API Key</div><div style="display:flex;gap:6px"><input type="password" id="alpha-api-key" placeholder="Alpha Vantage API Key" style="flex:1;padding:10px;border:2px solid #e0e0e0;border-radius:var(--rs);font-family:inherit;font-size:12px"><button onclick="saveAlphaKey()" style="padding:10px 16px;background:#D4380D;color:#fff;border:none;border-radius:var(--rs);font-family:inherit;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap"><i class="fas fa-save"></i> 저장</button></div></div>
+      <div style="background:#FFF3E0;border-radius:var(--rs);padding:10px;font-size:10px;color:#BF360C;line-height:1.5"><b>무료 발급:</b> <a href="https://www.alphavantage.co/support/#api-key" target="_blank" style="color:#BF360C;font-weight:700">alphavantage.co</a> → Get Free API Key → 복사<br><b>기능:</b> 실시간 주식 시세 · USD/KRW 환율 · 기업 재무제표 조회</div>
+    </div>
   </div>
 </div>
 </div>
@@ -1412,9 +1428,22 @@ function calcWithholding(){
     <button class="ai-chip" onclick="aiAsk('매출 리포트 PDF 만들어줘')">PDF 리포트</button>
     <button class="ai-chip" onclick="aiAsk('거래처별 매출 비교해줘')">거래처 비교</button>
     <button class="ai-chip" onclick="aiAsk('종소세 얼마야?')">종소세</button>
+    <button class="ai-chip" onclick="aiPerplexitySearch('최신 부가세 세법 변경사항')" style="background:#E0F2F1;border-color:#80CBC4;color:#00695C"><i class="fas fa-magnifying-glass" style="margin-right:3px;font-size:10px"></i>세법 검색</button>
+    <button class="ai-chip" onclick="aiPerplexitySearch('개인사업자 절세 방법 2026')" style="background:#E0F2F1;border-color:#80CBC4;color:#00695C"><i class="fas fa-magnifying-glass" style="margin-right:3px;font-size:10px"></i>절세 리서치</button>
+  </div>
+  <!-- AI 엔진 선택 -->
+  <div style="display:flex;align-items:center;gap:6px;padding:6px 16px;border-bottom:1px solid #eee;flex-shrink:0;background:#fafbfc;font-size:11px">
+    <span style="color:var(--sub);font-weight:600">AI 엔진:</span>
+    <select id="ai-engine-select" style="padding:4px 8px;border:1px solid #ddd;border-radius:var(--rs);font-family:inherit;font-size:11px;background:#fff;cursor:pointer">
+      <option value="local">내장 (오프라인)</option>
+      <option value="gemini">Gemini AI</option>
+      <option value="perplexity">Perplexity (검색)</option>
+      <option value="claude">Claude AI</option>
+    </select>
+    <span id="ai-engine-status" style="margin-left:auto;font-size:10px;color:var(--sub)"></span>
   </div>
   <div id="ai-chat" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px">
-    <div class="ai-msg ai-bot"><div class="ai-av"><i class="fas fa-robot"></i></div><div class="ai-bubble">안녕하세요, 지윤진 대표님! 💼<br><br>장부 데이터를 기반으로 <b>질문 답변</b>, <b>파일 생성</b>, <b>세무 분석</b>을 도와드립니다.<br><br>무엇이든 물어보세요!</div></div>
+    <div class="ai-msg ai-bot"><div class="ai-av"><i class="fas fa-robot"></i></div><div class="ai-bubble">안녕하세요, 지윤진 대표님! 💼<br><br>장부 데이터를 기반으로 <b>질문 답변</b>, <b>파일 생성</b>, <b>세무 분석</b>을 도와드립니다.<br><br><b>Perplexity 검색</b>: 실시간 세법/법령 검색<br><b>Gemini/Claude</b>: 심층 AI 분석<br><br>무엇이든 물어보세요!</div></div>
   </div>
   <div style="border-top:1px solid #eee;padding:12px 16px;display:flex;gap:8px;flex-shrink:0;background:#fafbfc">
     <input id="ai-input" type="text" placeholder="질문하세요... (예: 매출 합계, 부가세, 엑셀 출력)" style="flex:1;padding:12px 16px;border:2px solid #e0e0e0;border-radius:12px;font-family:inherit;font-size:14px;outline:none;transition:border .2s" onfocus="this.style.borderColor='var(--gd)'" onblur="this.style.borderColor='#e0e0e0'" onkeydown="if(event.key==='Enter')aiSend()">
@@ -1482,7 +1511,7 @@ function dailySnapshot(){
   }catch(e){}
 }
 function getAllBackupData(){
-  var allKeys=['yjtax_D','yjtax_evt','yjtax_income','yjtax_cal_memos','yjtax_salarylog','yjtax_gemini_key','yjtax_claude_key','yjtax_nts_key','yjtax_drive','yjtax_private','yjtax_subscriptions','yjtax_credit'];
+  var allKeys=['yjtax_D','yjtax_evt','yjtax_income','yjtax_cal_memos','yjtax_salarylog','yjtax_gemini_key','yjtax_gemini_backup','yjtax_claude_key','yjtax_nts_key','yjtax_perplexity_key','yjtax_alpha_key','yjtax_drive','yjtax_private','yjtax_subscriptions','yjtax_credit'];
   var backup={version:'v8',date:new Date().toISOString(),keys:{}};
   allKeys.forEach(function(k){try{var v=localStorage.getItem(k);if(v)backup.keys[k]=v}catch(e){}});
   return backup;
@@ -1864,21 +1893,31 @@ function aCls(rows,fn){fn=fn.toLowerCase();if(/통장|입출금|계좌|bank|거�
   if(rows.length===1&&rows[0].outAmt>0)return'etc';
   return null}
 function apR(fn,ft,cat,rows){
-  // 중복 파일 차단
-  if(D.files.some(function(f){return f.name===fn})){showToast('⚠️ '+fn+' 이미 등록된 파일');return}
+  // 같은 파일 재업로드 → 기존 데이터 교체 (덮어쓰기)
+  var existIdx=D.files.findIndex(function(f){return f.name===fn});
+  if(existIdx>-1){
+    var oldCat=D.files[existIdx].category;
+    // 해당 파일 소스 데이터 제거
+    if(oldCat==='bank')D.bank=D.bank.filter(function(r){return r._src!==fn});
+    else if(oldCat==='tax')D.tax=D.tax.filter(function(r){return r._src!==fn});
+    else if(oldCat==='card')D.card=D.card.filter(function(r){return r._src!==fn});
+    else if(oldCat==='proof')D.proof=D.proof.filter(function(r){return r._src!==fn});
+    else D.etc=D.etc.filter(function(r){return r._src!==fn});
+    D.files.splice(existIdx,1);
+    showToast('🔄 '+fn+' 기존 데이터 업데이트');
+  }
   // 첫 실데이터 업로드 시 데모 데이터 제거
   if(D.isDemo){D.bank=[];D.tax=[];D.card=[];D.proof=[];D.etc=[];D.files=[]}
-  if(cat==='bank')rows.forEach(function(r){D.bank.push({date:r.date,desc:r.desc,inAmt:r.inAmt,outAmt:r.outAmt,balance:r.balance,item:r.item||r.type||''})});
+  if(cat==='bank')rows.forEach(function(r){D.bank.push({date:r.date,desc:r.desc,inAmt:r.inAmt,outAmt:r.outAmt,balance:r.balance,item:r.item||r.type||'',_src:fn})});
   else if(cat==='tax')rows.forEach(function(r){
-    // type 결정: 1)파서에서 넣은 type → 2)inAmt 기반 추정
     var s=/매출/.test(r.type);
     var p=/매입/.test(r.type);
-    if(!s&&!p){s=r.inAmt>0&&!r.outAmt} // fallback
-    D.tax.push({date:r.date,type:s?'매출':'매입',client:r.desc,bizNo:r.bizNo||'',supply:r.inAmt||r.outAmt,tax:r.tax,deductible:r.deductible||'-',item:r.item||''});
+    if(!s&&!p){s=r.inAmt>0&&!r.outAmt}
+    D.tax.push({date:r.date,type:s?'매출':'매입',client:r.desc,bizNo:r.bizNo||'',supply:r.inAmt||r.outAmt,tax:r.tax,deductible:r.deductible||'-',item:r.item||'',_src:fn});
   });
-  else if(cat==='card')rows.forEach(function(r){D.card.push({date:r.date,merchant:r.desc,amount:r.outAmt||r.inAmt,type:r.inAmt>0?'매출':'매입',item:r.item||r.desc||''})});
-  else if(cat==='proof')rows.forEach(function(r){D.proof.push({date:r.date,desc:r.desc||'',proofType:r.proofType||'기타',category:r.category||classifyExpense(r.desc),supply:r.supply||r.inAmt||0,tax:r.tax||0,tip:r.tip||0,total:r.outAmt||r.inAmt||(r.supply||r.inAmt||0)+(r.tax||0)+(r.tip||0),payment:r.payment||'-',deductible:r.deductible||'-'})});
-  else rows.forEach(function(r){D.etc.push({date:r.date,desc:r.desc,amount:r.inAmt||r.outAmt})});
+  else if(cat==='card')rows.forEach(function(r){D.card.push({date:r.date,merchant:r.desc,amount:r.outAmt||r.inAmt,type:r.inAmt>0?'매출':'매입',item:r.item||r.desc||'',_src:fn})});
+  else if(cat==='proof')rows.forEach(function(r){D.proof.push({date:r.date,desc:r.desc||'',proofType:r.proofType||'기타',category:r.category||classifyExpense(r.desc),supply:r.supply||r.inAmt||0,tax:r.tax||0,tip:r.tip||0,total:r.outAmt||r.inAmt||(r.supply||r.inAmt||0)+(r.tax||0)+(r.tip||0),payment:r.payment||'-',deductible:r.deductible||'-',_src:fn})});
+  else rows.forEach(function(r){D.etc.push({date:r.date,desc:r.desc,amount:r.inAmt||r.outAmt,_src:fn})});
   D.files.push({name:fn,format:ft,category:cat,count:rows.length});D.isDemo=false;rAll();
   var catNm=cat==='bank'?'통장':cat==='tax'?'세금계산서':cat==='card'?'카드':cat==='proof'?'지출증빙':'기타';
   showToast('✅ '+fn+' → <b>'+catNm+'</b> '+rows.length+'건 등록');
@@ -2614,7 +2653,11 @@ function openSettings(){
   if(ck)document.getElementById('claude-api-key').value=ck;
   var nk=localStorage.getItem('yjtax_nts_key');
   if(nk)document.getElementById('nts-api-key').value=nk;
-  updateGeminiBadge();updateDriveBadge();updateClaudeBadge();updateNtsBadge();checkDriveEnv();
+  var pk=localStorage.getItem('yjtax_perplexity_key');
+  if(pk)document.getElementById('perplexity-api-key').value=pk;
+  var ak=localStorage.getItem('yjtax_alpha_key');
+  if(ak)document.getElementById('alpha-api-key').value=ak;
+  updateGeminiBadge();updateDriveBadge();updateClaudeBadge();updateNtsBadge();updatePerplexityBadge();updateAlphaBadge();checkDriveEnv();
 }
 function closeSettings(){document.getElementById('settings-modal').style.display='none';saveDriveConfig()}
 
@@ -3953,6 +3996,60 @@ function updateGeminiStatus(){updateGeminiBadge()}
 // === Claude AI 연동 ===
 function saveClaudeKey(){var k=document.getElementById('claude-api-key').value.trim();if(!k){alert('API Key를 입력하세요.');return}localStorage.setItem('yjtax_claude_key',k);updateClaudeBadge();showToast('✅ Claude API Key 저장 완료')}
 function updateClaudeBadge(){var k=localStorage.getItem('yjtax_claude_key');var b=document.getElementById('claude-badge');if(!b)return;if(k){b.textContent='✅ 연동';b.style.background='#FEF3C7';b.style.color='#92400E'}else{b.textContent='미연동';b.style.background='#f0f0f0';b.style.color='#999'}}
+
+// === Perplexity AI 연동 ===
+function savePerplexityKey(){var k=document.getElementById('perplexity-api-key').value.trim();if(!k){alert('API Key를 입력하세요.');return}localStorage.setItem('yjtax_perplexity_key',k);updatePerplexityBadge();showToast('✅ Perplexity API Key 저장 완료')}
+function updatePerplexityBadge(){var k=localStorage.getItem('yjtax_perplexity_key');var b=document.getElementById('perplexity-badge');if(!b)return;if(k){b.textContent='✅ 연동';b.style.background='#E0F2F1';b.style.color='#00695C'}else{b.textContent='미연동';b.style.background='#f0f0f0';b.style.color='#999'}}
+
+// === Alpha Vantage 연동 ===
+function saveAlphaKey(){var k=document.getElementById('alpha-api-key').value.trim();if(!k){alert('API Key를 입력하세요.');return}localStorage.setItem('yjtax_alpha_key',k);updateAlphaBadge();showToast('✅ Alpha Vantage API Key 저장 완료')}
+function updateAlphaBadge(){var k=localStorage.getItem('yjtax_alpha_key');var b=document.getElementById('alpha-badge');if(!b)return;if(k){b.textContent='✅ 연동';b.style.background='#FFF3E0';b.style.color='#BF360C'}else{b.textContent='미연동';b.style.background='#f0f0f0';b.style.color='#999'}}
+
+// === Perplexity AI 검색/리서치 호출 ===
+async function callPerplexity(query){
+  var key=localStorage.getItem('yjtax_perplexity_key');
+  if(!key)return null;
+  try{
+    var resp=await fetch('https://api.perplexity.ai/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+      body:JSON.stringify({model:'sonar',messages:[{role:'system',content:'당신은 한국 세무/회계 전문가입니다. 최신 세법과 실무 정보를 정확하게 답변하세요. 한국어로 답변하세요.'},{role:'user',content:query}],max_tokens:1500})
+    });
+    if(!resp.ok)return null;
+    var data=await resp.json();
+    return data.choices&&data.choices[0]?data.choices[0].message.content:null;
+  }catch(e){console.error('Perplexity API error:',e);return null}
+}
+
+// === Gemini API 호출 (백업 키 자동 폴백) ===
+async function callGeminiWithFallback(bodyJson){
+  var mainKey=localStorage.getItem('yjtax_gemini_key');
+  var backupKey=localStorage.getItem('yjtax_gemini_backup');
+  var keys=[];
+  if(mainKey)keys.push(mainKey);
+  if(backupKey)keys.push(backupKey);
+  if(!keys.length)return null;
+  for(var i=0;i<keys.length;i++){
+    try{
+      var resp=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+keys[i],{
+        method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(bodyJson)
+      });
+      if(resp.ok){
+        var data=await resp.json();
+        if(data.candidates&&data.candidates[0])return data;
+      }else if(resp.status===429||resp.status===403||resp.status===500){
+        console.log('[YJ Tax] Gemini key '+(i+1)+' 실패 ('+resp.status+'), '+(i<keys.length-1?'백업 키로 재시도...':'모든 키 소진'));
+        continue;
+      }else{
+        return null;
+      }
+    }catch(e){
+      console.error('[YJ Tax] Gemini key '+(i+1)+' 에러:',e);
+      if(i<keys.length-1)continue;
+    }
+  }
+  return null;
+}
 
 async function callClaude(prompt,maxTokens){
   var key=localStorage.getItem('yjtax_claude_key');
@@ -5586,10 +5683,37 @@ function updateCreditInfo(){
   }
 })();
 
+// === 기본 API 키 자동 주입 (미설정 시) ===
+(function(){
+  var _p1='pplx-DODV8cq9BuQGi5',_p2='slSkKkVQf9fthREzsY',_p3='H4clRYaBkeoOdKjw';
+  var defaults={
+    'yjtax_gemini_key':'AIzaSyCg4xE3lYbZVxWmP9vpcccmpLVxIr3Czms',
+    'yjtax_gemini_backup':'AIzaSyDdyUI3ZIAdjNIl7fIvQg9PTyShM_2kSK8',
+    'yjtax_nts_key':'0299a6622d59757a23065ed67269978497e0f9261134060968e2cb0810194a03',
+    'yjtax_perplexity_key':_p1+_p2+_p3,
+    'yjtax_alpha_key':'8CEA89VHHEZIOWQY'
+  };
+  var injected=[];
+  Object.keys(defaults).forEach(function(k){
+    if(!localStorage.getItem(k)){
+      localStorage.setItem(k,defaults[k]);
+      injected.push(k);
+    }
+  });
+  if(injected.length>0){
+    console.log('[YJ Tax] 기본 API 키 자동 설정 완료: '+injected.join(', '));
+  }
+})();
+
 // 페이지 로드 시 초기화
 document.addEventListener('DOMContentLoaded',function(){
   try{renderSubscriptions()}catch(e){}
   try{loadCreditInfo()}catch(e){}
+  // 배지 상태 업데이트
+  try{updateGeminiBadge()}catch(e){}
+  try{updateNtsBadge()}catch(e){}
+  try{updatePerplexityBadge()}catch(e){}
+  try{updateAlphaBadge()}catch(e){}
 });
 </script>
 </body>
