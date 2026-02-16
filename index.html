@@ -255,7 +255,7 @@ td{padding:12px 8px;border-bottom:1px solid #f5f5f5;white-space:nowrap}tr:hover 
     <div id="mismatch-list" style="font-size:12px;color:#555;line-height:1.8"></div>
   </div>
 
-  <div class="cg fi d4" id="cg" style="display:none"><div class="ci" onclick="switchTab(2);setTimeout(function(){swI(document.querySelectorAll('.ib')[0],'bank')},100)" style="cursor:pointer"><div class="ci-ic" style="background:#E3F2FD"><i class="fas fa-building-columns"></i></div><div class="ci-n" id="c-bk">0</div><div class="ci-l">통장</div></div><div class="ci" onclick="switchTab(2);setTimeout(function(){swI(document.querySelectorAll('.ib')[1],'tax')},100)" style="cursor:pointer"><div class="ci-ic" style="background:#FFF3E0"><i class="fas fa-file-invoice"></i></div><div class="ci-n" id="c-tx">0</div><div class="ci-l">세금계산서</div></div><div class="ci" onclick="switchTab(2);setTimeout(function(){swI(document.querySelectorAll('.ib')[2],'card')},100)" style="cursor:pointer"><div class="ci-ic" style="background:#F3E5F5"><i class="fas fa-credit-card"></i></div><div class="ci-n" id="c-cd">0</div><div class="ci-l">카드</div></div><div class="ci" onclick="switchTab(2);setTimeout(function(){swI(document.querySelectorAll('.ib')[3],'all')},100)" style="cursor:pointer"><div class="ci-ic" style="background:#ECEFF1"><i class="fas fa-folder"></i></div><div class="ci-n" id="c-et">0</div><div class="ci-l">기타</div></div></div>
+  <div class="cg fi d4" id="cg" style="display:none;grid-template-columns:1fr 1fr 1fr 1fr 1fr"><div class="ci" onclick="switchTab(2);setTimeout(function(){swI(document.querySelectorAll('.ib')[0],'bank')},100)" style="cursor:pointer"><div class="ci-ic" style="background:#E3F2FD"><i class="fas fa-building-columns"></i></div><div class="ci-n" id="c-bk">0</div><div class="ci-l">통장</div></div><div class="ci" onclick="switchTab(2);setTimeout(function(){swI(document.querySelectorAll('.ib')[1],'tax')},100)" style="cursor:pointer"><div class="ci-ic" style="background:#FFF3E0"><i class="fas fa-file-invoice"></i></div><div class="ci-n" id="c-tx">0</div><div class="ci-l">세금계산서</div></div><div class="ci" onclick="switchTab(2);setTimeout(function(){swI(document.querySelectorAll('.ib')[2],'card')},100)" style="cursor:pointer"><div class="ci-ic" style="background:#F3E5F5"><i class="fas fa-credit-card"></i></div><div class="ci-n" id="c-cd">0</div><div class="ci-l">카드</div></div><div class="ci" onclick="switchTab(2);setTimeout(function(){swI(document.querySelectorAll('.ib')[3],'proof')},100)" style="cursor:pointer"><div class="ci-ic" style="background:#FFF8E1"><i class="fas fa-receipt"></i></div><div class="ci-n" id="c-pf">0</div><div class="ci-l">지출증빙</div></div><div class="ci" onclick="switchTab(2);setTimeout(function(){swI(document.querySelectorAll('.ib')[4],'all')},100)" style="cursor:pointer"><div class="ci-ic" style="background:#ECEFF1"><i class="fas fa-folder"></i></div><div class="ci-n" id="c-et">0</div><div class="ci-l">전체</div></div></div>
   <div class="cd fi d4"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font-weight:700;font-size:14px">📋 요약</span><span class="dm dm-d" id="dm">🔶 데모</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px"><div style="background:#E3F2FD;padding:10px;border-radius:var(--rs);text-align:center"><div style="font-size:10px;color:#1565C0">매출</div><div style="font-size:18px;font-weight:800;color:#0D47A1" id="s-sc">0</div><div style="font-size:9px;color:#64B5F6">건</div></div><div style="background:#FFEBEE;padding:10px;border-radius:var(--rs);text-align:center"><div style="font-size:10px;color:#C62828">매입</div><div style="font-size:18px;font-weight:800;color:#B71C1C" id="s-ec">0</div><div style="font-size:9px;color:#EF9A9A">건</div></div></div><div style="font-size:12px;color:#555;line-height:2"><div>▸ 불공제 <strong style="color:var(--rd)" id="s-nd">0원</strong></div><div>▸ 주매출처: <strong id="s-tp">-</strong></div><div>▸ 총매출액: <strong style="color:#1565C0" id="s-sales-total">0원</strong> / 총매입액: <strong style="color:#C62828" id="s-exp-total">0원</strong></div></div></div>
 
   <!-- 데이터 보호 상태 바 -->
@@ -342,10 +342,34 @@ td{padding:12px 8px;border-bottom:1px solid #f5f5f5;white-space:nowrap}tr:hover 
     </div>
     <div id="fl" style="display:none;padding-top:8px;transition:all .3s"></div>
   </div>
-  <div class="it fi d2"><button class="ib on" onclick="swI(this,'bank')">통장</button><button class="ib" onclick="swI(this,'tax')">세금계산서</button><button class="ib" onclick="swI(this,'card')">카드</button><button class="ib" onclick="swI(this,'all')">전체</button></div>
+  <div class="it fi d2"><button class="ib on" onclick="swI(this,'bank')">통장</button><button class="ib" onclick="swI(this,'tax')">세금계산서</button><button class="ib" onclick="swI(this,'card')">카드</button><button class="ib" onclick="swI(this,'proof')">지출증빙</button><button class="ib" onclick="swI(this,'all')">전체</button></div>
   <div class="ip on" id="p-bank"><div class="cd"><div class="tw"><table id="tb-bk" style="table-layout:auto"><thead><tr><th style="width:80px">거래일</th><th>거래내용</th><th>거래기록사항</th><th style="width:95px;text-align:right">입금</th><th style="width:95px;text-align:right">출금</th><th style="width:95px;text-align:right">잔액</th></tr></thead><tbody></tbody></table></div><div class="empty" id="em-bk"><i class="fas fa-building-columns"></i>통장 업로드 (NH농협·신한·토스·카카오)</div></div></div>
   <div class="ip" id="p-tax"><div class="cd"><div class="tw"><table id="tb-tx" style="table-layout:auto"><thead><tr><th style="width:65px">작성일</th><th style="width:42px">구분</th><th>발행 상호명</th><th>품목명</th><th style="width:105px">사업자번호</th><th style="width:95px;text-align:right">공급가액</th><th style="width:70px;text-align:right">세액</th><th style="width:45px">공제</th></tr></thead><tbody></tbody></table></div><div class="empty" id="em-tx"><i class="fas fa-file-invoice"></i>세금계산서 업로드 (홈택스 XLS)</div></div></div>
   <div class="ip" id="p-card"><div class="cd"><div class="tw"><table id="tb-cd" style="table-layout:auto"><thead><tr><th style="width:70px">거래일</th><th>가맹점(상호명)</th><th>내용</th><th style="width:100px;text-align:right">결제금액</th><th style="width:60px">매출/매입</th></tr></thead><tbody></tbody></table></div><div class="empty" id="em-cd"><i class="fas fa-credit-card"></i>카드 업로드 (카카오뱅크 내역)</div></div></div>
+  <div class="ip" id="p-proof"><div class="cd">
+    <div style="background:#FFF8E1;border:2px solid #FFD54F;border-radius:var(--rs);padding:14px;margin-bottom:16px">
+      <div style="font-size:13px;font-weight:700;color:#F57F17;margin-bottom:10px"><i class="fas fa-plus-circle" style="margin-right:4px"></i>지출증빙 수동 입력</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
+        <div><div style="font-size:10px;color:var(--sub);margin-bottom:2px">거래일</div><input type="date" id="pf-date" style="width:100%;padding:7px;border:2px solid #e0e0e0;border-radius:var(--rs);font-family:inherit;font-size:12px"></div>
+        <div><div style="font-size:10px;color:var(--sub);margin-bottom:2px">상호명/내용</div><input type="text" id="pf-desc" placeholder="쌍둥이대리운전" style="width:100%;padding:7px;border:2px solid #e0e0e0;border-radius:var(--rs);font-family:inherit;font-size:12px"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px">
+        <div><div style="font-size:10px;color:var(--sub);margin-bottom:2px">증빙유형</div><select id="pf-type" style="width:100%;padding:7px;border:2px solid #e0e0e0;border-radius:var(--rs);font-family:inherit;font-size:12px"><option value="현금영수증">현금영수증</option><option value="간이영수증">간이영수증</option><option value="거래확인증">거래확인증</option><option value="카드전표">카드전표</option><option value="기타">기타</option></select></div>
+        <div><div style="font-size:10px;color:var(--sub);margin-bottom:2px">지출분류</div><select id="pf-cat" style="width:100%;padding:7px;border:2px solid #e0e0e0;border-radius:var(--rs);font-family:inherit;font-size:12px"><option value="교통비">교통비</option><option value="식대">식대</option><option value="사무용품">사무용품</option><option value="접대비">접대비</option><option value="소모품비">소모품비</option><option value="통신비">통신비</option><option value="수선비">수선비</option><option value="보험료">보험료</option><option value="기타">기타</option></select></div>
+        <div><div style="font-size:10px;color:var(--sub);margin-bottom:2px">결제방법</div><select id="pf-pay" style="width:100%;padding:7px;border:2px solid #e0e0e0;border-radius:var(--rs);font-family:inherit;font-size:12px"><option value="카드">카드</option><option value="현금">현금</option><option value="카카오페이">카카오페이</option><option value="계좌이체">계좌이체</option><option value="기타">기타</option></select></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:8px">
+        <div><div style="font-size:10px;color:var(--sub);margin-bottom:2px">과세금액</div><input type="text" id="pf-supply" placeholder="0" style="width:100%;padding:7px;border:2px solid #e0e0e0;border-radius:var(--rs);font-family:inherit;font-size:12px;text-align:right" oninput="calcProofTotal()"></div>
+        <div><div style="font-size:10px;color:var(--sub);margin-bottom:2px">부가세</div><input type="text" id="pf-tax" placeholder="0" style="width:100%;padding:7px;border:2px solid #e0e0e0;border-radius:var(--rs);font-family:inherit;font-size:12px;text-align:right" oninput="calcProofTotal()"></div>
+        <div><div style="font-size:10px;color:var(--sub);margin-bottom:2px">봉사료/면세</div><input type="text" id="pf-tip" placeholder="0" style="width:100%;padding:7px;border:2px solid #e0e0e0;border-radius:var(--rs);font-family:inherit;font-size:12px;text-align:right" oninput="calcProofTotal()"></div>
+        <div><div style="font-size:10px;color:var(--sub);margin-bottom:2px">총결제금액</div><input type="text" id="pf-total" placeholder="0" style="width:100%;padding:7px;border:2px solid #FFD54F;border-radius:var(--rs);font-family:inherit;font-size:12px;text-align:right;font-weight:700;background:#FFFDE7"></div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button onclick="addProofEntry()" style="flex:1;padding:8px;border:none;border-radius:var(--rs);background:#F57F17;color:#fff;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit"><i class="fas fa-plus" style="margin-right:4px"></i>추가</button>
+        <select id="pf-deduct" style="padding:7px 10px;border:2px solid #e0e0e0;border-radius:var(--rs);font-family:inherit;font-size:11px"><option value="공제">공제</option><option value="불공제">불공제</option><option value="-">미정</option></select>
+      </div>
+    </div>
+    <div class="tw"><table id="tb-pf" style="table-layout:auto"><thead><tr><th style="width:70px">거래일</th><th>내용</th><th style="width:70px">증빙유형</th><th style="width:60px">분류</th><th style="width:80px;text-align:right">과세금액</th><th style="width:65px;text-align:right">부가세</th><th style="width:85px;text-align:right">총결제금액</th><th style="width:45px">공제</th></tr></thead><tbody></tbody></table></div><div class="empty" id="em-pf"><i class="fas fa-receipt"></i>지출증빙 업로드 (현금영수증·간이영수증·거래확인증)<br><span style="font-size:11px;color:#aaa;margin-top:4px;display:block">대리운전·택시·교통비 등 적격증빙 관리</span></div></div></div>
   <div class="ip" id="p-all"><div class="cd"><div class="tw"><table id="tb-al"><thead><tr><th style="width:70px">분류</th><th style="width:50px">유형</th><th style="width:85px">날짜</th><th>내용</th><th>품목명</th><th style="width:100px;text-align:right">입금(매출)</th><th style="width:100px;text-align:right">출금(매입)</th></tr></thead><tbody></tbody></table></div><div class="empty" id="em-al"><i class="fas fa-inbox"></i>데이터 업로드</div></div></div>
   <div style="font-size:16px;font-weight:700;margin:28px 0 14px"><i class="fas fa-chart-pie" style="margin-right:8px"></i>매출처별 비중</div>
   <div class="cd"><div class="cw"><canvas id="donut"></canvas></div><div class="empty" id="em-ch" style="display:none"><i class="fas fa-chart-pie"></i>매출 데이터 필요</div></div>
@@ -1346,7 +1370,7 @@ function calcWithholding(){
 
 <script>
 if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-var D={bank:[],tax:[],card:[],etc:[],files:[],isDemo:true},pn={f:null,r:null,t:''};
+var D={bank:[],tax:[],card:[],proof:[],etc:[],files:[],isDemo:true},pn={f:null,r:null,t:''};
 // localStorage 저장/로드
 function saveData(){
   try{
@@ -1398,7 +1422,7 @@ function updateBackupStatus(){
     var hasShadow=!!localStorage.getItem('yjtax_D_shadow');
     var statusEl=document.getElementById('backup-status');
     if(statusEl){
-      var dataCount=(D.tax?D.tax.length:0)+(D.bank?D.bank.length:0)+(D.card?D.card.length:0);
+      var dataCount=(D.tax?D.tax.length:0)+(D.bank?D.bank.length:0)+(D.card?D.card.length:0)+(D.proof?D.proof.length:0);
       statusEl.innerHTML='🔒 이중백업 '+(hasShadow?'✅':'❌')+' · 스냅샷 <b>'+snaps.length+'</b>개 (최근: '+lastSnap+') · 데이터 <b>'+dataCount+'</b>건';
     }
   }catch(e){}
@@ -1709,7 +1733,7 @@ async function pPDF(f){var buf=await f.arrayBuffer();var pdf=await pdfjsLib.getD
 async function pWord(f){var buf=await f.arrayBuffer();return(await mammoth.extractRawText({arrayBuffer:buf})).value}
 function rTxt(f){return new Promise(function(res,rej){var r=new FileReader;r.onload=function(e){res(e.target.result)};r.onerror=function(){rej(new Error('읽기실패'))};r.readAsText(f,'UTF-8')})}
 function pTxt(txt){var ls=txt.split('\n').filter(function(l){return l.trim()});var rows=[];var dR=/(\d{4}[-./]?\d{2}[-./]?\d{2})/;var aR=/[\d,]{3,}/g;ls.forEach(function(l){var dm=l.match(dR);var am=l.match(aR);if(!am)return;var amounts=am.map(function(a){return parseInt(a.replace(/,/g,''),10)}).filter(function(a){return a>=100});if(!amounts.length)return;var isO=/출금|지출|매입|결제|이용|카드|비용|구매/.test(l);var isI=/입금|매출|수입|환급/.test(l);var desc=l.replace(dR,'').replace(aR,'').replace(/[|,\t]+/g,' ').trim().substring(0,40);rows.push({date:dm?dm[1]:'',desc:desc||'내역',inAmt:isI?amounts[0]:(!isO?amounts[0]:0),outAmt:isO?amounts[0]:0,tax:amounts.length>1?amounts[1]:0,balance:amounts.length>2?amounts[amounts.length-1]:0,type:'',deductible:'-'})});return rows}
-function aCls(rows,fn){fn=fn.toLowerCase();if(/통장|입출금|계좌|bank|거래내역|예금|적금|이체/.test(fn))return'bank';if(/세금계산서|매출|매입|tax|invoice|전자세금|홈택스/.test(fn))return'tax';if(/카드|card|승인|결제|신용|체크|이용내역/.test(fn))return'card';if(/영수증|receipt|간이영수증|현금영수증/.test(fn))return'etc';
+function aCls(rows,fn){fn=fn.toLowerCase();if(/통장|입출금|계좌|bank|거래내역|예금|적금|이체/.test(fn))return'bank';if(/세금계산서|매출|매입|tax|invoice|전자세금|홈택스/.test(fn))return'tax';if(/카드|card|승인|결제|신용|체크|이용내역/.test(fn))return'card';if(/지출증빙|거래확인증|대리운전|택시|교통비|봉사료/.test(fn))return'proof';if(/영수증|receipt|간이영수증|현금영수증/.test(fn))return'proof';
   // 데이터 분석으로 자동 분류
   var hasBal=rows.filter(function(r){return r.balance>0}).length;
   var hasTax=rows.filter(function(r){return r.tax>0}).length;
@@ -1724,7 +1748,7 @@ function apR(fn,ft,cat,rows){
   // 중복 파일 차단
   if(D.files.some(function(f){return f.name===fn})){showToast('⚠️ '+fn+' 이미 등록된 파일');return}
   // 첫 실데이터 업로드 시 데모 데이터 제거
-  if(D.isDemo){D.bank=[];D.tax=[];D.card=[];D.etc=[];D.files=[]}
+  if(D.isDemo){D.bank=[];D.tax=[];D.card=[];D.proof=[];D.etc=[];D.files=[]}
   if(cat==='bank')rows.forEach(function(r){D.bank.push({date:r.date,desc:r.desc,inAmt:r.inAmt,outAmt:r.outAmt,balance:r.balance,item:r.item||r.type||''})});
   else if(cat==='tax')rows.forEach(function(r){
     // type 결정: 1)파서에서 넣은 type → 2)inAmt 기반 추정
@@ -1734,14 +1758,15 @@ function apR(fn,ft,cat,rows){
     D.tax.push({date:r.date,type:s?'매출':'매입',client:r.desc,bizNo:r.bizNo||'',supply:r.inAmt||r.outAmt,tax:r.tax,deductible:r.deductible||'-',item:r.item||''});
   });
   else if(cat==='card')rows.forEach(function(r){D.card.push({date:r.date,merchant:r.desc,amount:r.outAmt||r.inAmt,type:r.inAmt>0?'매출':'매입',item:r.item||r.desc||''})});
+  else if(cat==='proof')rows.forEach(function(r){D.proof.push({date:r.date,desc:r.desc||'',proofType:r.proofType||'기타',category:r.category||classifyExpense(r.desc),supply:r.supply||r.inAmt||0,tax:r.tax||0,tip:r.tip||0,total:r.outAmt||r.inAmt||(r.supply||r.inAmt||0)+(r.tax||0)+(r.tip||0),payment:r.payment||'-',deductible:r.deductible||'-'})});
   else rows.forEach(function(r){D.etc.push({date:r.date,desc:r.desc,amount:r.inAmt||r.outAmt})});
   D.files.push({name:fn,format:ft,category:cat,count:rows.length});D.isDemo=false;rAll();
-  var catNm=cat==='bank'?'통장':cat==='tax'?'세금계산서':cat==='card'?'카드':'기타';
+  var catNm=cat==='bank'?'통장':cat==='tax'?'세금계산서':cat==='card'?'카드':cat==='proof'?'지출증빙':'기타';
   showToast('✅ '+fn+' → <b>'+catNm+'</b> '+rows.length+'건 등록');
   // 해당 카테고리 탭으로 자동 전환
-  var tabMap={bank:0,tax:1,card:2};
-  var tabIdx=tabMap[cat]!==undefined?tabMap[cat]:3;
-  var tabId={bank:'bank',tax:'tax',card:'card'}[cat]||'all';
+  var tabMap={bank:0,tax:1,card:2,proof:3};
+  var tabIdx=tabMap[cat]!==undefined?tabMap[cat]:4;
+  var tabId={bank:'bank',tax:'tax',card:'card',proof:'proof'}[cat]||'all';
   var btns=document.querySelectorAll('.ib');
   if(btns[tabIdx])swI(btns[tabIdx],tabId);
   // === 자동 파이프라인 (비동기) ===
@@ -1800,7 +1825,7 @@ function resetModal(){
   document.getElementById('ml-g-btns').style.display='';
   document.getElementById('mfn').style.display='';
 }
-function resetAll(){if(!confirm('모든 데이터를 초기화하시겠습니까?'))return;D.bank=[];D.tax=DTAX.slice();D.card=[];D.etc=[];D.files=[];D.isDemo=true;evtData=[];ndToggles={};try{localStorage.removeItem('yjtax_D');localStorage.removeItem('yjtax_evt')}catch(e){}rAll();try{renderEvtList();renderNdSim()}catch(e){}}
+function resetAll(){if(!confirm('모든 데이터를 초기화하시겠습니까?'))return;D.bank=[];D.tax=DTAX.slice();D.card=[];D.proof=[];D.etc=[];D.files=[];D.isDemo=true;evtData=[];ndToggles={};try{localStorage.removeItem('yjtax_D');localStorage.removeItem('yjtax_evt')}catch(e){}rAll();try{renderEvtList();renderNdSim()}catch(e){}}
 
 // === EXPORT ===
 function exXL(){
@@ -1808,6 +1833,7 @@ function exXL(){
   if(D.tax.length){var ws=XLSX.utils.json_to_sheet(D.tax.map(function(r){return{날짜:r.date,구분:r.type,거래처:r.client,품목명:r.item||'',사업자번호:r.bizNo||'',공급가액:r.supply,세액:r.tax,공제여부:r.deductible}}));XLSX.utils.book_append_sheet(wb,ws,'세금계산서')}
   if(D.bank.length){var ws2=XLSX.utils.json_to_sheet(D.bank.map(function(r){return{날짜:r.date,거래내용:r.item||'',거래기록사항:r.desc,입금:r.inAmt,출금:r.outAmt,잔액:r.balance}}));XLSX.utils.book_append_sheet(wb,ws2,'통장')}
   if(D.card.length){var ws3=XLSX.utils.json_to_sheet(D.card.map(function(r){return{날짜:r.date,가맹점:r.merchant,내용:r.item||'',금액:r.amount,구분:r.type}}));XLSX.utils.book_append_sheet(wb,ws3,'카드')}
+  if(D.proof.length){var wsPf=XLSX.utils.json_to_sheet(D.proof.map(function(r){return{거래일:r.date,내용:r.desc,증빙유형:r.proofType,지출분류:r.category,과세금액:r.supply,부가세:r.tax,봉사료:r.tip||0,총결제금액:r.total,결제방법:r.payment,공제여부:r.deductible}}));XLSX.utils.book_append_sheet(wb,wsPf,'지출증빙')}
   // 요약 시트
   var st=D.tax.filter(function(r){return r.type==='매출'}),et=D.tax.filter(function(r){return r.type==='매입'});
   var ts=st.reduce(function(a,r){return a+r.supply},0),te=et.reduce(function(a,r){return a+r.supply},0);
@@ -1822,6 +1848,7 @@ function exCSV(){
   D.tax.forEach(function(r){all.push([r.date,r.type==='매출'?'세금계산서(매출)':'세금계산서(매입)',r.client,r.supply,r.tax,r.deductible])});
   D.bank.forEach(function(r){all.push([r.date,'통장',r.desc,r.inAmt,r.outAmt,''])});
   D.card.forEach(function(r){all.push([r.date,'카드',r.merchant+(r.item?' ('+r.item+')':''),r.type==='매출'?r.amount:0,r.type==='매입'?r.amount:0,''])});
+  D.proof.forEach(function(r){all.push([r.date,'지출증빙('+r.proofType+')',r.desc+' ['+r.category+']',0,r.total,r.deductible])});
   var csv='날짜,분류,내용,입금/공급가액,출금/세액,비고\n'+all.map(function(r){return r.join(',')}).join('\n');
   var blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
   var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='YJ_장부_'+new Date().toISOString().slice(0,10)+'.csv';a.click()
@@ -1855,6 +1882,11 @@ function uKPI(){
   var te=et.reduce(function(a,r){return a+r.supply},0)+D.bank.reduce(function(a,r){return a+r.outAmt},0);
   D.card.forEach(function(r){if(r.type==='매출')ts+=r.amount;else te+=r.amount});
   var sTx=st.reduce(function(a,r){return a+r.tax},0),dTx=et.filter(function(r){return r.deductible!=='불공제'}).reduce(function(a,r){return a+r.tax},0),ndTx=et.filter(function(r){return r.deductible==='불공제'}).reduce(function(a,r){return a+r.tax},0);
+  // 지출증빙 부가세 공제 반영
+  var pfDedTx=D.proof.filter(function(r){return r.deductible==='공제'}).reduce(function(a,r){return a+(r.tax||0)},0);
+  var pfNdTx=D.proof.filter(function(r){return r.deductible==='불공제'}).reduce(function(a,r){return a+(r.tax||0)},0);
+  var pfExpTotal=D.proof.reduce(function(a,r){return a+(r.total||0)},0);
+  dTx+=pfDedTx;ndTx+=pfNdTx;te+=pfExpTotal;
   var vat=sTx-dTx,pr=ts-te;
   var pe=document.getElementById('k-pr');pe.textContent=fm(pr)+'원';pe.style.color=pr>=0?'var(--gn)':'var(--rd)';
   document.getElementById('k-sl').textContent=fm(ts)+'원';document.getElementById('k-ex').textContent=fm(te)+'원';
@@ -1890,7 +1922,7 @@ function uKPI(){
   var tp=Object.entries(cm).sort(function(a,b){return b[1]-a[1]})[0];
   document.getElementById('s-tp').textContent=tp?tp[0]:'-';
   document.getElementById('c-bk').textContent=D.bank.length;document.getElementById('c-tx').textContent=D.tax.length;
-  document.getElementById('c-cd').textContent=D.card.length;document.getElementById('c-et').textContent=D.etc.length;
+  document.getElementById('c-cd').textContent=D.card.length;try{document.getElementById('c-pf').textContent=D.proof.length}catch(e){};document.getElementById('c-et').textContent=D.etc.length;
   document.getElementById('cg').style.display=D.files.length?'grid':'none';
   var dm=document.getElementById('dm');dm.textContent=D.isDemo?'🔶 데모':'✅ 실데이터';dm.className='dm '+(D.isDemo?'dm-d':'dm-l');
   // 사업소득 표시
@@ -2110,6 +2142,9 @@ function rTbls(){
   document.getElementById('em-tx').style.display=D.tax.length?'none':'block';
   document.querySelector('#tb-cd tbody').innerHTML=D.card.map(function(r){return'<tr><td>'+fD(r.date)+'</td><td>'+r.merchant+'</td><td style="font-size:11px;color:#555;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(r.item||'<span style="color:#ccc">-</span>')+'</td><td class="am neg">'+fm(r.amount)+'</td><td><span class="badge b-rd">'+r.type+'</span></td></tr>'}).join('');
   document.getElementById('em-cd').style.display=D.card.length?'none':'block';
+  // 지출증빙 테이블
+  document.querySelector('#tb-pf tbody').innerHTML=D.proof.map(function(r,i){return'<tr><td style="white-space:nowrap">'+fD(r.date)+'</td><td style="font-size:12px;font-weight:600">'+r.desc+'</td><td><span class="badge b-or" style="font-size:9px">'+r.proofType+'</span></td><td><span class="badge b-bl" style="font-size:9px">'+r.category+'</span></td><td class="am">'+fm(r.supply)+'</td><td class="am">'+fm(r.tax)+'</td><td class="am neg" style="font-weight:700">'+fm(r.total)+'</td><td>'+(r.deductible==='공제'?'<span class="badge b-gn">공제</span>':r.deductible==='불공제'?'<span class="badge b-rd">불공제</span>':'<span class="badge b-gy">'+r.deductible+'</span>')+'</td></tr>'}).join('')+(D.proof.length?'<tr style="background:#FFF8E1;border-top:2px solid #F57F17;font-weight:800"><td colspan="4" style="text-align:right;padding:10px;font-size:12px">합계 ('+D.proof.length+'건)</td><td class="am" style="font-size:12px">'+fm(D.proof.reduce(function(a,r){return a+r.supply},0))+'</td><td class="am" style="font-size:12px">'+fm(D.proof.reduce(function(a,r){return a+r.tax},0))+'</td><td class="am neg" style="font-size:13px">'+fm(D.proof.reduce(function(a,r){return a+r.total},0))+'</td><td></td></tr>':'');
+  document.getElementById('em-pf').style.display=D.proof.length?'none':'block';
   var all=[];
   D.bank.forEach(function(r){all.push({c:'통장',cc:'b-bl',tp:r.inAmt?'입금':'출금',d:r.date,n:r.desc,it:r.item||'',i:r.inAmt,o:r.outAmt})});
   D.tax.forEach(function(r){all.push({c:'세금계산서',cc:'b-or',tp:r.type,d:r.date,n:r.client+' ('+(r.bizNo||'-')+')',it:r.item||'',i:r.type==='매출'?(r.supply+r.tax):0,o:r.type==='매입'?(r.supply+r.tax):0})});
@@ -2117,6 +2152,7 @@ function rTbls(){
     var isIn=r.type==='매출';
     all.push({c:'카드',cc:'b-pr',tp:isIn?'매출':'매입',d:r.date,n:r.merchant||r.desc||'',it:r.item||'',i:isIn?r.amount:0,o:isIn?0:r.amount});
   });
+  D.proof.forEach(function(r){all.push({c:'지출증빙',cc:'b-or',tp:r.category||'지출',d:r.date,n:r.desc||'',it:r.proofType||'',i:0,o:r.total})});
   D.etc.forEach(function(r){if(r.amount)all.push({c:'기타',cc:'b-gy',tp:r.type||'기타',d:r.date,n:r.desc||'',it:'',i:r.type==='매출'?r.amount:0,o:r.type!=='매출'?r.amount:0})});
   all.sort(function(a,b){return new Date(b.d)-new Date(a.d)});
   var totalIn=all.reduce(function(a,r){return a+(r.i||0)},0);
@@ -2135,6 +2171,22 @@ function rChart(){
   cv.style.display='block';ec.style.display='none';if(dc)dc.destroy();
   dc=new Chart(cv.getContext('2d'),{type:'doughnut',data:{labels:lb,datasets:[{data:vl,backgroundColor:['#3498DB','#2ECC71','#F39C12','#E74C3C','#9B59B6','#1ABC9C','#34495E'],borderWidth:0}]},options:{cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{family:'Pretendard',size:12},padding:16}}},responsive:true,maintainAspectRatio:true}})
 }
+// === 지출증빙 함수 ===
+function classifyExpense(desc){desc=(desc||'').toLowerCase();if(/대리운전|택시|교통|주차|톨게이트|고속|기차|ktx|버스|지하철|uber|카카오T/.test(desc))return'교통비';if(/식대|음식|식사|카페|커피|배달|치킨|피자|점심|저녁|아침/.test(desc))return'식대';if(/사무|문구|복사|프린트|잉크|종이|펜|노트/.test(desc))return'사무용품';if(/접대|회식|선물|경조|화환|부조/.test(desc))return'접대비';if(/통신|전화|인터넷|핸드폰|요금/.test(desc))return'통신비';if(/보험|가입|보장/.test(desc))return'보험료';return'기타'}
+function calcProofTotal(){try{var s=parseInt(String(document.getElementById('pf-supply').value||0).replace(/[,\s]/g,''),10)||0;var t=parseInt(String(document.getElementById('pf-tax').value||0).replace(/[,\s]/g,''),10)||0;var tip=parseInt(String(document.getElementById('pf-tip').value||0).replace(/[,\s]/g,''),10)||0;document.getElementById('pf-total').value=fm(s+t+tip)}catch(e){}}
+function addProofEntry(){
+  var dt=document.getElementById('pf-date').value;var desc=document.getElementById('pf-desc').value.trim();
+  var totalStr=document.getElementById('pf-total').value;var total=parseInt(String(totalStr||0).replace(/[,\s원]/g,''),10)||0;
+  if(!dt){alert('거래일을 선택하세요.');return}if(!desc){alert('상호명/내용을 입력하세요.');return}if(!total){alert('금액을 입력하세요.');return}
+  var supply=parseInt(String(document.getElementById('pf-supply').value||0).replace(/[,\s]/g,''),10)||0;
+  var tax=parseInt(String(document.getElementById('pf-tax').value||0).replace(/[,\s]/g,''),10)||0;
+  var tip=parseInt(String(document.getElementById('pf-tip').value||0).replace(/[,\s]/g,''),10)||0;
+  if(!supply&&!tax&&total)supply=Math.round(total/1.1);tax=tax||total-supply-tip;
+  D.proof.push({date:dt,desc:desc,proofType:document.getElementById('pf-type').value,category:document.getElementById('pf-cat').value,supply:supply,tax:tax,tip:tip,total:total,payment:document.getElementById('pf-pay').value,deductible:document.getElementById('pf-deduct').value});
+  showToast('✅ 지출증빙 추가: '+desc+' '+fm(total)+'원');
+  document.getElementById('pf-desc').value='';document.getElementById('pf-supply').value='';document.getElementById('pf-tax').value='';document.getElementById('pf-tip').value='';document.getElementById('pf-total').value='';
+  D.isDemo=false;rAll();
+}
 function rFL(){
   var c=document.getElementById('fl'),rb=document.getElementById('rb'),xb=document.getElementById('xb'),wrap=document.getElementById('fl-wrap');
   if(!D.files.length){c.innerHTML='';rb.style.display='none';xb.style.display='none';wrap.style.display='none';return}
@@ -2142,7 +2194,7 @@ function rFL(){
   document.getElementById('fl-title').textContent='업로드 파일 ('+D.files.length+'개)';
   var ic={excel:'fa-file-excel',csv:'fa-file-csv',pdf:'fa-file-pdf',word:'fa-file-word',text:'fa-file-lines',image:'fa-file-image'};
   var bg={excel:'#E8F5E9',csv:'#FFF3E0',pdf:'#FFEBEE',word:'#E3F2FD',text:'#F3E5F5',image:'#FFF8E1'};
-  var cb={bank:'b-bl',tax:'b-or',card:'b-pr',etc:'b-gy'};var cl={bank:'통장',tax:'세금계산서',card:'카드',etc:'기타'};
+  var cb={bank:'b-bl',tax:'b-or',card:'b-pr',proof:'b-or',etc:'b-gy'};var cl={bank:'통장',tax:'세금계산서',card:'카드',proof:'지출증빙',etc:'기타'};
   c.innerHTML=D.files.map(function(f,i){return'<div class="lg"><div class="lg-ic" style="background:'+(bg[f.format]||'#ECEFF1')+'"><i class="fas '+(ic[f.format]||'fa-file')+'"></i></div><div style="flex:1;min-width:0"><div style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+f.name+'</div><div style="font-size:11px;color:#999">'+f.count+'건 · '+f.format.toUpperCase()+'</div><span class="badge '+(cb[f.category]||'b-gy')+'">'+(cl[f.category]||'기타')+'</span></div><button class="lg-rm" onclick="rmF('+i+')"><i class="fas fa-xmark"></i></button></div>'}).join('')}
 var flOpen=false;
 function toggleFileList(){
@@ -2155,9 +2207,9 @@ function toggleFileList(){
 try{if(localStorage.getItem('yjtax_fl_open')==='1'){flOpen=true;document.getElementById('fl').style.display='block';document.getElementById('fl-chevron').style.transform='rotate(180deg)'}}catch(e){}
 function rmF(i){D.files.splice(i,1);if(!D.files.length)resetAll();else rFL()}
 function uUI(){
-  if(!D.isDemo){document.getElementById('mu1').style.display='none';document.getElementById('us1').style.display='flex';document.getElementById('um1').textContent=D.files.length+'개 파일 · '+(D.bank.length+D.tax.length+D.card.length+D.etc.length)+'건 로드'}
+  if(!D.isDemo){document.getElementById('mu1').style.display='none';document.getElementById('us1').style.display='flex';document.getElementById('um1').textContent=D.files.length+'개 파일 · '+(D.bank.length+D.tax.length+D.card.length+D.proof.length+D.etc.length)+'건 로드'}
   else{document.getElementById('mu1').style.display='block';document.getElementById('us1').style.display='none'}
-  document.getElementById('xb').style.display=(D.tax.length||D.bank.length||D.card.length)?'flex':'none';
+  document.getElementById('xb').style.display=(D.tax.length||D.bank.length||D.card.length||D.proof.length)?'flex':'none';
 }
 
 // === 폴더 재귀 탐색 (드래그 폴더 지원) ===
