@@ -1483,17 +1483,26 @@ function saveData(){
     localStorage.setItem('yjtax_evt_shadow',JSON.stringify(evtData));
   }catch(e){}
 }
+function ensureD(){
+  // 구버전 localStorage 데이터 호환 + 누락 속성 보정
+  if(!D.bank)D.bank=[];if(!D.tax)D.tax=[];if(!D.card)D.card=[];
+  if(!D.proof)D.proof=[];if(!D.etc)D.etc=[];if(!D.files)D.files=[];
+  if(D.isDemo===undefined)D.isDemo=true;
+  if(!Array.isArray(D.bank))D.bank=[];if(!Array.isArray(D.tax))D.tax=[];
+  if(!Array.isArray(D.card))D.card=[];if(!Array.isArray(D.proof))D.proof=[];
+  if(!Array.isArray(D.etc))D.etc=[];if(!Array.isArray(D.files))D.files=[];
+}
 function loadData(){
   try{
     var d=localStorage.getItem('yjtax_D');
-    if(d){D=JSON.parse(d);return true}
+    if(d){D=JSON.parse(d);ensureD();return true}
     // 원본 없으면 shadow에서 복원 시도
     var shadow=localStorage.getItem('yjtax_D_shadow');
-    if(shadow){D=JSON.parse(shadow);showToast('⚠️ 백업에서 데이터 자동 복원됨');saveData();return true}
+    if(shadow){D=JSON.parse(shadow);ensureD();showToast('⚠️ 백업에서 데이터 자동 복원됨');saveData();return true}
     return false;
   }catch(e){
     // 파싱 실패 시 shadow 시도
-    try{var shadow2=localStorage.getItem('yjtax_D_shadow');if(shadow2){D=JSON.parse(shadow2);showToast('⚠️ 손상 감지 → 백업에서 복원');saveData();return true}}catch(e2){}
+    try{var shadow2=localStorage.getItem('yjtax_D_shadow');if(shadow2){D=JSON.parse(shadow2);ensureD();showToast('⚠️ 손상 감지 → 백업에서 복원');saveData();return true}}catch(e2){}
     return false;
   }
 }
@@ -1657,11 +1666,13 @@ function rfMoney(){renderMoney();showToast('✅ 최신 정보 갱신 완료')}
 // === PARSE ENGINE ===
 var _mpQueue=[];var _mpProcessing=false;var _mpTotal=0;var _mpDone=0;
 function mpQ(file){_mpQueue.push(file);_mpTotal++;muShowProgress();if(!_mpProcessing)mpNext()}
+var processFile=mpQ; // alias for drag-drop handlers
 async function mpNext(){if(!_mpQueue.length){_mpProcessing=false;_mpTotal=0;_mpDone=0;muHideProgress();return}_mpProcessing=true;var f=_mpQueue.shift();try{await mp(f)}catch(e){showToast('⚠️ '+f.name+': '+e.message)}_mpDone++;muUpdateProgress();mpNext()}
 function muShowProgress(){var p=document.getElementById('muProgress');if(p)p.classList.add('on')}
 function muHideProgress(){var p=document.getElementById('muProgress');if(p){p.classList.remove('on');var b=document.getElementById('muProgressBar');if(b)b.style.width='0%'}}
 function muUpdateProgress(){var b=document.getElementById('muProgressBar');if(b&&_mpTotal>0)b.style.width=Math.round(_mpDone/_mpTotal*100)+'%'}
 async function mp(file){
+  ensureD();
   var ext=file.name.split('.').pop().toLowerCase();
   var ft=ext==='xlsx'||ext==='xls'?'excel':ext==='csv'||ext==='tsv'?'csv':ext==='pdf'?'pdf':ext==='doc'||ext==='docx'?'word':(ext==='png'||ext==='jpg'||ext==='jpeg'||ext==='gif'||ext==='webp'||ext==='heic'||ext==='bmp'||ext==='tiff'||ext==='tif'||ext==='svg'||ext==='avif')?'image':(file.type&&file.type.startsWith('image/'))?'image':'text';
   showToast('📂 처리 중: '+file.name+' ('+ft+')');
@@ -1893,6 +1904,7 @@ function aCls(rows,fn){fn=fn.toLowerCase();if(/통장|입출금|계좌|bank|거�
   if(rows.length===1&&rows[0].outAmt>0)return'etc';
   return null}
 function apR(fn,ft,cat,rows){
+  ensureD();
   // 같은 파일 재업로드 → 기존 데이터 교체 (덮어쓰기)
   var existIdx=D.files.findIndex(function(f){return f.name===fn});
   if(existIdx>-1){
@@ -2033,7 +2045,18 @@ function exPDF(){
 }
 
 // === REFRESH ===
-function rAll(){uKPI();rTbls();rChart();rFL();uUI();try{renderTrend();checkMismatch();renderClients()}catch(e){}saveData()}
+function rAll(){
+  ensureD();
+  try{uKPI()}catch(e){console.error('[rAll] uKPI error:',e)}
+  try{rTbls()}catch(e){console.error('[rAll] rTbls error:',e)}
+  try{rChart()}catch(e){console.error('[rAll] rChart error:',e)}
+  try{rFL()}catch(e){console.error('[rAll] rFL error:',e)}
+  try{uUI()}catch(e){console.error('[rAll] uUI error:',e)}
+  try{renderTrend()}catch(e){}
+  try{checkMismatch()}catch(e){}
+  try{renderClients()}catch(e){}
+  saveData();
+}
 function uKPI(){
   var st=D.tax.filter(function(r){return r.type==='매출'}),et=D.tax.filter(function(r){return r.type==='매입'});
   // 매출 = 세금계산서 매출만 (공급가액+세액)
@@ -2429,6 +2452,7 @@ async function scanProofFolder(input){
   input.value='';
 }
 async function processProofBatch(files){
+  ensureD();
   var gk=localStorage.getItem('yjtax_gemini_key')||localStorage.getItem('yjtax_gemini_backup');
   if(!gk){alert('⚙️ 설정에서 Gemini API Key를 먼저 입력하세요.');return}
   var prog=document.getElementById('proof-scan-progress');
@@ -3233,13 +3257,13 @@ function importBackup(input){
       // D, evtData 메모리에도 반영
       try{D=JSON.parse(backup.keys['yjtax_D']||'{}')}catch(e){}
       try{evtData=JSON.parse(backup.keys['yjtax_evt']||'[]')}catch(e){}
-      rAll();loadIncomeData();
+      ensureD();rAll();loadIncomeData();
       try{renderEvtList();renderNdSim()}catch(e){}
       showToast('✅ 전체 복원 완료! ('+backup.date+')');
       alert('✅ 전체 데이터 복원 완료!\n\n복원 시점: '+backup.date+'\n복원 항목: '+Object.keys(backup.keys).length+'개');
     }
     // 레거시 형식
-    else if(backup.D){D=backup.D;if(backup.evtData)evtData=backup.evtData;saveData();rAll();alert('✅ 백업 복원 완료! ('+backup.date+')')}
+    else if(backup.D){D=backup.D;ensureD();if(backup.evtData)evtData=backup.evtData;saveData();rAll();alert('✅ 백업 복원 완료! ('+backup.date+')')}
     else alert('올바른 백업 파일이 아닙니다.')}catch(err){alert('파일 읽기 오류: '+err.message)}};
   reader.readAsText(input.files[0]);input.value='';
 }
