@@ -343,7 +343,7 @@ td{padding:12px 8px;border-bottom:1px solid #f5f5f5;white-space:nowrap}tr:hover 
     <div id="fl" style="display:none;padding-top:8px;transition:all .3s"></div>
   </div>
   <div class="it fi d2"><button class="ib on" onclick="swI(this,'bank')">통장</button><button class="ib" onclick="swI(this,'tax')">세금계산서</button><button class="ib" onclick="swI(this,'card')">카드</button><button class="ib" onclick="swI(this,'all')">전체</button></div>
-  <div class="ip on" id="p-bank"><div class="cd"><div class="tw"><table id="tb-bk" style="table-layout:auto"><thead><tr><th style="width:70px">거래일</th><th>적요/거래처</th><th style="width:100px;text-align:right">입금</th><th style="width:100px;text-align:right">출금</th><th style="width:100px;text-align:right">잔액</th></tr></thead><tbody></tbody></table></div><div class="empty" id="em-bk"><i class="fas fa-building-columns"></i>통장 업로드 (NH농협·신한·토스·카카오)</div></div></div>
+  <div class="ip on" id="p-bank"><div class="cd"><div class="tw"><table id="tb-bk" style="table-layout:auto"><thead><tr><th style="width:80px">거래일</th><th>거래내용</th><th>거래기록사항</th><th style="width:95px;text-align:right">입금</th><th style="width:95px;text-align:right">출금</th><th style="width:95px;text-align:right">잔액</th></tr></thead><tbody></tbody></table></div><div class="empty" id="em-bk"><i class="fas fa-building-columns"></i>통장 업로드 (NH농협·신한·토스·카카오)</div></div></div>
   <div class="ip" id="p-tax"><div class="cd"><div class="tw"><table id="tb-tx" style="table-layout:auto"><thead><tr><th style="width:65px">작성일</th><th style="width:42px">구분</th><th>발행 상호명</th><th>품목명</th><th style="width:105px">사업자번호</th><th style="width:95px;text-align:right">공급가액</th><th style="width:70px;text-align:right">세액</th><th style="width:45px">공제</th></tr></thead><tbody></tbody></table></div><div class="empty" id="em-tx"><i class="fas fa-file-invoice"></i>세금계산서 업로드 (홈택스 XLS)</div></div></div>
   <div class="ip" id="p-card"><div class="cd"><div class="tw"><table id="tb-cd" style="table-layout:auto"><thead><tr><th style="width:70px">거래일</th><th>가맹점(상호명)</th><th>내용</th><th style="width:100px;text-align:right">결제금액</th><th style="width:60px">매출/매입</th></tr></thead><tbody></tbody></table></div><div class="empty" id="em-cd"><i class="fas fa-credit-card"></i>카드 업로드 (카카오뱅크 내역)</div></div></div>
   <div class="ip" id="p-all"><div class="cd"><div class="tw"><table id="tb-al"><thead><tr><th style="width:70px">분류</th><th style="width:50px">유형</th><th style="width:85px">날짜</th><th>내용</th><th>품목명</th><th style="width:100px;text-align:right">입금(매출)</th><th style="width:100px;text-align:right">출금(매입)</th></tr></thead><tbody></tbody></table></div><div class="empty" id="em-al"><i class="fas fa-inbox"></i>데이터 업로드</div></div></div>
@@ -1627,12 +1627,15 @@ function findAllCols(keywords,exclude){var r=[];var keys=Object.keys(colMap);key
 // 4. 컬럼 인덱스 매핑
 var isSales=/매출/.test(f.name),isPurch=/매입/.test(f.name);
 var iDate=findCol(['거래일시','작성일자','발급일자','거래일자','거래일','일자','날짜','이용일']);
-// === 은행별 특수 처리: desc 관련 컬럼 여러개 수집 ===
-var iDescAll=findAllCols(['거래기록사항','거래내용','적요','내용','메모','거래메모','비고','기재내용','받는분','보내는분','상호','법인명','거래처','업체명','가맹점','품목명'],['등록번호','금액','잔액','일시','일자','거래점','거래구분','거래 유형','거래 기관','계좌번호','구분']);
+// === 은행별 desc(상대방) + bankType(거래유형) 분리 매핑 ===
+// desc = 거래기록사항/적요/내용 (상대방: 쿠팡(주), 네이버페이, 정세직, 세븐일레븐 등)
+// bankType = 거래내용/거래구분/거래유형 (유형: NH체크, 실시간이체, 체크카드결제, 출금 등)
 var iDesc;
-if(isSales)iDesc=findCol(['공급받는자 상호','공급받는자상호','상호','법인명','거래처','업체명','가맹점','품목명','공급받는자','적요','내용','거래내용','거래기록사항'],['등록번호','금액','잔액']);
-else if(isPurch)iDesc=findCol(['공급자 상호','공급자상호','상호','법인명','거래처','업체명','가맹점','품목명','공급자','적요','내용','거래내용','거래기록사항'],['등록번호','금액','잔액']);
-else iDesc=findCol(['거래기록사항','적요','내용','거래내용','메모','거래메모','비고','상호','법인명','거래처','업체명','가맹점','품목명','기재내용','받는분','보내는분'],['등록번호','금액','잔액','일시','일자','거래점','거래구분','거래 유형','거래 기관','계좌번호','구분']);
+if(isSales)iDesc=findCol(['공급받는자 상호','공급받는자상호','상호','법인명','거래처','업체명','가맹점','품목명','공급받는자'],['등록번호','금액','잔액']);
+else if(isPurch)iDesc=findCol(['공급자 상호','공급자상호','상호','법인명','거래처','업체명','가맹점','품목명','공급자'],['등록번호','금액','잔액']);
+else iDesc=findCol(['거래기록사항','적요','내용','메모','거래메모','비고','상호','법인명','거래처','업체명','가맹점','품목명','기재내용','받는분','보내는분'],['등록번호','금액','잔액','일시','일자','거래점','거래구분','거래 유형','거래 기관','계좌번호','구분','거래내용']);
+// 거래내용/거래유형 (NH체크, 체크카드결제 등)
+var iBankType=findCol(['거래내용','거래구분','거래 유형'],['금액','잔액','일시','일자','거래점','거래기록']);
 // 입금/출금: 별도 컬럼 방식 (농협/신한) vs 단일금액 컬럼 방식 (카카오/토스)
 var iSupply=findCol(['입금금액','입금액','입금(원)','입금'],['일시','일자']);
 var iOut=findCol(['출금금액','출금액','출금(원)','출금'],['일시','일자']);
@@ -1652,7 +1655,7 @@ var iType=findCol(['거래구분','거래 유형','구분','유형','분류','�
 var iDed=findCol(['공제여부','공제']);
 var iName=findCol(['상호']);
 var iItem=findCol(['품목명','품명','품목']);
-console.log('[YJ Parser] iDate:',iDate,'iDesc:',iDesc,'iDescAll:',iDescAll,'iSupply:',iSupply,'iOut:',iOut,'iSingleAmt:',iSingleAmt,'iBal:',iBal);
+console.log('[YJ Parser] iDate:',iDate,'iDesc:',iDesc,'iBankType:',iBankType,'iSupply:',iSupply,'iOut:',iOut,'iSingleAmt:',iSingleAmt,'iBal:',iBal,'iItem:',iItem);
 // 5. 데이터행 파싱
 var results=[];
 var fileType=isSales?'매출':isPurch?'매입':'';
@@ -1671,30 +1674,28 @@ for(var di=headerIdx+1;di<allRows.length;di++){
   }
   var tax=toN(iTax>=0?row[iTax]:'');
   if(!supply&&!tax&&!outV)continue;
-  // === desc 구성: 여러 텍스트 컬럼 합치기 ===
-  var descParts=[];
-  iDescAll.forEach(function(ci){
-    var v=String(row[ci]||'').trim();
-    if(v&&v!=='undefined'&&v!=='-'&&v!=='0'&&!/^[\d,.]+$/.test(v))descParts.push(v);
-  });
-  var desc=descParts.join(' ').trim();
-  // 폴백: iDesc 단일 컬럼
-  if(!desc&&iDesc>=0)desc=String(row[iDesc]||'').trim();
+  // === desc(상대방) 추출 ===
+  var desc=(iDesc>=0?String(row[iDesc]||'').trim():'');
   if(!desc&&iName>=0)desc=String(row[iName]||'').trim();
-  // 최종 폴백: 모든 텍스트 컬럼 합침
+  // 최종 폴백: 숫자/날짜 아닌 텍스트 컬럼 합침
   if(!desc){
     var txts=[];
     for(var ci2=0;ci2<row.length;ci2++){
-      if(ci2===iDate||ci2===iSupply||ci2===iOut||ci2===iTax||ci2===iBal||ci2===iSingleAmt||ci2===iBiz||ci2===iDed)continue;
+      if(ci2===iDate||ci2===iSupply||ci2===iOut||ci2===iTax||ci2===iBal||ci2===iSingleAmt||ci2===iBiz||ci2===iDed||ci2===iBankType||ci2===iType)continue;
       var cv2=String(row[ci2]||'').trim();
       if(cv2&&cv2!=='undefined'&&cv2!=='-'&&cv2!=='0'&&!/^[\d,.]+$/.test(cv2)&&cv2.length>1)txts.push(cv2);
     }
     desc=txts.join(' ').substring(0,80);
   }
+  // === 거래내용/유형 (NH체크, 체크카드결제 등) ===
+  var bankTypeVal=(iBankType>=0?String(row[iBankType]||'').trim():'');
   // type 결정
   var rowType=(iType>=0?String(row[iType]||'').trim():'');
+  if(!rowType&&bankTypeVal)rowType=bankTypeVal;
   if(!rowType&&fileType)rowType=fileType;
+  // item: 세금계산서 품목명 or 거래내용(은행)
   var itemVal=(iItem>=0?String(row[iItem]||'').trim():'');
+  if(!itemVal&&bankTypeVal)itemVal=bankTypeVal;
   // 날짜: 시간 부분 제거 (2026/02/16 14:51:03 → 2026/02/16)
   var dateRaw=(iDate>=0?String(row[iDate]||'').trim():'');
   dateRaw=dateRaw.replace(/\s+\d{1,2}:\d{2}(:\d{2})?$/,'').trim();
@@ -1805,7 +1806,7 @@ function resetAll(){if(!confirm('모든 데이터를 초기화하시겠습니까
 function exXL(){
   var wb=XLSX.utils.book_new();
   if(D.tax.length){var ws=XLSX.utils.json_to_sheet(D.tax.map(function(r){return{날짜:r.date,구분:r.type,거래처:r.client,품목명:r.item||'',사업자번호:r.bizNo||'',공급가액:r.supply,세액:r.tax,공제여부:r.deductible}}));XLSX.utils.book_append_sheet(wb,ws,'세금계산서')}
-  if(D.bank.length){var ws2=XLSX.utils.json_to_sheet(D.bank.map(function(r){return{날짜:r.date,적요:r.desc,입금:r.inAmt,출금:r.outAmt,잔액:r.balance}}));XLSX.utils.book_append_sheet(wb,ws2,'통장')}
+  if(D.bank.length){var ws2=XLSX.utils.json_to_sheet(D.bank.map(function(r){return{날짜:r.date,거래내용:r.item||'',거래기록사항:r.desc,입금:r.inAmt,출금:r.outAmt,잔액:r.balance}}));XLSX.utils.book_append_sheet(wb,ws2,'통장')}
   if(D.card.length){var ws3=XLSX.utils.json_to_sheet(D.card.map(function(r){return{날짜:r.date,가맹점:r.merchant,내용:r.item||'',금액:r.amount,구분:r.type}}));XLSX.utils.book_append_sheet(wb,ws3,'카드')}
   // 요약 시트
   var st=D.tax.filter(function(r){return r.type==='매출'}),et=D.tax.filter(function(r){return r.type==='매입'});
@@ -2103,7 +2104,7 @@ function saveBonusData(){
 function getBonusTotal(){return bonusEntries.reduce(function(a,e){return a+e.amt*10000},0)}
 function getBonusByType(){var sal=0,div=0;bonusEntries.forEach(function(e){if(e.type==='salary')sal+=e.amt*10000;else div+=e.amt*10000});return{salary:sal,dividend:div}}
 function rTbls(){
-  document.querySelector('#tb-bk tbody').innerHTML=D.bank.map(function(r){return'<tr><td>'+fD(r.date)+'</td><td>'+r.desc+'</td><td class="am pos">'+(r.inAmt?fm(r.inAmt):'')+'</td><td class="am neg">'+(r.outAmt?fm(r.outAmt):'')+'</td><td class="am">'+(r.balance?fm(r.balance):'')+'</td></tr>'}).join('');
+  document.querySelector('#tb-bk tbody').innerHTML=D.bank.map(function(r){return'<tr><td style="white-space:nowrap">'+fD(r.date)+'</td><td style="font-size:12px;color:#555">'+(r.item||'<span style="color:#ccc">-</span>')+'</td><td style="font-size:12px;font-weight:600">'+(r.desc||'<span style="color:#ccc">-</span>')+'</td><td class="am pos">'+(r.inAmt?fm(r.inAmt):'')+'</td><td class="am neg">'+(r.outAmt?fm(r.outAmt):'')+'</td><td class="am">'+(r.balance?fm(r.balance):'')+'</td></tr>'}).join('');
   document.getElementById('em-bk').style.display=D.bank.length?'none':'block';
   document.querySelector('#tb-tx tbody').innerHTML=D.tax.map(function(r,i){return'<tr data-idx="'+i+'" style="border-bottom:1px solid #f0f0f0"><td style="white-space:nowrap">'+fD(r.date)+'</td><td><span class="badge '+(r.type==='매출'?'b-bl':'b-rd')+'">'+r.type+'</span></td><td style="font-size:12px;font-weight:600;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+r.client+'</td><td style="font-size:11px;color:#555;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(r.item||'<span style="color:#ccc">-</span>')+'</td><td style="font-family:monospace;font-size:10px;color:#999">'+(r.bizNo||'-')+'</td><td class="am" style="font-weight:700">'+fm(r.supply)+'</td><td class="am" style="font-weight:700">'+fm(r.tax)+'</td><td><span class="badge '+(r.deductible==='공제'?'b-gn':r.deductible==='불공제'?'b-rd':'b-gy')+'">'+r.deductible+'</span></td></tr>'}).join('')+(D.tax.length?'<tr style="background:#f8f9fa;border-top:2px solid #333;font-weight:800"><td colspan="5" style="text-align:right;padding:10px">합계 (매출 '+D.tax.filter(function(r){return r.type==='매출'}).length+'건 / 매입 '+D.tax.filter(function(r){return r.type==='매입'}).length+'건)</td><td class="am pos" style="font-size:13px">'+fm(D.tax.reduce(function(a,r){return a+r.supply},0))+'</td><td class="am" style="font-size:13px">'+fm(D.tax.reduce(function(a,r){return a+r.tax},0))+'</td><td></td></tr>':'');
   document.getElementById('em-tx').style.display=D.tax.length?'none':'block';
@@ -2704,7 +2705,7 @@ function searchLedger(q){
   
   // 통장 필터
   var fBank=D.bank.filter(function(r){return matchRow(r,f,Math.max(r.inAmt||0,r.outAmt||0))});
-  document.querySelector('#tb-bk tbody').innerHTML=fBank.map(function(r){return'<tr><td>'+fD(r.date)+'</td><td>'+r.desc+'</td><td class="am pos">'+(r.inAmt?fm(r.inAmt):'')+'</td><td class="am neg">'+(r.outAmt?fm(r.outAmt):'')+'</td><td class="am">'+(r.balance?fm(r.balance):'')+'</td></tr>'}).join('');
+  document.querySelector('#tb-bk tbody').innerHTML=fBank.map(function(r){return'<tr><td style="white-space:nowrap">'+fD(r.date)+'</td><td style="font-size:12px;color:#555">'+(r.item||'<span style="color:#ccc">-</span>')+'</td><td style="font-size:12px;font-weight:600">'+(r.desc||'<span style="color:#ccc">-</span>')+'</td><td class="am pos">'+(r.inAmt?fm(r.inAmt):'')+'</td><td class="am neg">'+(r.outAmt?fm(r.outAmt):'')+'</td><td class="am">'+(r.balance?fm(r.balance):'')+'</td></tr>'}).join('');
   document.getElementById('em-bk').style.display=fBank.length?'none':'block';
   
   // 세금계산서 필터
