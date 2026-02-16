@@ -1608,7 +1608,7 @@ if(headerIdx<0){
   if(!j2.length){res([]);return}
   var c2=Object.keys(j2[0]);
   var fd2=function(kws){return c2.find(function(col){return kws.some(function(k){return String(col).indexOf(k)!==-1})})};
-  res(j2.map(function(row){return{date:row[fd2(['일자','날짜','거래일'])]||'',desc:row[fd2(['상호','거래처','품목명','적요'])]||'',inAmt:toN(row[fd2(['공급가액','금액','입금'])]),outAmt:toN(row[fd2(['출금','지출'])]),tax:toN(row[fd2(['세액'])]),balance:toN(row[fd2(['잔액'])]),type:row[fd2(['구분'])]||'',deductible:'-',bizNo:row[fd2(['사업자등록번호','사업자번호'])]||''}}).filter(function(r){return r.inAmt||r.outAmt||r.tax}));
+  res(j2.map(function(row){return{date:row[fd2(['일자','날짜','거래일'])]||'',desc:row[fd2(['적요','내용','거래내용','메모','비고','상호','거래처','품목명','기재내용','받는분','보내는분'])]||'',inAmt:toN(row[fd2(['공급가액','금액','입금'])]),outAmt:toN(row[fd2(['출금','지출'])]),tax:toN(row[fd2(['세액'])]),balance:toN(row[fd2(['잔액'])]),type:row[fd2(['구분'])]||'',deductible:'-',bizNo:row[fd2(['사업자등록번호','사업자번호'])]||'',item:row[fd2(['품목명','품명','품목'])]||''}}).filter(function(r){return r.inAmt||r.outAmt||r.tax}));
   return;
 }
 // 3. 헤더 → 컬럼명:인덱스 맵
@@ -1619,9 +1619,9 @@ function findCol(keywords,exclude){var keys=Object.keys(colMap);for(var ki=0;ki<
 var isSales=/매출/.test(f.name),isPurch=/매입/.test(f.name);
 var iDate=findCol(['작성일자','발급일자','일자','날짜','거래일','이용일']);
 var iDesc;
-if(isSales)iDesc=findCol(['공급받는자 상호','공급받는자상호','상호','법인명','거래처','업체명','가맹점','품목명','공급받는자'],['등록번호']);
-else if(isPurch)iDesc=findCol(['공급자 상호','공급자상호','상호','법인명','거래처','업체명','가맹점','품목명','공급자'],['등록번호']);
-else iDesc=findCol(['상호','법인명','거래처','업체명','가맹점','품목명'],['등록번호']);
+if(isSales)iDesc=findCol(['공급받는자 상호','공급받는자상호','상호','법인명','거래처','업체명','가맹점','품목명','공급받는자','적요','내용','거래내용'],['등록번호']);
+else if(isPurch)iDesc=findCol(['공급자 상호','공급자상호','상호','법인명','거래처','업체명','가맹점','품목명','공급자','적요','내용','거래내용'],['등록번호']);
+else iDesc=findCol(['적요','내용','거래내용','메모','비고','상호','법인명','거래처','업체명','가맹점','품목명','기재내용','받는분','보내는분'],['등록번호']);
 var iSupply=findCol(['공급가액','금액','이용금액','입금']);
 var iTax=findCol(['세액']);
 var iBal=findCol(['잔액','잔고']);
@@ -1652,7 +1652,7 @@ for(var di=headerIdx+1;di<allRows.length;di++){
 }
 res(results);
 }catch(err){rej(err)}};r.readAsArrayBuffer(f)})}
-function pCSV(txt){var ls=txt.trim().split('\n');if(ls.length<2)return[];var sp=ls[0].indexOf('\t')>-1?'\t':',';var hd=ls[0].split(sp).map(function(h){return h.trim().replace(/"/g,'')});return ls.slice(1).map(function(l){var v=l.split(sp).map(function(x){return x.trim().replace(/"/g,'')});var row={};hd.forEach(function(h,i){row[h]=v[i]||''});var fd=function(kws){return hd.find(function(h){return kws.some(function(k){return h.indexOf(k)>-1})})};return{date:row[fd(['일자','날짜'])]||'',desc:row[fd(['상호','거래처','가맹점','적요','내용'])]||'',inAmt:toN(row[fd(['공급가액','금액','입금','매출'])]),outAmt:toN(row[fd(['출금','지출','매입'])]),tax:toN(row[fd(['세액'])]),balance:toN(row[fd(['잔액'])]),type:row[fd(['구분'])]||'',deductible:row[fd(['공제'])]||'-',bizNo:row[fd(['사업자등록번호','사업자번호'])]||'',item:row[fd(['품목명','품명','품목','내용','적요'])]||''}}).filter(function(r){return r.inAmt||r.outAmt||r.tax})}
+function pCSV(txt){var ls=txt.trim().split('\n');if(ls.length<2)return[];var sp=ls[0].indexOf('\t')>-1?'\t':',';var hd=ls[0].split(sp).map(function(h){return h.trim().replace(/"/g,'')});return ls.slice(1).map(function(l){var v=l.split(sp).map(function(x){return x.trim().replace(/"/g,'')});var row={};hd.forEach(function(h,i){row[h]=v[i]||''});var fd=function(kws){return hd.find(function(h){return kws.some(function(k){return h.indexOf(k)>-1})})};return{date:row[fd(['일자','날짜'])]||'',desc:row[fd(['적요','내용','거래내용','메모','비고','상호','거래처','가맹점','기재내용','받는분','보내는분'])]||'',inAmt:toN(row[fd(['공급가액','금액','입금','매출'])]),outAmt:toN(row[fd(['출금','지출','매입'])]),tax:toN(row[fd(['세액'])]),balance:toN(row[fd(['잔액'])]),type:row[fd(['구분'])]||'',deductible:row[fd(['공제'])]||'-',bizNo:row[fd(['사업자등록번호','사업자번호'])]||'',item:row[fd(['품목명','품명','품목'])]||''}}).filter(function(r){return r.inAmt||r.outAmt||r.tax})}
 async function pPDF(f){var buf=await f.arrayBuffer();var pdf=await pdfjsLib.getDocument({data:buf}).promise;var t='';for(var i=1;i<=pdf.numPages;i++){var pg=await pdf.getPage(i);var c=await pg.getTextContent();t+=c.items.map(function(x){return x.str}).join(' ')+'\n'}return t}
 async function pWord(f){var buf=await f.arrayBuffer();return(await mammoth.extractRawText({arrayBuffer:buf})).value}
 function rTxt(f){return new Promise(function(res,rej){var r=new FileReader;r.onload=function(e){res(e.target.result)};r.onerror=function(){rej(new Error('읽기실패'))};r.readAsText(f,'UTF-8')})}
