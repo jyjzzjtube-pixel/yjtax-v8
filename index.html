@@ -151,7 +151,7 @@ td{padding:12px 8px;border-bottom:1px solid #f5f5f5;white-space:nowrap}tr:hover 
   </div>
   <!-- D-Day 카드 (캘린더 아래) -->
   <div class="dg fi d1" id="ddg"></div>
-  <div class="kg"><div class="kp fi d2"><div class="kp-l">💰 순수익</div><div class="kp-v" id="k-pr" style="color:var(--gn)">0원</div><div class="kp-s">매출-매입(VAT포함)</div></div><div class="kp fi d2"><div class="kp-l">📈 매출</div><div class="kp-v" id="k-sl" style="color:var(--bl)">0원</div><div class="kp-s">VAT 포함</div></div><div class="kp fi d2"><div class="kp-l">📉 매입</div><div class="kp-v" id="k-ex" style="color:var(--rd)">0원</div><div class="kp-s">VAT 포함</div></div></div>
+  <div class="kg"><div class="kp fi d2"><div class="kp-l">💰 순수익</div><div class="kp-v" id="k-pr" style="color:var(--gn)">0원</div><div class="kp-s">매출-매입</div></div><div class="kp fi d2"><div class="kp-l">📈 매출</div><div class="kp-v" id="k-sl" style="color:var(--bl)">0원</div><div class="kp-s">세금계산서(VAT포함)</div></div><div class="kp fi d2"><div class="kp-l">📉 매입</div><div class="kp-v" id="k-ex" style="color:var(--rd)">0원</div><div class="kp-s">통장출금+카드결제</div></div></div>
   <!-- 급여 / 원천징수 / 배당 -->
   <div class="kg" style="margin-top:-4px"><div class="kp fi d2" style="cursor:pointer;border-left:3px solid var(--bl)" onclick="switchTab(4)"><div class="kp-l">💼 급여(실수령)</div><div class="kp-v" id="k-salary" style="color:var(--bl);font-size:20px">0원</div><div class="kp-s" id="k-salary-sub">내일사장 급여</div></div><div class="kp fi d2" style="cursor:pointer;border-left:3px solid var(--or)" onclick="switchTab(4)"><div class="kp-l">🏛️ 원천징수</div><div class="kp-v" id="k-withhold" style="color:var(--or);font-size:20px">0원</div><div class="kp-s" id="k-withhold-sub">소득세+지방세+4대보험</div></div><div class="kp fi d2" style="cursor:pointer;border-left:3px solid var(--pr)" onclick="switchTab(4)"><div class="kp-l">💎 배당소득</div><div class="kp-v" id="k-dividend" style="color:var(--pr);font-size:20px">0원</div><div class="kp-s" id="k-dividend-sub">원윌앤코 배당</div></div></div>
   <!-- 종합 경비 현황 -->
@@ -754,6 +754,9 @@ td{padding:12px 8px;border-bottom:1px solid #f5f5f5;white-space:nowrap}tr:hover 
     <p style="font-size:12px;opacity:.7;margin:0">와이제이 파트너스 맞춤 — 아이콘 클릭 시 상세 보기</p>
   </div>
 
+  <!-- 도구 검색 -->
+  <div style="margin-bottom:14px"><input type="text" id="tool-search" placeholder="🔍 도구 검색 (홈택스, 부가세, 4대보험, 카카오...)" oninput="searchTools(this.value)" style="width:100%;padding:12px 16px;border:2px solid #e0e0e0;border-radius:var(--r);font-family:inherit;font-size:13px;transition:border-color .2s" onfocus="this.style.borderColor='var(--gd)'" onblur="this.style.borderColor='#e0e0e0'"></div>
+  <div id="tool-search-results" style="display:none;margin-bottom:14px"></div>
   <!-- 6개 카테고리 아이콘 그리드 -->
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px" id="tool-grid">
     <div class="tool-icon" onclick="toggleToolDetail('tl-1')" style="background:linear-gradient(135deg,#E3F2FD,#BBDEFB);border-radius:var(--r);padding:20px 12px;text-align:center;cursor:pointer;transition:transform .15s;border:2px solid transparent" id="ti-1">
@@ -1206,6 +1209,34 @@ td{padding:12px 8px;border-bottom:1px solid #f5f5f5;white-space:nowrap}tr:hover 
 .tool-item-use{font-size:10px;color:var(--bl);margin-top:3px;font-weight:600}
 </style>
 <script>
+function searchTools(q){
+  var results=document.getElementById('tool-search-results');
+  var grid=document.getElementById('tool-grid');
+  if(!q||q.length<1){results.style.display='none';grid.style.display='grid';document.querySelectorAll('.tool-detail').forEach(function(d){d.style.display='none'});return}
+  q=q.toLowerCase();
+  var items=document.querySelectorAll('.tool-item');
+  var matches=[];
+  items.forEach(function(item){
+    var name=item.querySelector('.tool-item-name');
+    var desc=item.querySelector('.tool-item-desc');
+    var use=item.querySelector('.tool-item-use');
+    var text=(name?name.textContent:'')+(desc?desc.textContent:'')+(use?use.textContent:'');
+    if(text.toLowerCase().indexOf(q)>-1){matches.push(item.cloneNode(true))}
+  });
+  if(matches.length){
+    grid.style.display='none';
+    document.querySelectorAll('.tool-detail').forEach(function(d){d.style.display='none'});
+    results.style.display='block';
+    results.innerHTML='<div style="font-size:12px;color:var(--sub);margin-bottom:8px">검색 결과: '+matches.length+'건</div>';
+    var wrap=document.createElement('div');wrap.className='cd';wrap.style.borderLeft='4px solid var(--gd)';
+    matches.forEach(function(m){wrap.appendChild(m)});
+    results.appendChild(wrap);
+  }else{
+    grid.style.display='none';
+    results.style.display='block';
+    results.innerHTML='<div style="text-align:center;padding:20px;color:var(--sub)"><i class="fas fa-search" style="font-size:20px;display:block;margin-bottom:6px;color:#ddd"></i>"'+q+'" 검색 결과 없음</div>';
+  }
+}
 function toggleToolDetail(id){
   var el=document.getElementById(id);
   var allDetails=document.querySelectorAll('.tool-detail');
@@ -1529,7 +1560,7 @@ function checkCalAlarms(){
 }
 function swI(b,id){b.parentElement.querySelectorAll('.ib').forEach(function(e){e.classList.remove('on')});b.classList.add('on');document.querySelectorAll('.ip').forEach(function(e){e.classList.remove('on')});document.getElementById('p-'+id).classList.add('on')}
 var fm=function(n){n=Number(n)||0;return Math.round(n).toLocaleString('ko-KR')};
-var fD=function(d){if(!d)return'-';var t=new Date(d);if(isNaN(t))return String(d).substring(0,10);return String(t.getMonth()+1).padStart(2,'0')+'/'+String(t.getDate()).padStart(2,'0')};
+var fD=function(d){if(!d||d==='-'||d===''){var n=new Date();return String(n.getMonth()+1).padStart(2,'0')+'/'+String(n.getDate()).padStart(2,'0')}var t=new Date(d);if(isNaN(t)){var s=String(d).replace(/[^0-9\-\/\.]/g,'');t=new Date(s);if(isNaN(t))return String(d).substring(0,10)}return String(t.getMonth()+1).padStart(2,'0')+'/'+String(t.getDate()).padStart(2,'0')};
 var toN=function(v){if(!v&&v!==0)return 0;return Math.abs(parseInt(String(v).replace(/[,\s원₩]/g,''),10))||0};
 
 // === D-DAY ===
@@ -1904,18 +1935,27 @@ function exPDF(){
 function rAll(){uKPI();rTbls();rChart();rFL();uUI();try{renderTrend();checkMismatch();renderClients()}catch(e){}saveData()}
 function uKPI(){
   var st=D.tax.filter(function(r){return r.type==='매출'}),et=D.tax.filter(function(r){return r.type==='매입'});
-  var ts=st.reduce(function(a,r){return a+r.supply},0)+D.bank.reduce(function(a,r){return a+r.inAmt},0);
-  var te=et.reduce(function(a,r){return a+r.supply},0)+D.bank.reduce(function(a,r){return a+r.outAmt},0);
-  D.card.forEach(function(r){if(r.type==='매출')ts+=r.amount;else te+=r.amount});
-  var sTx=st.reduce(function(a,r){return a+r.tax},0),dTx=et.filter(function(r){return r.deductible!=='불공제'}).reduce(function(a,r){return a+r.tax},0),ndTx=et.filter(function(r){return r.deductible==='불공제'}).reduce(function(a,r){return a+r.tax},0);
-  // 지출증빙 부가세 공제 반영
+  // 매출 = 세금계산서 매출만 (공급가액+세액)
+  var tsSupply=st.reduce(function(a,r){return a+r.supply},0);
+  var sTx=st.reduce(function(a,r){return a+r.tax},0);
+  var tsVat=tsSupply+sTx;
+  // 매입 = 통장 출금 + 카드 결제만
+  var bankOut=D.bank.reduce(function(a,r){return a+r.outAmt},0);
+  var cardOut=D.card.filter(function(r){return r.type!=='매출'}).reduce(function(a,r){return a+r.amount},0);
+  var teVat=bankOut+cardOut;
+  // 순수익 = 매출(VAT포함) - 매입(통장출금+카드)
+  var pr=tsVat-teVat;
+  // 부가세 계산은 세금계산서 기준
+  var dTx=et.filter(function(r){return r.deductible!=='불공제'}).reduce(function(a,r){return a+r.tax},0);
+  var ndTx=et.filter(function(r){return r.deductible==='불공제'}).reduce(function(a,r){return a+r.tax},0);
   var pfDedTx=D.proof.filter(function(r){return r.deductible==='공제'}).reduce(function(a,r){return a+(r.tax||0)},0);
   var pfNdTx=D.proof.filter(function(r){return r.deductible==='불공제'}).reduce(function(a,r){return a+(r.tax||0)},0);
   var pfExpTotal=D.proof.reduce(function(a,r){return a+(r.total||0)},0);
-  dTx+=pfDedTx;ndTx+=pfNdTx;te+=pfExpTotal;
+  dTx+=pfDedTx;ndTx+=pfNdTx;
   var vat=sTx-dTx;
-  var eTx=et.reduce(function(a,r){return a+r.tax},0);
-  var tsVat=ts+sTx,teVat=te+eTx+pfNdTx+pfDedTx,pr=tsVat-teVat;
+  // 전체 비용 변수 (경비현황용)
+  var te=et.reduce(function(a,r){return a+r.supply},0)+bankOut+cardOut+pfExpTotal;
+  var ts=tsSupply;
   var pe=document.getElementById('k-pr');pe.textContent=fm(pr)+'원';pe.style.color=pr>=0?'var(--gn)':'var(--rd)';
   document.getElementById('k-sl').textContent=fm(tsVat)+'원';document.getElementById('k-ex').textContent=fm(teVat)+'원';
   document.getElementById('v-a').textContent=fm(vat)+' 원';
@@ -1924,9 +1964,10 @@ function uKPI(){
   // 경비 현황 KPI
   var dedItems=et.filter(function(r){return r.deductible!=='불공제'});
   var ndItems=et.filter(function(r){return r.deductible==='불공제'});
-  // 접대비 = 카드 중 접대비 분류 + 세금계산서 접대비
-  var entAmt=D.card.filter(function(c){return(c.aiCategory||'').indexOf('접대')>-1}).reduce(function(a,c){return a+c.amount},0);
-  entAmt+=et.filter(function(r){return(r.aiCategory||'').indexOf('접대')>-1}).reduce(function(a,r){return a+r.supply},0);
+  // 접대비 = 카드 중 접대비 분류 + 세금계산서 접대비 + 지출증빙 접대비
+  var entAmt=D.card.filter(function(c){return(c.aiCategory||c.item||c.merchant||'').indexOf('접대')>-1}).reduce(function(a,c){return a+c.amount},0);
+  entAmt+=et.filter(function(r){return(r.aiCategory||r.item||r.client||'').indexOf('접대')>-1}).reduce(function(a,r){return a+r.supply},0);
+  entAmt+=D.proof.filter(function(r){return r.category==='접대비'}).reduce(function(a,r){return a+(r.total||0)},0);
   var entLimitKpi=12000000+Math.round(Math.min(ts,10000000000)*0.003);
   try{
     document.getElementById('kpi-ded-amt').textContent=fm(dedItems.reduce(function(a,r){return a+r.supply},0))+'원';
@@ -1965,22 +2006,23 @@ function uKPI(){
   // 급여/원천징수/배당 KPI 업데이트
   try{
     var salKeys=Object.keys(salaryLog).map(Number);
+    // 급여 = 실수령액 합계 (4대보험 이미 제외된 금액)
     var totalSalaryNet=salKeys.reduce(function(a,k){return a+(salaryLog[k].net||0)},0);
-    var salaryMonthlyKpi=parseInt(document.getElementById('salary-monthly').value||0)*10000;if(!salaryMonthlyKpi)salaryMonthlyKpi=2000000;
-    var totalSalaryGross=salKeys.length*salaryMonthlyKpi;
-    var totalWithheld=totalSalaryGross-totalSalaryNet;
     var bt=getBonusByType();
     var dividendTotal=bt.dividend;
     var bonusSalary=bt.salary;
-    var bonusWithheldKpi=0;
-    if(bonusSalary>0)bonusWithheldKpi+=Math.round(bonusSalary*0.033);
-    if(dividendTotal>0)bonusWithheldKpi+=Math.round(dividendTotal*0.154);
+    // 원천징수 = 3.3% 떼인 금액만 (성과금/상여 기준)
+    var withheld33=0;
+    if(bonusSalary>0)withheld33+=Math.round(bonusSalary*0.033);
+    // 배당 원천징수 15.4%
+    var withheldDiv=0;
+    if(dividendTotal>0)withheldDiv=Math.round(dividendTotal*0.154);
     document.getElementById('k-salary').textContent=fm(totalSalaryNet)+'원';
-    document.getElementById('k-salary-sub').textContent=salKeys.length+'회 수령'+(bonusSalary>0?' +상여 '+fm(bonusSalary)+'원':'');
-    document.getElementById('k-withhold').textContent=fm(totalWithheld+bonusWithheldKpi)+'원';
-    document.getElementById('k-withhold-sub').textContent='급여공제 '+fm(totalWithheld)+'원'+(bonusWithheldKpi?' +성과금 '+fm(bonusWithheldKpi)+'원':'');
+    document.getElementById('k-salary-sub').textContent=salKeys.length+'회 수령 (4대보험 제외 실수령)';
+    document.getElementById('k-withhold').textContent=fm(withheld33)+'원';
+    document.getElementById('k-withhold-sub').textContent=bonusSalary>0?'성과금 '+fm(bonusSalary)+'원 × 3.3%':'3.3% 원천징수 내역 없음';
     document.getElementById('k-dividend').textContent=fm(dividendTotal)+'원';
-    document.getElementById('k-dividend-sub').textContent=dividendTotal?'원천징수 '+fm(Math.round(dividendTotal*0.154))+'원 (15.4%)':'배당 내역 없음';
+    document.getElementById('k-dividend-sub').textContent=dividendTotal?'원천징수 '+fm(withheldDiv)+'원 (15.4%)':'배당 내역 없음';
   }catch(e){console.log('KPI salary/dividend update error',e)}
   calcTotalIncome();
 }
@@ -3100,11 +3142,21 @@ function renderCardItems(){
   var el=document.getElementById('card-items');
   var empty=document.getElementById('card-items-empty');
   var items=[];
+  // 세금계산서 매입
   D.tax.filter(function(r){return r.type==='매입'}).forEach(function(r,i){
     items.push({id:'tax_'+i,label:'🧾 '+r.client,amount:r.supply+r.tax,date:r.date});
   });
+  // 카드 결제
   if(D.card)D.card.filter(function(c){return c.type==='매입'||c.amount>0}).forEach(function(c,i){
     items.push({id:'card_'+i,label:'💳 '+(c.merchant||c.desc||'카드'),amount:c.amount,date:c.date||''});
+  });
+  // 통장 출금
+  D.bank.filter(function(r){return r.outAmt>0}).forEach(function(r,i){
+    items.push({id:'bank_'+i,label:'🏦 '+(r.desc||'통장출금'),amount:r.outAmt,date:r.date||''});
+  });
+  // 지출증빙
+  D.proof.forEach(function(r,i){
+    items.push({id:'proof_'+i,label:'📋 '+(r.desc||'지출증빙'),amount:r.total||0,date:r.date||''});
   });
   if(!items.length){el.innerHTML='';empty.style.display='block';return}
   empty.style.display='none';
