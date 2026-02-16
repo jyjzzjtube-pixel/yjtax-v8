@@ -31,7 +31,15 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
 .nb.mn.on i{color:var(--gd)}
 .ct{max-width:960px;margin:0 auto;padding:0 28px 100px;margin-top:-18px;position:relative;z-index:1}
 .tc{display:none}.tc.on{display:block}
-.mu{background:linear-gradient(135deg,var(--nv),var(--nvl));border:2px dashed rgba(255,215,0,.5);border-radius:var(--r);padding:32px 24px;text-align:center;color:#fff;margin-bottom:20px;cursor:pointer;position:relative;overflow:hidden;transition:all .2s}
+.mu-wrap{position:sticky;top:0;z-index:90;padding-top:8px;background:var(--bg);margin-bottom:6px}
+.mu{background:linear-gradient(135deg,var(--nv),var(--nvl));border:2px dashed rgba(255,215,0,.5);border-radius:var(--r);padding:20px 24px;text-align:center;color:#fff;cursor:pointer;position:relative;overflow:hidden;transition:all .2s}
+.mu.mu-compact{padding:14px 20px}
+.mu.mu-compact .mu-tags{display:none}
+.mu-status{display:none;align-items:center;gap:8px;background:#E8F8E8;padding:10px 14px;border-radius:var(--rs);font-size:13px;font-weight:600;color:var(--gn);margin-top:6px}
+.mu-status.on{display:flex}
+.mu-status .mu-add{margin-left:auto;background:var(--gn);color:#fff;border:none;padding:4px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit}
+.mu-progress{display:none;background:rgba(255,255,255,.15);border-radius:8px;height:4px;margin-top:10px;overflow:hidden}.mu-progress.on{display:block}
+.mu-progress-bar{height:100%;background:var(--gd);border-radius:8px;width:0%;transition:width .3s}
 .mu:hover{border-color:var(--gd);box-shadow:0 8px 32px rgba(26,43,75,.3)}
 .mu::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(255,215,0,.08),transparent 60%);pointer-events:none}
 .mu input{display:none}
@@ -135,8 +143,10 @@ td{padding:12px 8px;border-bottom:1px solid #f5f5f5;white-space:nowrap}tr:hover 
 
 <!-- TAB1: 대시보드 -->
 <div class="tc on" id="t1">
-  <div class="mu fi" id="mu1"><div style="font-size:36px;margin-bottom:8px;position:relative"><i class="fas fa-wand-magic-sparkles"></i></div><div style="font-size:16px;font-weight:700;margin-bottom:4px;position:relative">마스터 업로드</div><div style="font-size:12px;opacity:.65;position:relative">아무 파일이나 던지세요</div><div class="mu-tags"><span class="mu-tag">Excel</span><span class="mu-tag">PDF</span><span class="mu-tag">Word</span><span class="mu-tag">CSV</span><span class="mu-tag">TXT</span><span class="mu-tag">Image</span><span class="mu-tag" style="background:rgba(255,215,0,.25);color:#FFD700">ALL</span></div><input type="file" id="fi1" multiple></div>
-  <div id="us1" style="display:none;align-items:center;gap:8px;background:#E8F8E8;padding:14px 18px;border-radius:var(--rs);margin-bottom:16px;font-size:14px;font-weight:600;color:var(--gn)"><i class="fas fa-check-circle"></i><span id="um1"></span></div>
+  <div class="mu-wrap" id="muWrap">
+    <div class="mu fi" id="mu1"><div style="font-size:36px;margin-bottom:8px;position:relative"><i class="fas fa-wand-magic-sparkles"></i></div><div style="font-size:16px;font-weight:700;margin-bottom:4px;position:relative">마스터 업로드</div><div style="font-size:12px;opacity:.65;position:relative">아무 파일이나 던지세요 — 자동 인식 & 정리</div><div class="mu-tags"><span class="mu-tag">Excel</span><span class="mu-tag">PDF</span><span class="mu-tag">Word</span><span class="mu-tag">CSV</span><span class="mu-tag">TXT</span><span class="mu-tag">Image</span><span class="mu-tag" style="background:rgba(255,215,0,.25);color:#FFD700">ALL</span></div><div class="mu-progress" id="muProgress"><div class="mu-progress-bar" id="muProgressBar"></div></div><input type="file" id="fi1" multiple></div>
+    <div class="mu-status" id="us1"><i class="fas fa-check-circle"></i><span id="um1"></span><button class="mu-add" onclick="document.getElementById('fi1').click()">+ 파일 추가</button></div>
+  </div>
   <div style="font-size:16px;font-weight:700;margin-bottom:14px"><i class="fas fa-calendar-alt" style="color:var(--rd);margin-right:8px"></i>세무 캘린더</div>
   <!-- 달력형 캘린더 -->
   <div class="cd fi d1" style="padding:16px">
@@ -1616,9 +1626,16 @@ function renderMoney(){
 function rfMoney(){renderMoney();showToast('✅ 최신 정보 갱신 완료')}
 
 // === PARSE ENGINE ===
+var _mpQueue=[];var _mpProcessing=false;var _mpTotal=0;var _mpDone=0;
+function mpQ(file){_mpQueue.push(file);_mpTotal++;muShowProgress();if(!_mpProcessing)mpNext()}
+async function mpNext(){if(!_mpQueue.length){_mpProcessing=false;_mpTotal=0;_mpDone=0;muHideProgress();return}_mpProcessing=true;var f=_mpQueue.shift();try{await mp(f)}catch(e){showToast('⚠️ '+f.name+': '+e.message)}_mpDone++;muUpdateProgress();mpNext()}
+function muShowProgress(){var p=document.getElementById('muProgress');if(p)p.classList.add('on')}
+function muHideProgress(){var p=document.getElementById('muProgress');if(p){p.classList.remove('on');var b=document.getElementById('muProgressBar');if(b)b.style.width='0%'}}
+function muUpdateProgress(){var b=document.getElementById('muProgressBar');if(b&&_mpTotal>0)b.style.width=Math.round(_mpDone/_mpTotal*100)+'%'}
 async function mp(file){
   var ext=file.name.split('.').pop().toLowerCase();
   var ft=ext==='xlsx'||ext==='xls'?'excel':ext==='csv'||ext==='tsv'?'csv':ext==='pdf'?'pdf':ext==='doc'||ext==='docx'?'word':(ext==='png'||ext==='jpg'||ext==='jpeg'||ext==='gif'||ext==='webp'||ext==='heic'||ext==='bmp'||ext==='tiff'||ext==='tif'||ext==='svg'||ext==='avif')?'image':(file.type&&file.type.startsWith('image/'))?'image':'text';
+  showToast('📂 처리 중: '+file.name+' ('+ft+')');
   try{
     var rows=[];
     if(ft==='image'){
@@ -2508,8 +2525,16 @@ function toggleFileList(){
 try{if(localStorage.getItem('yjtax_fl_open')==='1'){flOpen=true;document.getElementById('fl').style.display='block';document.getElementById('fl-chevron').style.transform='rotate(180deg)'}}catch(e){}
 function rmF(i){D.files.splice(i,1);if(!D.files.length)resetAll();else rFL()}
 function uUI(){
-  if(!D.isDemo){document.getElementById('mu1').style.display='none';document.getElementById('us1').style.display='flex';document.getElementById('um1').textContent=D.files.length+'개 파일 · '+(D.bank.length+D.tax.length+D.card.length+D.proof.length+D.etc.length)+'건 로드'}
-  else{document.getElementById('mu1').style.display='block';document.getElementById('us1').style.display='none'}
+  // 마스터 업로드 항상 표시 (고정) — 파일 있으면 compact 모드 + 상태 표시
+  var muEl=document.getElementById('mu1');var usEl=document.getElementById('us1');
+  if(!D.isDemo){
+    muEl.classList.add('mu-compact');
+    usEl.classList.add('on');
+    document.getElementById('um1').textContent=D.files.length+'개 파일 · '+(D.bank.length+D.tax.length+D.card.length+D.proof.length+D.etc.length)+'건 로드 완료';
+  }else{
+    muEl.classList.remove('mu-compact');
+    usEl.classList.remove('on');
+  }
   document.getElementById('xb').style.display=(D.tax.length||D.bank.length||D.card.length||D.proof.length)?'flex':'none';
 }
 
@@ -2557,16 +2582,16 @@ function handleDrop(e){
         var imgPdfFiles=files.filter(function(f){return f.type.startsWith('image/')||f.type==='application/pdf'||/\.(png|jpg|jpeg|gif|webp|heic|bmp|tiff|tif|pdf)$/i.test(f.name)});
         var otherFiles=files.filter(function(f){return!f.type.startsWith('image/')&&f.type!=='application/pdf'&&!/\.(png|jpg|jpeg|gif|webp|heic|bmp|tiff|tif|pdf)$/i.test(f.name)});
         if(imgPdfFiles.length>0){showToast('📸 이미지/PDF '+imgPdfFiles.length+'건 → 지출증빙 AI 스캔');processProofBatch(imgPdfFiles)}
-        otherFiles.forEach(mp);
+        otherFiles.forEach(mpQ);
       });
       return;
     }
   }
   // 폴백: 일반 파일
-  Array.from(e.dataTransfer.files).forEach(mp);
+  Array.from(e.dataTransfer.files).forEach(mpQ);
 }
 // === BIND ===
-function bind(z,f){var ze=document.getElementById(z),fe=document.getElementById(f);ze.addEventListener('click',function(){fe.click()});fe.addEventListener('change',function(e){Array.from(e.target.files).forEach(mp);fe.value=''});ze.addEventListener('dragover',function(e){e.preventDefault();ze.style.borderColor='var(--gd)';ze.style.background='#FFF8E1';ze.style.transform='scale(1.02)'});ze.addEventListener('dragleave',function(){ze.style.borderColor='';ze.style.background='';ze.style.transform=''});ze.addEventListener('drop',function(e){ze.style.borderColor='';ze.style.background='';ze.style.transform='';handleDrop(e)})}
+function bind(z,f){var ze=document.getElementById(z),fe=document.getElementById(f);ze.addEventListener('click',function(){fe.click()});fe.addEventListener('change',function(e){Array.from(e.target.files).forEach(mpQ);fe.value=''});ze.addEventListener('dragover',function(e){e.preventDefault();ze.style.borderColor='var(--gd)';ze.style.background='#FFF8E1';ze.style.transform='scale(1.02)'});ze.addEventListener('dragleave',function(){ze.style.borderColor='';ze.style.background='';ze.style.transform=''});ze.addEventListener('drop',function(e){ze.style.borderColor='';ze.style.background='';ze.style.transform='';handleDrop(e)})}
 bind('mu1','fi1');bind('mu2','fi2');
 document.getElementById('mo').addEventListener('click',function(e){if(e.target===this){this.classList.remove('show');resetModal();pn={f:null,r:null,t:''}}});
 
