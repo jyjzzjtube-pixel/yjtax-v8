@@ -335,7 +335,7 @@ td{padding:12px 8px;border-bottom:1px solid #f5f5f5;white-space:nowrap}tr:hover 
   </div>
   <div id="filter-summary" style="display:none;margin-top:6px;padding:8px 12px;background:#FFF8E1;border-radius:8px;font-size:11px;color:#F57F17;font-weight:600"></div>
 </div>
-  <div class="us fi" id="mu2" style="transition:all .2s"><div style="font-size:28px;color:var(--gd);margin-bottom:6px"><i class="fas fa-file-circle-plus"></i></div><div style="font-size:14px;font-weight:600;color:#555">파일 추가</div><div style="font-size:12px;color:#aaa">클릭 또는 파일을 여기로 드래그</div><input type="file" id="fi2" multiple></div>
+  <div class="us fi" id="mu2" style="transition:all .2s" ondragover="event.preventDefault();this.style.borderColor='var(--gd)';this.style.background='var(--gdb)'" ondragleave="event.preventDefault();this.style.borderColor='';this.style.background=''" ondrop="event.preventDefault();this.style.borderColor='';this.style.background='';handleMu2Drop(event)"><div style="font-size:28px;color:var(--gd);margin-bottom:6px"><i class="fas fa-file-circle-plus"></i></div><div style="font-size:14px;font-weight:600;color:#555">파일 추가</div><div style="font-size:12px;color:#aaa">클릭 또는 파일을 여기로 드래그 (엑셀·이미지·PDF)</div><input type="file" id="fi2" multiple></div>
   <div class="xb" id="xb" style="display:none"><button class="xbtn x-xl" onclick="exXL()"><i class="fas fa-file-excel"></i> 엑셀</button><button class="xbtn x-pdf" onclick="exPDF()"><i class="fas fa-file-pdf"></i> PDF</button><button class="xbtn x-csv" onclick="exCSV()"><i class="fas fa-file-csv"></i> CSV</button><button class="xbtn" style="background:var(--pr);color:#fff" onclick="exClientReport()"><i class="fas fa-file-circle-check"></i> 고객리포트</button></div>
   <div id="fl-wrap" style="display:none;margin-bottom:12px">
     <div id="fl-header" onclick="toggleFileList()" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:#fff;border-radius:var(--rs);box-shadow:var(--sh);font-size:13px;font-weight:700;color:var(--nv);user-select:none;transition:all .2s">
@@ -349,11 +349,17 @@ td{padding:12px 8px;border-bottom:1px solid #f5f5f5;white-space:nowrap}tr:hover 
   <div class="ip" id="p-tax"><div class="cd"><div class="tw"><table id="tb-tx" style="table-layout:auto"><thead><tr><th style="width:65px">작성일</th><th style="width:42px">구분</th><th>발행 상호명</th><th>품목명</th><th style="width:105px">사업자번호</th><th style="width:95px;text-align:right">공급가액</th><th style="width:70px;text-align:right">세액</th><th style="width:45px">공제</th></tr></thead><tbody></tbody></table></div><div class="empty" id="em-tx"><i class="fas fa-file-invoice"></i>세금계산서 업로드 (홈택스 XLS)</div></div></div>
   <div class="ip" id="p-card"><div class="cd"><div class="tw"><table id="tb-cd" style="table-layout:auto"><thead><tr><th style="width:70px">거래일</th><th>가맹점(상호명)</th><th>내용</th><th style="width:100px;text-align:right">결제금액</th><th style="width:60px">매출/매입</th></tr></thead><tbody></tbody></table></div><div class="empty" id="em-cd"><i class="fas fa-credit-card"></i>카드 업로드 (카카오뱅크 내역)</div></div></div>
   <div class="ip" id="p-proof"><div class="cd">
-    <!-- 지출증빙 AI 자동 스캔 -->
-    <div style="background:linear-gradient(135deg,#FFF8E1,#FFF3E0);border:2px solid #FF9800;border-radius:var(--rs);padding:16px;margin-bottom:16px">
+    <!-- 지출증빙 AI 자동 스캔 + 드래그앤드롭 -->
+    <div id="proof-drop-zone" style="background:linear-gradient(135deg,#FFF8E1,#FFF3E0);border:2px solid #FF9800;border-radius:var(--rs);padding:16px;margin-bottom:16px;transition:all .3s" ondragover="event.preventDefault();event.stopPropagation();this.style.borderColor='#E65100';this.style.background='#FFE0B2'" ondragleave="event.preventDefault();this.style.borderColor='#FF9800';this.style.background=''" ondrop="event.preventDefault();this.style.borderColor='#FF9800';this.style.background='';handleProofDrop(event)">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
         <div style="width:40px;height:40px;border-radius:10px;background:#FF9800;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff"><i class="fas fa-wand-magic-sparkles"></i></div>
-        <div><div style="font-size:14px;font-weight:800;color:#E65100">AI 자동 스캔</div><div style="font-size:10px;color:#BF360C">이미지/PDF 업로드 → Gemini AI 자동 분류 · 자동 기입</div></div>
+        <div><div style="font-size:14px;font-weight:800;color:#E65100">AI 자동 스캔</div><div style="font-size:10px;color:#BF360C">이미지/PDF 업로드 · 드래그&드롭 · 폴더째 업로드 → Gemini AI 자동 분류</div></div>
+      </div>
+      <!-- 드래그 앤 드롭 안내 -->
+      <div id="proof-drag-hint" style="padding:18px;background:rgba(255,255,255,.7);border:3px dashed #FFB74D;border-radius:var(--rs);text-align:center;margin-bottom:10px;transition:all .3s">
+        <i class="fas fa-hand-pointer" style="font-size:28px;color:#FF9800;margin-bottom:6px;display:block"></i>
+        <div style="font-size:13px;font-weight:700;color:#E65100;margin-bottom:2px">파일을 여기로 드래그하세요</div>
+        <div style="font-size:10px;color:#BF360C">PNG · JPG · PDF (대리운전 영수증, 택시 이용내역, 카카오페이 거래확인증 등)</div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <label style="flex:1;min-width:140px;padding:14px;background:#fff;border:2px dashed #FF9800;border-radius:var(--rs);text-align:center;cursor:pointer;transition:all .15s;font-size:12px;font-weight:600;color:#E65100" onmouseover="this.style.background='#FFF3E0'" onmouseout="this.style.background='#fff'">
@@ -370,7 +376,7 @@ td{padding:12px 8px;border-bottom:1px solid #f5f5f5;white-space:nowrap}tr:hover 
       <div id="proof-scan-progress" style="display:none;margin-top:10px;padding:10px;background:#fff;border-radius:var(--rs);font-size:11px">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><i class="fas fa-spinner fa-spin" style="color:#FF9800"></i><span id="proof-scan-status">스캔 중...</span></div>
         <div style="background:#f0f0f0;border-radius:4px;height:6px;overflow:hidden"><div id="proof-scan-bar" style="background:linear-gradient(90deg,#FF9800,#F57C00);height:100%;width:0%;transition:width .3s"></div></div>
-        <div id="proof-scan-log" style="margin-top:6px;max-height:100px;overflow-y:auto;font-size:10px;color:var(--sub)"></div>
+        <div id="proof-scan-log" style="margin-top:6px;max-height:150px;overflow-y:auto;font-size:10px;color:var(--sub)"></div>
       </div>
     </div>
     <div style="background:#FFF8E1;border:2px solid #FFD54F;border-radius:var(--rs);padding:14px;margin-bottom:16px">
@@ -395,7 +401,7 @@ td{padding:12px 8px;border-bottom:1px solid #f5f5f5;white-space:nowrap}tr:hover 
         <select id="pf-deduct" style="padding:7px 10px;border:2px solid #e0e0e0;border-radius:var(--rs);font-family:inherit;font-size:11px"><option value="공제">공제</option><option value="불공제">불공제</option><option value="-">미정</option></select>
       </div>
     </div>
-    <div class="tw"><table id="tb-pf" style="table-layout:auto"><thead><tr><th style="width:70px">거래일</th><th>내용</th><th style="width:70px">증빙유형</th><th style="width:60px">분류</th><th style="width:80px;text-align:right">과세금액</th><th style="width:65px;text-align:right">부가세</th><th style="width:85px;text-align:right">총결제금액</th><th style="width:45px">공제</th></tr></thead><tbody></tbody></table></div><div class="empty" id="em-pf"><i class="fas fa-receipt"></i>지출증빙 업로드 (현금영수증·간이영수증·거래확인증)<br><span style="font-size:11px;color:#aaa;margin-top:4px;display:block">대리운전·택시·교통비 등 적격증빙 관리</span></div></div></div>
+    <div class="tw"><table id="tb-pf" style="table-layout:auto"><thead><tr><th style="width:75px">거래일</th><th>상호명/내용</th><th style="width:65px">증빙유형</th><th style="width:55px">분류</th><th style="width:75px;text-align:right">과세금액</th><th style="width:60px;text-align:right">부가세</th><th style="width:65px;text-align:right">봉사료</th><th style="width:85px;text-align:right;color:#E65100;font-weight:700">총결제금액</th><th style="width:55px">결제</th><th style="width:42px">공제</th></tr></thead><tbody></tbody></table></div><div class="empty" id="em-pf"><i class="fas fa-receipt"></i>지출증빙을 드래그하거나 업로드하세요<br><span style="font-size:11px;color:#aaa;margin-top:4px;display:block">대리운전 영수증 · 택시 이용내역 · 카카오페이 거래확인증 등</span></div></div></div>
   <div class="ip" id="p-all"><div class="cd"><div class="tw"><table id="tb-al"><thead><tr><th style="width:70px">분류</th><th style="width:50px">유형</th><th style="width:85px">날짜</th><th>내용</th><th>품목명</th><th style="width:100px;text-align:right">입금(매출)</th><th style="width:100px;text-align:right">출금(매입)</th></tr></thead><tbody></tbody></table></div><div class="empty" id="em-al"><i class="fas fa-inbox"></i>데이터 업로드</div></div></div>
   <div style="font-size:16px;font-weight:700;margin:28px 0 14px"><i class="fas fa-chart-pie" style="margin-right:8px"></i>매출처별 비중</div>
   <div class="cd"><div class="cw"><canvas id="donut"></canvas></div><div class="empty" id="em-ch" style="display:none"><i class="fas fa-chart-pie"></i>매출 데이터 필요</div></div>
@@ -1616,30 +1622,46 @@ async function mp(file){
   try{
     var rows=[];
     if(ft==='image'){
-      // 이미지 → Gemini OCR
+      // 이미지 → 지출증빙 전용 AI 스캔으로 직접 처리 (더 정확한 인식)
       var gk=localStorage.getItem('yjtax_gemini_key');
       if(gk){
-        showToast('📸 AI 스캔 중: '+file.name);
-        var b64=await new Promise(function(res){var r=new FileReader;r.onload=function(e){res(e.target.result.split(',')[1])};r.readAsDataURL(file)});
+        showToast('📸 지출증빙 AI 스캔: '+file.name);
         try{
-          var resp=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+gk,{
-            method:'POST',headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({contents:[{parts:[{inline_data:{mime_type:file.type||'image/png',data:b64}},{text:'이 이미지에서 모든 텍스트, 숫자, 날짜, 금액, 거래처명, 사업자번호를 정확히 추출해주세요. 영수증이면 JSON으로: {"date":"날짜","desc":"거래처","amount":금액,"tax":세액,"bizNo":"사업자번호"}. 여러건이면 배열로. 사업자등록증이면 모든 정보를 텍스트로.'}]}]})
-          });
-          var data=await resp.json();
-          var text=data.candidates[0].content.parts[0].text;
-          // JSON 파싱 시도
-          var jsonMatch=text.match(/\[[\s\S]*?\]|\{[\s\S]*?\}/);
-          if(jsonMatch){
-            try{
-              var parsed=JSON.parse(jsonMatch[0]);
-              if(!Array.isArray(parsed))parsed=[parsed];
-              rows=parsed.map(function(p){return{date:p.date||'',desc:p.desc||p.name||p.merchant||'',inAmt:toN(p.amount)||0,outAmt:0,tax:toN(p.tax)||0,balance:0,type:'',deductible:'-',bizNo:p.bizNo||p.bno||''}});
-              showToast('✅ AI 스캔 완료: '+rows.length+'건');
-            }catch(pe){rows=pTxt(text);showToast('✅ AI 텍스트 추출 완료')}
-          }else{rows=pTxt(text);showToast('✅ AI 텍스트 추출 완료')}
-        }catch(ge){showToast('⚠️ AI 스캔 실패, 텍스트 모드');rows=[{date:'',desc:file.name,inAmt:0,outAmt:0,tax:0,balance:0,type:'',deductible:'-'}]}
-      }else{rows=[{date:'',desc:file.name+' (Gemini 키 필요)',inAmt:0,outAmt:0,tax:0,balance:0,type:'',deductible:'-'}];showToast('⚠️ 이미지 스캔은 Gemini API 키가 필요합니다')}
+          var result=await geminiProofScan(file,gk);
+          if(result&&!result.error){
+            var entry=buildProofEntry(result,file.name);
+            if(D.isDemo){D.bank=[];D.tax=[];D.card=[];D.proof=[];D.etc=[];D.files=[];D.isDemo=false}
+            D.proof.push(entry);
+            D.files.push({name:file.name,format:'image',category:'proof',count:1});
+            driveUpload(file,'proof');
+            showToast('✅ '+file.name+' → '+entry.desc+' '+fm(entry.total)+'원 ['+entry.category+']');
+            rAll();
+          }else{
+            showToast('⚠️ '+file.name+': '+(result?result.error:'인식 실패'));
+          }
+        }catch(ge){showToast('⚠️ AI 스캔 실패: '+ge.message)}
+        return; // 지출증빙으로 처리 완료
+      }else{showToast('⚠️ 이미지 스캔은 설정에서 Gemini API 키를 먼저 입력하세요');return}
+    }
+    else if(ft==='pdf'&&/거래확인증|영수증|대리운전|택시|교통|카카오페이|증빙/i.test(file.name)){
+      // 증빙성 PDF → 지출증빙 전용 AI 스캔
+      var gk2=localStorage.getItem('yjtax_gemini_key');
+      if(gk2){
+        showToast('📄 지출증빙 PDF 스캔: '+file.name);
+        try{
+          var result2=await geminiProofScan(file,gk2);
+          if(result2&&!result2.error){
+            var entry2=buildProofEntry(result2,file.name);
+            if(D.isDemo){D.bank=[];D.tax=[];D.card=[];D.proof=[];D.etc=[];D.files=[];D.isDemo=false}
+            D.proof.push(entry2);
+            D.files.push({name:file.name,format:'pdf',category:'proof',count:1});
+            driveUpload(file,'proof');
+            showToast('✅ '+file.name+' → '+entry2.desc+' '+fm(entry2.total)+'원');
+            rAll();return;
+          }
+        }catch(e2){}
+      }
+      rows=pTxt(await pPDF(file)); // fallback
     }
     else if(ft==='excel')rows=await pXL(file);else if(ft==='csv')rows=pCSV(await rTxt(file));else if(ft==='pdf')rows=pTxt(await pPDF(file));else if(ft==='word')rows=pTxt(await pWord(file));else rows=pTxt(await rTxt(file));
     if(!rows.length){showToast('⚠️ '+file.name+': 데이터를 추출할 수 없습니다');return}
@@ -1723,8 +1745,13 @@ var iOut=findCol(['출금금액','출금액','출금(원)','출금'],['일시','
 // 단일 금액 컬럼 (카카오/토스: 양수=입금, 음수=출금)
 var iSingleAmt=-1;
 if(iSupply<0&&iOut<0)iSingleAmt=findCol(['거래금액','거래 금액','금액','이용금액'],['잔액']);
-// 공급가액 (세금계산서용)
-if(iSupply<0&&iSingleAmt<0)iSupply=findCol(['공급가액','금액','이용금액','수입'],['잔액','출금','거래후']);
+// 공급가액 (세금계산서용) — '공급가액'을 우선 찾고, 합계/총액 컬럼은 제외
+var iTaxSupply=findCol(['공급가액'],['잔액','출금','거래후','합계','총']);
+var iTotalAmt=findCol(['합계금액','합계','총금액','총액'],['잔액']);
+if(iSupply<0&&iSingleAmt<0){
+  if(iTaxSupply>=0)iSupply=iTaxSupply;
+  else iSupply=findCol(['금액','이용금액','수입'],['잔액','출금','거래후','합계','총','세액']);
+}
 if(iOut<0&&iSingleAmt<0)iOut=findCol(['지출','찾은금액','지급'],['잔액']);
 var iTax=findCol(['세액']);
 var iBal=findCol(['거래후잔액','거래후 잔액','거래 후 잔액','잔액(원)','잔액','잔고']);
@@ -1754,6 +1781,24 @@ for(var di=headerIdx+1;di<allRows.length;di++){
     outV=toN(iOut>=0?row[iOut]:'');
   }
   var tax=toN(iTax>=0?row[iTax]:'');
+  // 세금계산서: 합계금액 컬럼이 있으면 supply+tax 검증/보정
+  var totalAmtCol=toN(iTotalAmt>=0?row[iTotalAmt]:'');
+  if(totalAmtCol>0&&tax>0){
+    // 합계금액이 있고 세액도 있으면, 공급가액 = 합계 - 세액
+    if(supply>0&&Math.abs(supply+tax-totalAmtCol)>10&&Math.abs(supply-totalAmtCol)<10){
+      // supply가 실제 합계금액과 같다면 → supply에 합계가 들어간 것 → 보정
+      supply=totalAmtCol-tax;
+    }else if(supply===0||supply===totalAmtCol){
+      supply=totalAmtCol-tax;
+    }
+  }else if(!totalAmtCol&&supply>0&&tax>0){
+    // 합계 컬럼이 없지만, supply/1.1 ≈ supply-tax 인지 체크 (supply가 이미 VAT포함인 경우)
+    var estSupply=Math.round(supply/1.1);
+    if(Math.abs(estSupply*0.1-tax)<100&&supply>tax*5){
+      // supply가 VAT포함 금액으로 보임 → 보정
+      supply=supply-tax;
+    }
+  }
   if(!supply&&!tax&&!outV)continue;
   // === desc(상대방) 추출 ===
   var desc=(iDesc>=0?String(row[iDesc]||'').trim():'');
@@ -2232,8 +2277,8 @@ function rTbls(){
   document.getElementById('em-tx').style.display=D.tax.length?'none':'block';
   document.querySelector('#tb-cd tbody').innerHTML=D.card.map(function(r){return'<tr><td>'+fD(r.date)+'</td><td>'+r.merchant+'</td><td style="font-size:11px;color:#555;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(r.item||'<span style="color:#ccc">-</span>')+'</td><td class="am neg">'+fm(r.amount)+'</td><td><span class="badge b-rd">'+r.type+'</span></td></tr>'}).join('');
   document.getElementById('em-cd').style.display=D.card.length?'none':'block';
-  // 지출증빙 테이블
-  document.querySelector('#tb-pf tbody').innerHTML=D.proof.map(function(r,i){return'<tr><td style="white-space:nowrap">'+fD(r.date)+'</td><td style="font-size:12px;font-weight:600">'+r.desc+'</td><td><span class="badge b-or" style="font-size:9px">'+r.proofType+'</span></td><td><span class="badge b-bl" style="font-size:9px">'+r.category+'</span></td><td class="am">'+fm(r.supply)+'</td><td class="am">'+fm(r.tax)+'</td><td class="am neg" style="font-weight:700">'+fm(r.total)+'</td><td>'+(r.deductible==='공제'?'<span class="badge b-gn">공제</span>':r.deductible==='불공제'?'<span class="badge b-rd">불공제</span>':'<span class="badge b-gy">'+r.deductible+'</span>')+'</td></tr>'}).join('')+(D.proof.length?'<tr style="background:#FFF8E1;border-top:2px solid #F57F17;font-weight:800"><td colspan="4" style="text-align:right;padding:10px;font-size:12px">합계 ('+D.proof.length+'건)</td><td class="am" style="font-size:12px">'+fm(D.proof.reduce(function(a,r){return a+r.supply},0))+'</td><td class="am" style="font-size:12px">'+fm(D.proof.reduce(function(a,r){return a+r.tax},0))+'</td><td class="am neg" style="font-size:13px">'+fm(D.proof.reduce(function(a,r){return a+r.total},0))+'</td><td></td></tr>':'');
+  // 지출증빙 테이블 (봉사료+결제방법 추가)
+  document.querySelector('#tb-pf tbody').innerHTML=D.proof.map(function(r,i){return'<tr><td style="white-space:nowrap">'+fD(r.date)+'</td><td style="font-size:12px;font-weight:600;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+r.desc+'">'+r.desc+'</td><td><span class="badge b-or" style="font-size:9px">'+r.proofType+'</span></td><td><span class="badge b-bl" style="font-size:9px">'+r.category+'</span></td><td class="am">'+fm(r.supply)+'</td><td class="am">'+fm(r.tax)+'</td><td class="am" style="color:#9C27B0">'+(r.tip?fm(r.tip):'<span style="color:#ddd">-</span>')+'</td><td class="am neg" style="font-weight:700;color:#E65100">'+fm(r.total)+'</td><td style="font-size:10px;color:#555">'+(r.payment||'-')+'</td><td>'+(r.deductible==='공제'?'<span class="badge b-gn">공제</span>':r.deductible==='불공제'?'<span class="badge b-rd">불공제</span>':'<span class="badge b-gy">'+r.deductible+'</span>')+'</td></tr>'}).join('')+(D.proof.length?'<tr style="background:#FFF8E1;border-top:2px solid #F57F17;font-weight:800"><td colspan="4" style="text-align:right;padding:10px;font-size:12px">합계 ('+D.proof.length+'건)</td><td class="am" style="font-size:12px">'+fm(D.proof.reduce(function(a,r){return a+r.supply},0))+'</td><td class="am" style="font-size:12px">'+fm(D.proof.reduce(function(a,r){return a+r.tax},0))+'</td><td class="am" style="font-size:12px;color:#9C27B0">'+fm(D.proof.reduce(function(a,r){return a+(r.tip||0)},0))+'</td><td class="am neg" style="font-size:13px;color:#E65100">'+fm(D.proof.reduce(function(a,r){return a+r.total},0))+'</td><td></td><td></td></tr>':'');
   document.getElementById('em-pf').style.display=D.proof.length?'none':'block';
   var all=[];
   D.bank.forEach(function(r){all.push({c:'통장',cc:'b-bl',tp:r.inAmt?'입금':'출금',d:r.date,n:r.desc,it:r.item||'',i:r.inAmt,o:r.outAmt})});
@@ -2263,6 +2308,54 @@ function rChart(){
 }
 // === 지출증빙 함수 ===
 function classifyExpense(desc){desc=(desc||'').toLowerCase();if(/대리운전|택시|교통|주차|톨게이트|고속|기차|ktx|버스|지하철|uber|카카오T/.test(desc))return'교통비';if(/식대|음식|식사|카페|커피|배달|치킨|피자|점심|저녁|아침/.test(desc))return'식대';if(/사무|문구|복사|프린트|잉크|종이|펜|노트/.test(desc))return'사무용품';if(/접대|회식|선물|경조|화환|부조/.test(desc))return'접대비';if(/통신|전화|인터넷|핸드폰|요금/.test(desc))return'통신비';if(/보험|가입|보장/.test(desc))return'보험료';return'기타'}
+
+// === 드래그 앤 드롭 핸들러 ===
+async function handleProofDrop(e){
+  var dt=e.dataTransfer;if(!dt||!dt.files||!dt.files.length)return;
+  var files=Array.from(dt.files).filter(function(f){
+    return f.type.startsWith('image/')||f.type==='application/pdf'||/\.(png|jpg|jpeg|gif|webp|heic|bmp|tiff|tif|pdf)$/i.test(f.name);
+  });
+  if(!files.length){showToast('⚠️ 이미지(PNG/JPG) 또는 PDF 파일만 가능합니다');return}
+  showToast('📁 '+files.length+'개 파일 드롭됨 — AI 스캔 시작!');
+  await processProofBatch(files);
+}
+// 파일 추가 영역 드래그&드롭 (엑셀→파싱, 이미지/PDF→지출증빙)
+async function handleMu2Drop(e){
+  var dt=e.dataTransfer;if(!dt||!dt.files||!dt.files.length)return;
+  var allFiles=Array.from(dt.files);
+  var imgPdf=allFiles.filter(function(f){return f.type.startsWith('image/')||f.type==='application/pdf'||/\.(png|jpg|jpeg|gif|webp|heic|bmp|tiff|tif|pdf)$/i.test(f.name)});
+  var xlsCsv=allFiles.filter(function(f){return/\.(xlsx?|csv|txt)$/i.test(f.name)});
+  if(imgPdf.length>0){
+    showToast('📸 이미지/PDF '+imgPdf.length+'건 → 지출증빙 AI 스캔');
+    await processProofBatch(imgPdf);
+  }
+  if(xlsCsv.length>0){xlsCsv.forEach(function(f){processFile(f)})}
+  if(!imgPdf.length&&!xlsCsv.length){showToast('⚠️ 지원되는 파일 형식이 아닙니다')}
+}
+// 메인 업로드 영역에도 드래그&드롭 지원 (지출증빙 탭이 아니어도 동작)
+document.addEventListener('DOMContentLoaded',function(){
+  var mainDrop=document.querySelector('.mu');
+  if(mainDrop){
+    mainDrop.addEventListener('dragover',function(e){e.preventDefault();e.stopPropagation();mainDrop.style.borderColor='#FFD700';mainDrop.style.boxShadow='0 0 20px rgba(255,215,0,.4)'});
+    mainDrop.addEventListener('dragleave',function(e){e.preventDefault();mainDrop.style.borderColor='';mainDrop.style.boxShadow=''});
+    mainDrop.addEventListener('drop',function(e){
+      e.preventDefault();e.stopPropagation();mainDrop.style.borderColor='';mainDrop.style.boxShadow='';
+      var dt=e.dataTransfer;if(!dt||!dt.files||!dt.files.length)return;
+      var allFiles=Array.from(dt.files);
+      var imgPdf=allFiles.filter(function(f){return f.type.startsWith('image/')||f.type==='application/pdf'||/\.(png|jpg|jpeg|gif|webp|heic|bmp|tiff|tif|pdf)$/i.test(f.name)});
+      var xlsCsv=allFiles.filter(function(f){return/\.(xlsx?|csv|txt)$/i.test(f.name)});
+      // 이미지/PDF → 지출증빙 AI 스캔
+      if(imgPdf.length>0){
+        showToast('📸 이미지/PDF '+imgPdf.length+'건 → 지출증빙 AI 스캔');
+        processProofBatch(imgPdf);
+      }
+      // 엑셀/CSV → 기존 파싱
+      if(xlsCsv.length>0){
+        xlsCsv.forEach(function(f){processFile(f)});
+      }
+    });
+  }
+});
 
 // === 지출증빙 AI 자동 스캔 ===
 async function scanProofFiles(input){
@@ -2332,7 +2425,7 @@ async function geminiProofScan(file,apiKey){
       }
       var resp=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+apiKey,{
         method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({contents:[{parts:[{text:'다음은 지출증빙 PDF 텍스트입니다. 분석해서 반드시 아래 JSON 형식으로만 답해주세요. 다른 텍스트 없이 JSON만 출력하세요.\n{"date":"YYYY-MM-DD","desc":"상호명/거래처","proofType":"거래확인증|현금영수증|간이영수증|카드전표|기타","category":"교통비|식대|사무용품|접대비|소모품비|통신비|기타","supply":과세금액숫자,"tax":부가세숫자,"tip":봉사료숫자,"total":총결제금액숫자,"payment":"카드|현금|카카오페이|계좌이체|기타","deductible":"공제|불공제"}\n인식 불가 시 {"error":"인식 불가"} 반환.\n\n텍스트:\n'+text}]}]})
+        body:JSON.stringify({contents:[{parts:[{text:'다음은 지출증빙 PDF 텍스트입니다. 분석해서 반드시 아래 JSON 형식으로만 답해주세요. 다른 텍스트 없이 JSON만 출력하세요.\n{"date":"YYYY-MM-DD","desc":"상호명/거래처","proofType":"거래확인증|현금영수증|간이영수증|카드전표|대리운전영수증|택시영수증|기타","category":"교통비|식대|사무용품|접대비|소모품비|통신비|기타","supply":과세금액숫자,"tax":부가세숫자,"tip":봉사료숫자,"total":총결제금액숫자,"payment":"카드|현금|카카오페이|계좌이체|기타","deductible":"공제|불공제"}\n\n** 카카오페이 거래확인증 PDF인 경우: 거래일시, 결제금액, 가맹점명 정확히 추출. payment=카카오페이 **\n- 총결제금액 = 과세금액+부가세+봉사료\n- 숫자는 콤마 없이 순수 숫자만\n인식 불가 시 {"error":"인식 불가"} 반환.\n\n텍스트:\n'+text}]}]})
       });
       var data=await resp.json();
       return parseGeminiProofResult(data);
@@ -2344,7 +2437,7 @@ async function geminiProofScan(file,apiKey){
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({contents:[{parts:[
         {inline_data:{mime_type:file.type||'image/png',data:b64}},
-        {text:'이 지출증빙 이미지를 분석해서 반드시 아래 JSON 형식으로만 답해주세요. 다른 텍스트 없이 JSON만 출력하세요.\n{"date":"YYYY-MM-DD","desc":"상호명/거래처","proofType":"거래확인증|현금영수증|간이영수증|카드전표|기타","category":"교통비|식대|사무용품|접대비|소모품비|통신비|기타","supply":과세금액숫자,"tax":부가세숫자,"tip":봉사료숫자,"total":총결제금액숫자,"payment":"카드|현금|카카오페이|계좌이체|기타","deductible":"공제|불공제"}\n- 대리운전/택시는 category를 교통비로\n- 봉사료가 있으면 tip에 넣어주세요\n- 날짜가 26.01.24 형식이면 2026-01-24로 변환\n- 총결제금액은 과세금액+부가세+봉사료\n인식 불가 시 {"error":"인식 불가"} 반환.'}
+        {text:'이 지출증빙 이미지를 분석해서 반드시 아래 JSON 형식으로만 답해주세요. 다른 텍스트 없이 JSON만 출력하세요.\n{"date":"YYYY-MM-DD","desc":"상호명/거래처","proofType":"거래확인증|현금영수증|간이영수증|카드전표|대리운전영수증|택시영수증|기타","category":"교통비|식대|사무용품|접대비|소모품비|통신비|기타","supply":과세금액숫자,"tax":부가세숫자,"exempt":면세금액숫자,"tip":봉사료숫자,"total":총결제금액숫자,"payment":"카드|현금|카카오페이|계좌이체|기타","deductible":"공제|불공제","from":"출발지(해당시)","to":"도착지(해당시)","time":"운행시간(해당시)"}\n\n** 영수증 유형별 인식 가이드 **\n1. 대리운전 영수증 (쌍둥이대리운전 등): 과세금액, 부가세, 면세금액, 봉사료, 결제방법, 총결제금액 정확히 읽기. category=교통비\n2. 택시 이용 상세 (카카오T): 날짜(26.01.24→2026-01-24), 출발/도착, 운행시간 읽기. 금액 없으면 total=0. category=교통비\n3. 카카오페이 거래확인증: 결제금액, 거래처명, 날짜 읽기. payment=카카오페이\n4. 일반 영수증/카드전표: 과세금액, 부가세, 총금액 읽기\n\n- 봉사료가 있으면 반드시 tip에 넣어주세요 (대리운전 봉사료는 면세)\n- 총결제금액 = 과세금액 + 부가세 + 봉사료\n- 날짜가 26.01.24 형식이면 2026-01-24로 변환\n- 숫자는 반드시 콤마 없이 순수 숫자만\n인식 불가 시 {"error":"인식 불가"} 반환.'}
       ]}]})
     });
     var data=await resp.json();
@@ -2460,7 +2553,11 @@ function handleDrop(e){
         // 임시파일/숨김파일 제외
         files=files.filter(function(f){return !f.name.startsWith('~$')&&!f.name.startsWith('.')&&f.size>0});
         if(folderFound)showToast('📂 '+files.length+'개 파일 발견');
-        files.forEach(mp);
+        // 이미지/PDF는 지출증빙 AI 스캔으로 분리 처리
+        var imgPdfFiles=files.filter(function(f){return f.type.startsWith('image/')||f.type==='application/pdf'||/\.(png|jpg|jpeg|gif|webp|heic|bmp|tiff|tif|pdf)$/i.test(f.name)});
+        var otherFiles=files.filter(function(f){return!f.type.startsWith('image/')&&f.type!=='application/pdf'&&!/\.(png|jpg|jpeg|gif|webp|heic|bmp|tiff|tif|pdf)$/i.test(f.name)});
+        if(imgPdfFiles.length>0){showToast('📸 이미지/PDF '+imgPdfFiles.length+'건 → 지출증빙 AI 스캔');processProofBatch(imgPdfFiles)}
+        otherFiles.forEach(mp);
       });
       return;
     }
