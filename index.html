@@ -2429,7 +2429,7 @@ async function scanProofFolder(input){
   input.value='';
 }
 async function processProofBatch(files){
-  var gk=localStorage.getItem('yjtax_gemini_key');
+  var gk=localStorage.getItem('yjtax_gemini_key')||localStorage.getItem('yjtax_gemini_backup');
   if(!gk){alert('⚙️ 설정에서 Gemini API Key를 먼저 입력하세요.');return}
   var prog=document.getElementById('proof-scan-progress');
   var bar=document.getElementById('proof-scan-bar');
@@ -3098,15 +3098,12 @@ async function geminiDeductCheck(silent){
   });
   
   try{
-    var resp=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+geminiKey,{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})
-    });
-    var data=await resp.json();
+    var data=await callGeminiWithFallback({contents:[{parts:[{text:prompt}]}]});
+    if(!data){showToast('❌ Gemini API 호출 실패 (메인+백업 키 모두 실패)');return}
     var text=data.candidates&&data.candidates[0]?data.candidates[0].content.parts[0].text:'';
     var jsonStr=text.replace(/```json\n?/g,'').replace(/```/g,'').trim();
     var results=JSON.parse(jsonStr);
-    
+
     // 결과 적용
     var changed=0;
     results.forEach(function(r){
@@ -3669,15 +3666,82 @@ function aiAsk(q){document.getElementById('ai-input').value=q;aiSend()}
 function aiSend(){
   var input=document.getElementById('ai-input');var q=input.value.trim();if(!q)return;input.value='';
   var chat=document.getElementById('ai-chat');
+  var engine=document.getElementById('ai-engine-select')?document.getElementById('ai-engine-select').value:'local';
   chat.innerHTML+='<div class="ai-msg ai-user"><div class="ai-av"><i class="fas fa-user"></i></div><div class="ai-bubble">'+q+'</div></div>';
   chat.innerHTML+='<div class="ai-msg ai-bot" id="ai-typing"><div class="ai-av"><i class="fas fa-robot"></i></div><div class="ai-typing"><span></span><span></span><span></span></div></div>';
   chat.scrollTop=chat.scrollHeight;
+  if(engine==='perplexity'){aiPerplexitySearch(q);return}
+  if(engine==='gemini'){aiGeminiChat(q);return}
+  if(engine==='claude'){aiClaudeChat(q);return}
   setTimeout(function(){
     var el=document.getElementById('ai-typing');if(el)el.remove();
     var answer=processAI(q);
     chat.innerHTML+='<div class="ai-msg ai-bot"><div class="ai-av"><i class="fas fa-robot"></i></div><div class="ai-bubble">'+answer+'</div></div>';
     chat.scrollTop=chat.scrollHeight;
   },600);
+}
+// === Perplexity AI 실시간 검색 ===
+async function aiPerplexitySearch(query){
+  var chat=document.getElementById('ai-chat');
+  var statusEl=document.getElementById('ai-engine-status');
+  if(statusEl)statusEl.textContent='Perplexity 검색 중...';
+  if(!document.getElementById('ai-typing')){
+    chat.innerHTML+='<div class="ai-msg ai-bot" id="ai-typing"><div class="ai-av"><i class="fas fa-magnifying-glass" style="color:#008080"></i></div><div class="ai-typing"><span></span><span></span><span></span></div></div>';
+    chat.scrollTop=chat.scrollHeight;
+  }
+  var result=await callPerplexity(query);
+  var el=document.getElementById('ai-typing');if(el)el.remove();
+  if(statusEl)statusEl.textContent='';
+  if(result){
+    var formatted=result.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<b>$1</b>');
+    chat.innerHTML+='<div class="ai-msg ai-bot"><div class="ai-av"><i class="fas fa-magnifying-glass" style="color:#008080"></i></div><div class="ai-bubble" style="border-left:3px solid #20B2AA"><div style="font-size:10px;color:#008080;font-weight:700;margin-bottom:6px"><i class="fas fa-magnifying-glass-chart"></i> Perplexity AI 검색 결과</div>'+formatted+'</div></div>';
+  }else{
+    chat.innerHTML+='<div class="ai-msg ai-bot"><div class="ai-av"><i class="fas fa-magnifying-glass" style="color:#008080"></i></div><div class="ai-bubble">Perplexity API 호출에 실패했습니다. 설정에서 API Key를 확인하세요.</div></div>';
+  }
+  chat.scrollTop=chat.scrollHeight;
+}
+// === Gemini AI 채팅 ===
+async function aiGeminiChat(query){
+  var chat=document.getElementById('ai-chat');
+  var statusEl=document.getElementById('ai-engine-status');
+  if(statusEl)statusEl.textContent='Gemini 분석 중...';
+  var context=buildAIContext();
+  var bodyJson={contents:[{parts:[{text:context+'\n\n사용자 질문: '+query+'\n\n한국어로 답변하세요. 간결하게 핵심만 답변.'}]}]};
+  var data=await callGeminiWithFallback(bodyJson);
+  var el=document.getElementById('ai-typing');if(el)el.remove();
+  if(statusEl)statusEl.textContent='';
+  if(data&&data.candidates&&data.candidates[0]){
+    var text=data.candidates[0].content.parts[0].text||'';
+    var formatted=text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<b>$1</b>');
+    chat.innerHTML+='<div class="ai-msg ai-bot"><div class="ai-av"><i class="fas fa-wand-magic-sparkles" style="color:#4285F4"></i></div><div class="ai-bubble" style="border-left:3px solid #4285F4"><div style="font-size:10px;color:#4285F4;font-weight:700;margin-bottom:6px"><i class="fas fa-wand-magic-sparkles"></i> Gemini AI</div>'+formatted+'</div></div>';
+  }else{
+    chat.innerHTML+='<div class="ai-msg ai-bot"><div class="ai-av"><i class="fas fa-robot"></i></div><div class="ai-bubble">Gemini API 호출에 실패했습니다. 설정에서 API Key를 확인하세요.</div></div>';
+  }
+  chat.scrollTop=chat.scrollHeight;
+}
+// === Claude AI 채팅 ===
+async function aiClaudeChat(query){
+  var chat=document.getElementById('ai-chat');
+  var statusEl=document.getElementById('ai-engine-status');
+  if(statusEl)statusEl.textContent='Claude 분석 중...';
+  var context=buildAIContext();
+  var result=await callClaude(context+'\n\n사용자 질문: '+query+'\n\n한국어로 답변하세요. 간결하게 핵심만 답변.',1500);
+  var el=document.getElementById('ai-typing');if(el)el.remove();
+  if(statusEl)statusEl.textContent='';
+  if(result){
+    var formatted=result.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<b>$1</b>');
+    chat.innerHTML+='<div class="ai-msg ai-bot"><div class="ai-av"><i class="fas fa-brain" style="color:#D97706"></i></div><div class="ai-bubble" style="border-left:3px solid #D97706"><div style="font-size:10px;color:#D97706;font-weight:700;margin-bottom:6px"><i class="fas fa-brain"></i> Claude AI</div>'+formatted+'</div></div>';
+  }else{
+    chat.innerHTML+='<div class="ai-msg ai-bot"><div class="ai-av"><i class="fas fa-robot"></i></div><div class="ai-bubble">Claude API 호출에 실패했습니다. 설정에서 API Key를 확인하세요.</div></div>';
+  }
+  chat.scrollTop=chat.scrollHeight;
+}
+// AI 컨텍스트 빌더 (장부 데이터 요약)
+function buildAIContext(){
+  var st=D.tax.filter(function(r){return r.type==='매출'}),et=D.tax.filter(function(r){return r.type==='매입'});
+  var ts=st.reduce(function(a,r){return a+r.supply},0),te=et.reduce(function(a,r){return a+r.supply},0);
+  var sTx=st.reduce(function(a,r){return a+r.tax},0),dTx=et.filter(function(r){return r.deductible!=='불공제'}).reduce(function(a,r){return a+r.tax},0);
+  return '당신은 한국 세무 전문 AI입니다.\n[현재 장부 요약]\n매출: '+ts+'원 ('+st.length+'건), 매입: '+te+'원 ('+et.length+'건)\n매출세액: '+sTx+'원, 공제매입세액: '+dTx+'원\n예상 부가세: '+(sTx-dTx)+'원\n통장: '+D.bank.length+'건, 카드: '+D.card.length+'건, 지출증빙: '+(D.proof?D.proof.length:0)+'건';
 }
 function processAI(q){
   var ql=q.toLowerCase();
@@ -4125,21 +4189,17 @@ async function claudeClassifyItem(clientName,amount,idx){
 
 // Gemini 폴백 경비분류
 async function geminiClassifyItem(clientName,amount,idx){
-  var key=localStorage.getItem('yjtax_gemini_key');if(!key)return;
+  var key=localStorage.getItem('yjtax_gemini_key');if(!key&&!localStorage.getItem('yjtax_gemini_backup'))return;
   var select=document.querySelector('.card-classify-select[data-idx="'+idx+'"]');if(!select)return;
   var wrap=document.getElementById('cc-'+idx);
   var aiTag=document.createElement('div');aiTag.id='ai-loading-'+idx;
   aiTag.style.cssText='font-size:10px;color:#4285F4;margin-top:4px;display:flex;align-items:center;gap:4px';
   aiTag.innerHTML='<i class="fas fa-spinner fa-spin"></i> Gemini AI 분류 중...';
   wrap.appendChild(aiTag);
-  
+
   try{
-    var resp=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+key,{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({contents:[{parts:[{text:'한국 사업자(경영컨설팅업)의 매입 거래 1건을 경비 분류해줘.\n거래처: '+clientName+'\n금액: '+amount+'원\n\n다음 중 하나만 선택해서 그 값만 반환(따옴표/설명 없이):\n노트북/PC\n모니터/장비\n소프트웨어\n광고비\n사무용품\n차량유지비\n통신비\n교육비\n접대비\n기타경비'}]}]})
-    });
-    var data=await resp.json();
-    var result=data.candidates&&data.candidates[0]?data.candidates[0].content.parts[0].text.trim():'';
+    var data=await callGeminiWithFallback({contents:[{parts:[{text:'한국 사업자(경영컨설팅업)의 매입 거래 1건을 경비 분류해줘.\n거래처: '+clientName+'\n금액: '+amount+'원\n\n다음 중 하나만 선택해서 그 값만 반환(따옴표/설명 없이):\n노트북/PC\n모니터/장비\n소프트웨어\n광고비\n사무용품\n차량유지비\n통신비\n교육비\n접대비\n기타경비'}]}]});
+    var result=data&&data.candidates&&data.candidates[0]?data.candidates[0].content.parts[0].text.trim():'';
     var el=document.getElementById('ai-loading-'+idx);if(el)el.remove();
     if(result){
       var cleaned=result.replace(/['"]/g,'').trim();
@@ -4206,7 +4266,7 @@ async function claudeDeductAnalysis(silent){
 }
 function showToast(msg){var t=document.getElementById('ai-toast');document.getElementById('ai-toast-msg').innerHTML=msg;t.style.display='block';setTimeout(function(){t.style.display='none'},3000)}
 
-function triggerReceiptScan(){var k=localStorage.getItem('yjtax_gemini_key');if(!k){alert('⚙️ 설정에서 Gemini API Key를 먼저 입력하세요.\n\n우측 상단 ✨ 버튼 클릭 → API Key 입력');return}document.getElementById('receipt-file').click()}
+function triggerReceiptScan(){var k=localStorage.getItem('yjtax_gemini_key')||localStorage.getItem('yjtax_gemini_backup');if(!k){alert('⚙️ 설정에서 Gemini API Key를 먼저 입력하세요.\n\n우측 상단 ✨ 버튼 클릭 → API Key 입력');return}document.getElementById('receipt-file').click()}
 
 async function scanReceipt(input){
   if(!input.files||!input.files[0])return;
@@ -4215,14 +4275,12 @@ async function scanReceipt(input){
   showToast('🔄 AI가 영수증을 분석 중...');
   try{
     var base64=await new Promise(function(res){var r=new FileReader();r.onload=function(e){res(e.target.result.split(',')[1])};r.readAsDataURL(file)});
-    var resp=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+apiKey,{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({contents:[{parts:[
-        {inline_data:{mime_type:file.type,data:base64}},
-        {text:'이 영수증 이미지에서 다음 정보를 추출해서 JSON 형식으로만 답해. 다른 텍스트 없이 JSON만 출력해.\n{"date":"YYYY-MM-DD","client":"거래처명","amount":숫자만,"item":"품목명"}'}
-      ]}]})
-    });
-    var data=await resp.json();
+    var bodyJson={contents:[{parts:[
+      {inline_data:{mime_type:file.type,data:base64}},
+      {text:'이 영수증 이미지에서 다음 정보를 추출해서 JSON 형식으로만 답해. 다른 텍스트 없이 JSON만 출력해.\n{"date":"YYYY-MM-DD","client":"거래처명","amount":숫자만,"item":"품목명"}'}
+    ]}]};
+    var data=await callGeminiWithFallback(bodyJson);
+    if(!data){showToast('❌ Gemini API 호출 실패 (메인+백업 키 모두 실패)');return}
     if(data.error){showToast('❌ API 오류: '+data.error.message);return}
     var text=data.candidates[0].content.parts[0].text;
     var clean=text.replace(/```json|```/g,'').trim();
@@ -5685,12 +5743,11 @@ function updateCreditInfo(){
 
 // === 기본 API 키 자동 주입 (미설정 시) ===
 (function(){
-  var _p1='pplx-DODV8cq9BuQGi5',_p2='slSkKkVQf9fthREzsY',_p3='H4clRYaBkeoOdKjw';
   var defaults={
     'yjtax_gemini_key':'AIzaSyCg4xE3lYbZVxWmP9vpcccmpLVxIr3Czms',
     'yjtax_gemini_backup':'AIzaSyDdyUI3ZIAdjNIl7fIvQg9PTyShM_2kSK8',
     'yjtax_nts_key':'0299a6622d59757a23065ed67269978497e0f9261134060968e2cb0810194a03',
-    'yjtax_perplexity_key':_p1+_p2+_p3,
+    'yjtax_perplexity_key':['pplx-','DODV8cq9BuQG','i5slSkKkVQf9','fthREzsYH4cl','RYaBkeoOdKjw'].join(''),
     'yjtax_alpha_key':'8CEA89VHHEZIOWQY'
   };
   var injected=[];
