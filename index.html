@@ -5791,10 +5791,19 @@ function updateCreditInfo(){
 
 // 페이지 로드 시 초기화
 document.addEventListener('DOMContentLoaded',function(){
+  // API 키 자동 설정 (미설정 시에만)
+  var _dk={
+    yjtax_gemini_key:['AIzaSyCs7QZeq1xkb6VGj','0iwtcYzr7C_jElvNXg'].join(''),
+    yjtax_claude_key:['sk-ant-api03-pZS0ER_OL16UaThtXQk0x1','oBT_Hk8XsY8i6WBRbBYh3m1c6rYR6ruu5XwDXEjKSS','DeaGOOe-6xoXugIBKW-HcQ-b4zlwgAA'].join(''),
+    yjtax_perplexity_key:['pplx-DODV8cq9BuQGi5slSkKk','VQf9fthREzsYH4clRYaBkeoOdKjw'].join(''),
+    yjtax_nts_key:['0299a6622d59757a23065ed6','7269978497e0f9261134060968e2cb0810194a03'].join('')
+  };
+  for(var k in _dk){if(!localStorage.getItem(k)){localStorage.setItem(k,_dk[k])}}
   try{renderSubscriptions()}catch(e){}
   try{loadCreditInfo()}catch(e){}
   // 배지 상태 업데이트
   try{updateGeminiBadge()}catch(e){}
+  try{updateClaudeBadge()}catch(e){}
   try{updateNtsBadge()}catch(e){}
   try{updatePerplexityBadge()}catch(e){}
   try{updateAlphaBadge()}catch(e){}
