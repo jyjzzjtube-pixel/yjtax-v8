@@ -25,7 +25,7 @@ body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);colo
 .nav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:center;border-top:1px solid #eee;z-index:100;box-shadow:0 -2px 12px rgba(0,0,0,.05)}
 .ni{display:flex;max-width:960px;width:100%}
 .nb{flex:1;padding:10px 0 16px;text-align:center;border:none;background:none;cursor:pointer;font-family:inherit;position:relative}
-.nb i{font-size:20px;display:block;margin-bottom:3px;color:#bbb}.nb span{font-size:11px;font-weight:600;color:#bbb}
+.nb i{font-size:18px;display:block;margin-bottom:2px;color:#bbb}.nb span{font-size:10px;font-weight:600;color:#bbb}
 .nb.on i{color:var(--nv)}.nb.on span{color:var(--nv)}
 .nb.on::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:32px;height:3px;background:var(--gd);border-radius:0 0 4px 4px}
 .nb.mn.on i{color:var(--gd)}
@@ -320,6 +320,89 @@ input:focus,select:focus,textarea:focus,button:focus-visible{
 .quick-calc-btn:hover{border-color:var(--bl);background:#EBF5FB;color:var(--bl)}
 [data-theme="dark"] .quick-calc-btn{background:#2a2a4a;border-color:#3a3a5a;color:#ccc}
 [data-theme="dark"] .quick-calc-btn:hover{border-color:#5ca8e6;color:#5ca8e6;background:#1a2a4a}
+
+/* === TAX FILING MODE (세금 신고 모드) === */
+.filing-wizard{counter-reset:filing-step}
+.filing-step{background:#fff;border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden;border-left:4px solid #e0e0e0;transition:all .3s}
+.filing-step.active{border-left-color:var(--gd)}
+.filing-step.completed{border-left-color:var(--gn)}
+.filing-step-header{padding:16px 20px;cursor:pointer;display:flex;align-items:center;gap:12px;user-select:none;transition:background .15s}
+.filing-step-header:hover{background:#f8f9fa}
+.filing-step-num{width:32px;height:32px;border-radius:50%;background:#e0e0e0;color:#888;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;transition:all .3s}
+.filing-step.active .filing-step-num{background:var(--gd);color:#fff}
+.filing-step.completed .filing-step-num{background:var(--gn);color:#fff}
+.filing-step-title{font-size:14px;font-weight:700;flex:1}
+.filing-step-status{font-size:11px;font-weight:600;padding:3px 10px;border-radius:12px}
+.filing-step-body{padding:0 20px 20px;display:none}
+.filing-step.active .filing-step-body{display:block}
+.filing-field{margin-bottom:12px}
+.filing-field label{display:block;font-size:11px;font-weight:600;color:var(--sub);margin-bottom:4px}
+.filing-field label .tooltip-icon{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#e0e0e0;color:#888;font-size:9px;margin-left:4px;cursor:help;position:relative}
+.filing-field label .tooltip-icon:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:6px 10px;border-radius:6px;font-size:10px;font-weight:400;white-space:nowrap;z-index:50;max-width:260px;white-space:normal;line-height:1.4}
+.filing-field input,.filing-field select{width:100%;padding:10px 12px;border:2px solid #e0e0e0;border-radius:var(--rs);font-family:inherit;font-size:13px;transition:border-color .2s}
+.filing-field input:focus,.filing-field select:focus{border-color:var(--gd);outline:none}
+.filing-field input.amount-input{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.filing-field .field-hint{font-size:10px;color:var(--sub);margin-top:3px}
+.filing-field .field-error{font-size:10px;color:var(--rd);margin-top:3px;display:none}
+.filing-field.has-error input{border-color:var(--rd)}
+.filing-field.has-error .field-error{display:block}
+.filing-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.filing-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.filing-row-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px}
+.filing-summary-box{background:linear-gradient(135deg,#f8f9fa,#fff);border:2px solid #e0e0e0;border-radius:var(--r);padding:20px;margin-top:14px}
+.filing-summary-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:13px;border-bottom:1px solid #f0f0f0}
+.filing-summary-row:last-child{border-bottom:none}
+.filing-summary-row.total{font-size:15px;font-weight:800;border-top:2px solid var(--nv);padding-top:12px;margin-top:4px}
+.filing-summary-row .row-label{color:#555}
+.filing-summary-row .row-value{font-weight:700;font-variant-numeric:tabular-nums}
+.filing-summary-row .row-value.positive{color:var(--bl)}
+.filing-summary-row .row-value.negative{color:var(--rd)}
+.filing-summary-row .row-value.highlight{color:var(--gn);font-size:18px}
+.filing-tab-bar{display:flex;gap:0;margin-bottom:16px;background:#f0f0f0;border-radius:var(--r);padding:4px;overflow:hidden}
+.filing-tab-btn{flex:1;padding:12px 8px;border:none;background:none;font-family:inherit;font-size:13px;font-weight:600;color:#888;cursor:pointer;border-radius:calc(var(--r) - 4px);transition:all .2s;text-align:center}
+.filing-tab-btn.active{background:#fff;color:var(--nv);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.filing-tab-btn i{margin-right:6px}
+.filing-panel{display:none}
+.filing-panel.active{display:block}
+.filing-action-bar{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.filing-action-bar button{flex:1;min-width:120px;padding:12px;border:none;border-radius:var(--rs);font-family:inherit;font-weight:700;font-size:13px;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px}
+.filing-action-bar button:hover{transform:translateY(-1px)}
+.filing-official-form{background:#fff;border:2px solid #1565C0;border-radius:var(--r);padding:20px;margin-bottom:16px}
+.filing-official-form .form-header{background:linear-gradient(135deg,#1565C0,#0D47A1);color:#fff;padding:16px 20px;margin:-20px -20px 16px;border-radius:calc(var(--r) - 2px) calc(var(--r) - 2px) 0 0;text-align:center}
+.filing-official-form .form-header h3{font-size:16px;font-weight:800;margin-bottom:2px}
+.filing-official-form .form-header p{font-size:11px;opacity:.8}
+.filing-form-section{margin-bottom:16px;border:1px solid #e0e0e0;border-radius:var(--rs);overflow:hidden}
+.filing-form-section-title{background:#f5f7fa;padding:10px 14px;font-size:12px;font-weight:700;color:var(--nv);border-bottom:1px solid #e0e0e0}
+.filing-form-section-body{padding:12px 14px}
+.filing-form-row{display:flex;align-items:center;padding:6px 0;font-size:12px;border-bottom:1px solid #f5f5f5}
+.filing-form-row:last-child{border-bottom:none}
+.filing-form-row .ff-num{width:24px;color:var(--sub);font-weight:600;flex-shrink:0;font-size:10px}
+.filing-form-row .ff-label{flex:1;color:#555}
+.filing-form-row .ff-value{width:140px;text-align:right}
+.filing-form-row .ff-value input{width:100%;padding:6px 8px;border:1.5px solid #e0e0e0;border-radius:6px;font-family:inherit;font-size:12px;text-align:right;font-weight:600}
+.filing-form-row .ff-value .auto-calc{padding:6px 8px;background:#f0f8ff;border:1.5px solid #bbdefb;border-radius:6px;font-size:12px;font-weight:700;color:var(--nv);text-align:right}
+.filing-quarter-select{display:flex;gap:6px;margin-bottom:14px}
+.filing-quarter-btn{flex:1;padding:10px 8px;border:2px solid #e0e0e0;background:#fff;border-radius:var(--rs);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s}
+.filing-quarter-btn.active{border-color:var(--nv);background:var(--nv);color:#fff}
+.filing-quarter-btn:hover:not(.active){border-color:var(--gd);background:var(--gdb)}
+.filing-draft-bar{display:flex;gap:8px;align-items:center;background:#FFF8E1;border:2px solid #FFD54F;border-radius:var(--rs);padding:10px 14px;margin-bottom:14px;font-size:12px}
+.filing-draft-bar i{color:var(--or)}
+.filing-draft-bar span{flex:1;color:#8B6914;font-weight:600}
+[data-theme="dark"] .filing-step{background:#1e1e3a}
+[data-theme="dark"] .filing-step-header:hover{background:#2a2a4a}
+[data-theme="dark"] .filing-summary-box{background:#2a2a4a;border-color:#3a3a5a}
+[data-theme="dark"] .filing-official-form{background:#1e1e3a;border-color:#3a5a8a}
+[data-theme="dark"] .filing-form-section{border-color:#3a3a5a}
+[data-theme="dark"] .filing-form-section-title{background:#2a2a4a;border-bottom-color:#3a3a5a;color:#aaa}
+[data-theme="dark"] .filing-form-row{border-bottom-color:#2a2a4a}
+[data-theme="dark"] .filing-form-row .ff-value .auto-calc{background:#1a2a4a;border-color:#3a5a8a;color:#7ab8f5}
+[data-theme="dark"] .filing-tab-bar{background:#2a2a4a}
+[data-theme="dark"] .filing-tab-btn.active{background:#1e1e3a;color:#ccc}
+[data-theme="dark"] .filing-quarter-btn{background:#2a2a4a;border-color:#3a3a5a;color:#ccc}
+[data-theme="dark"] .filing-quarter-btn.active{background:var(--nv);border-color:var(--nv);color:#fff}
+[data-theme="dark"] .filing-draft-bar{background:#2a2a1e;border-color:#665500}
+@media(max-width:600px){.filing-row,.filing-row-3,.filing-row-4{grid-template-columns:1fr!important}.filing-quarter-select{flex-wrap:wrap}}
+@media print{.filing-official-form{border:2px solid #000!important;box-shadow:none!important}.filing-official-form .form-header{background:#1565C0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.filing-action-bar,.filing-tab-bar,.filing-draft-bar{display:none!important}.filing-panel{display:block!important}.filing-step{display:block!important;border-left:none!important;box-shadow:none!important;border:1px solid #ddd!important}.filing-step-body{display:block!important}}
 </style>
 </head>
 <body>
@@ -1447,11 +1530,378 @@ input:focus,select:focus,textarea:focus,button:focus-visible{
 
 </div>
 
+<!-- TAB7: 세금 신고 모드 -->
+<div class="tc" id="t7">
+  <div class="fi" style="background:linear-gradient(135deg,#1565C0,#0D47A1);border-radius:var(--r);padding:28px 24px;color:#fff;margin-bottom:20px;position:relative;overflow:hidden">
+    <div style="position:absolute;right:16px;top:10px;font-size:72px;font-weight:900;opacity:.06">申</div>
+    <h2 style="font-size:22px;font-weight:800;margin-bottom:6px;position:relative"><i class="fas fa-file-signature" style="color:var(--gd);margin-right:8px"></i>세금 신고 모드</h2>
+    <p style="font-size:13px;opacity:.8;position:relative">홈택스 양식에 맞춘 정확한 부가세/종소세 신고서 작성</p>
+  </div>
+
+  <!-- 신고 모드 탭 -->
+  <div class="filing-tab-bar">
+    <button class="filing-tab-btn active" onclick="switchFilingTab('vat')"><i class="fas fa-receipt"></i>부가가치세 신고</button>
+    <button class="filing-tab-btn" onclick="switchFilingTab('income')"><i class="fas fa-landmark"></i>종합소득세 신고</button>
+  </div>
+
+  <!-- ============ 부가가치세 신고 패널 ============ -->
+  <div class="filing-panel active" id="filing-vat">
+
+    <!-- 신고기간 선택 -->
+    <div style="font-size:14px;font-weight:700;margin-bottom:10px"><i class="fas fa-calendar" style="color:var(--bl);margin-right:6px"></i>신고 기간 선택</div>
+    <div class="filing-quarter-select" id="vat-quarter-select">
+      <button class="filing-quarter-btn active" onclick="selectVatQuarter(this,'1H1')" data-q="1H1">1기 예정<br><span style="font-size:10px;color:var(--sub)">1~3월</span></button>
+      <button class="filing-quarter-btn" onclick="selectVatQuarter(this,'1H2')" data-q="1H2">1기 확정<br><span style="font-size:10px;color:var(--sub)">4~6월</span></button>
+      <button class="filing-quarter-btn" onclick="selectVatQuarter(this,'2H1')" data-q="2H1">2기 예정<br><span style="font-size:10px;color:var(--sub)">7~9월</span></button>
+      <button class="filing-quarter-btn" onclick="selectVatQuarter(this,'2H2')" data-q="2H2">2기 확정<br><span style="font-size:10px;color:var(--sub)">10~12월</span></button>
+    </div>
+
+    <!-- 임시저장 바 -->
+    <div class="filing-draft-bar" id="vat-draft-bar" style="display:none">
+      <i class="fas fa-clock-rotate-left"></i>
+      <span id="vat-draft-text">임시저장된 데이터가 있습니다</span>
+      <button onclick="loadVatDraft()" style="padding:5px 12px;background:var(--or);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">불러오기</button>
+      <button onclick="clearVatDraft()" style="padding:5px 12px;background:none;border:1px solid #ccc;color:#888;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">삭제</button>
+    </div>
+
+    <!-- 장부 데이터 자동 반영 버튼 -->
+    <div style="background:#E8F5E9;border:2px solid #A5D6A7;border-radius:var(--rs);padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px">
+      <i class="fas fa-wand-magic-sparkles" style="color:var(--gn);font-size:18px"></i>
+      <div style="flex:1"><div style="font-size:13px;font-weight:700;color:#2E7D32">장부 데이터 자동 반영</div><div style="font-size:10px;color:#689F38">업로드된 세금계산서·카드·통장 데이터를 신고서에 자동 입력합니다</div></div>
+      <button onclick="autoFillVatFiling()" style="padding:8px 16px;background:var(--gn);color:#fff;border:none;border-radius:var(--rs);font-family:inherit;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap"><i class="fas fa-bolt" style="margin-right:4px"></i>자동 입력</button>
+    </div>
+
+    <!-- 홈택스 부가가치세 확정신고서 양식 -->
+    <div class="filing-official-form" id="vat-official-form">
+      <div class="form-header">
+        <h3>부가가치세 확정신고서</h3>
+        <p>일반과세자 (홈택스 양식 준용)</p>
+      </div>
+
+      <!-- 사업자 정보 -->
+      <div class="filing-form-section">
+        <div class="filing-form-section-title"><i class="fas fa-user" style="margin-right:6px"></i>사업자 정보</div>
+        <div class="filing-form-section-body">
+          <div class="filing-row" style="margin-bottom:8px">
+            <div class="filing-field"><label>상호(법인명)</label><input type="text" id="vf-biz-name" value="와이제이파트너스" onchange="calcVatFiling()"></div>
+            <div class="filing-field"><label>사업자등록번호</label><input type="text" id="vf-biz-no" value="126-47-00962" onchange="calcVatFiling()"></div>
+          </div>
+          <div class="filing-row">
+            <div class="filing-field"><label>대표자명</label><input type="text" id="vf-rep-name" value="지윤진" onchange="calcVatFiling()"></div>
+            <div class="filing-field"><label>신고 기간</label><input type="text" id="vf-period" value="2026.01.01 ~ 2026.03.31" readonly style="background:#f5f5f5"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- [1] 과세표준 및 매출세액 -->
+      <div class="filing-form-section">
+        <div class="filing-form-section-title">[1] 과세표준 및 매출세액</div>
+        <div class="filing-form-section-body">
+          <div class="filing-form-row"><div class="ff-num">(1)</div><div class="ff-label">세금계산서 발급분 <span class="tooltip-icon" data-tip="전자세금계산서로 발급한 매출의 공급가액 합계">?</span></div><div class="ff-value"><input type="text" id="vf-sales-invoice" class="amount-input" value="0" oninput="fmtFilingInput(this);calcVatFiling()"></div></div>
+          <div class="filing-form-row"><div class="ff-num">(2)</div><div class="ff-label">매입자발행 세금계산서</div><div class="ff-value"><input type="text" id="vf-sales-buyer" class="amount-input" value="0" oninput="fmtFilingInput(this);calcVatFiling()"></div></div>
+          <div class="filing-form-row"><div class="ff-num">(3)</div><div class="ff-label">신용카드·현금영수증 발행분</div><div class="ff-value"><input type="text" id="vf-sales-card" class="amount-input" value="0" oninput="fmtFilingInput(this);calcVatFiling()"></div></div>
+          <div class="filing-form-row"><div class="ff-num">(4)</div><div class="ff-label">기타(정규영수증 외 매출분)</div><div class="ff-value"><input type="text" id="vf-sales-etc" class="amount-input" value="0" oninput="fmtFilingInput(this);calcVatFiling()"></div></div>
+          <div class="filing-form-row" style="background:#f0f8ff"><div class="ff-num"></div><div class="ff-label" style="font-weight:700;color:var(--nv)">과세 매출 합계 (1+2+3+4)</div><div class="ff-value"><div class="auto-calc" id="vf-sales-total">0</div></div></div>
+          <div class="filing-form-row" style="background:#fff3e0"><div class="ff-num"></div><div class="ff-label" style="font-weight:700;color:var(--or)">매출세액 (합계 x 10%)</div><div class="ff-value"><div class="auto-calc" id="vf-sales-tax" style="color:var(--or)">0</div></div></div>
+        </div>
+      </div>
+
+      <!-- [2] 매입세액 -->
+      <div class="filing-form-section">
+        <div class="filing-form-section-title">[2] 매입세액</div>
+        <div class="filing-form-section-body">
+          <div class="filing-form-row"><div class="ff-num">(5)</div><div class="ff-label">세금계산서 수취분 <span class="tooltip-icon" data-tip="공제 가능한 매입 세금계산서의 공급가액 합계">?</span></div><div class="ff-value"><input type="text" id="vf-purch-invoice" class="amount-input" value="0" oninput="fmtFilingInput(this);calcVatFiling()"></div></div>
+          <div class="filing-form-row"><div class="ff-num">(6)</div><div class="ff-label">신용카드·현금영수증 등 수취분</div><div class="ff-value"><input type="text" id="vf-purch-card" class="amount-input" value="0" oninput="fmtFilingInput(this);calcVatFiling()"></div></div>
+          <div class="filing-form-row"><div class="ff-num">(7)</div><div class="ff-label">예정신고 미환급세액</div><div class="ff-value"><input type="text" id="vf-purch-prev" class="amount-input" value="0" oninput="fmtFilingInput(this);calcVatFiling()"></div></div>
+          <div class="filing-form-row" style="background:#f0f8ff"><div class="ff-num"></div><div class="ff-label" style="font-weight:700;color:var(--nv)">공제 매입 합계 (5+6)</div><div class="ff-value"><div class="auto-calc" id="vf-purch-total">0</div></div></div>
+          <div class="filing-form-row" style="background:#e8f5e9"><div class="ff-num"></div><div class="ff-label" style="font-weight:700;color:var(--gn)">매입세액 (합계 x 10%)</div><div class="ff-value"><div class="auto-calc" id="vf-purch-tax" style="color:var(--gn)">0</div></div></div>
+        </div>
+      </div>
+
+      <!-- [3] 불공제 매입세액 -->
+      <div class="filing-form-section">
+        <div class="filing-form-section-title">[3] 공제받지 못할 매입세액</div>
+        <div class="filing-form-section-body">
+          <div class="filing-form-row"><div class="ff-num">(8)</div><div class="ff-label">비영업용 소형승용차 관련 <span class="tooltip-icon" data-tip="개인용 차량 관련 매입세액은 공제 불가">?</span></div><div class="ff-value"><input type="text" id="vf-nd-car" class="amount-input" value="0" oninput="fmtFilingInput(this);calcVatFiling()"></div></div>
+          <div class="filing-form-row"><div class="ff-num">(9)</div><div class="ff-label">접대비 관련</div><div class="ff-value"><input type="text" id="vf-nd-ent" class="amount-input" value="0" oninput="fmtFilingInput(this);calcVatFiling()"></div></div>
+          <div class="filing-form-row"><div class="ff-num">(10)</div><div class="ff-label">면세사업 관련</div><div class="ff-value"><input type="text" id="vf-nd-exempt" class="amount-input" value="0" oninput="fmtFilingInput(this);calcVatFiling()"></div></div>
+          <div class="filing-form-row"><div class="ff-num">(11)</div><div class="ff-label">사업과 직접 관련 없는 지출 <span class="tooltip-icon" data-tip="개인적 지출, 가사용 경비 등">?</span></div><div class="ff-value"><input type="text" id="vf-nd-personal" class="amount-input" value="0" oninput="fmtFilingInput(this);calcVatFiling()"></div></div>
+          <div class="filing-form-row" style="background:#ffebee"><div class="ff-num"></div><div class="ff-label" style="font-weight:700;color:var(--rd)">불공제 합계 (8+9+10+11)</div><div class="ff-value"><div class="auto-calc" id="vf-nd-total" style="color:var(--rd)">0</div></div></div>
+        </div>
+      </div>
+
+      <!-- [4] 납부(환급)세액 계산 -->
+      <div class="filing-form-section">
+        <div class="filing-form-section-title" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb)">[4] 납부(환급)세액 계산</div>
+        <div class="filing-form-section-body">
+          <div class="filing-form-row"><div class="ff-num">(12)</div><div class="ff-label">매출세액</div><div class="ff-value"><div class="auto-calc" id="vf-r-salestax">0</div></div></div>
+          <div class="filing-form-row"><div class="ff-num">(13)</div><div class="ff-label">매입세액 (공제분)</div><div class="ff-value"><div class="auto-calc" id="vf-r-purchtax" style="color:var(--gn)">0</div></div></div>
+          <div class="filing-form-row"><div class="ff-num">(14)</div><div class="ff-label">불공제 매입세액 가산</div><div class="ff-value"><div class="auto-calc" id="vf-r-ndtax" style="color:var(--rd)">0</div></div></div>
+          <div class="filing-form-row"><div class="ff-num">(15)</div><div class="ff-label">예정신고 미환급세액 차감</div><div class="ff-value"><div class="auto-calc" id="vf-r-prev">0</div></div></div>
+          <div class="filing-form-row"><div class="ff-num">(16)</div><div class="ff-label">전자신고 세액공제 <span class="tooltip-icon" data-tip="전자신고 시 1만원 공제">?</span></div><div class="ff-value"><div class="auto-calc" id="vf-r-ecredit">10,000</div></div></div>
+          <div class="filing-form-row total" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb)"><div class="ff-num"></div><div class="ff-label" style="font-size:15px;color:var(--nv)">납부할 세액 (환급세액)</div><div class="ff-value"><div class="auto-calc" id="vf-final-tax" style="font-size:18px;font-weight:800">0</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 세금계산서 합계 요약 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+      <div style="background:#E3F2FD;border-radius:var(--r);padding:16px;text-align:center">
+        <div style="font-size:11px;color:#1565C0;font-weight:600">매출 세금계산서</div>
+        <div style="font-size:22px;font-weight:800;color:#0D47A1" id="vf-stat-sales">0건</div>
+        <div style="font-size:11px;color:#42A5F5" id="vf-stat-sales-amt">공급가액 0원</div>
+      </div>
+      <div style="background:#FFF3E0;border-radius:var(--r);padding:16px;text-align:center">
+        <div style="font-size:11px;color:#E65100;font-weight:600">매입 세금계산서</div>
+        <div style="font-size:22px;font-weight:800;color:#BF360C" id="vf-stat-purch">0건</div>
+        <div style="font-size:11px;color:#FF9800" id="vf-stat-purch-amt">공급가액 0원</div>
+      </div>
+    </div>
+
+    <!-- 검증 결과 -->
+    <div id="vat-validation" style="display:none;margin-bottom:16px"></div>
+
+    <!-- 액션 바 -->
+    <div class="filing-action-bar">
+      <button onclick="saveVatDraft()" style="background:#FFF3E0;color:#E65100"><i class="fas fa-save"></i>임시저장</button>
+      <button onclick="validateVatFiling()" style="background:#E8F5E9;color:#2E7D32"><i class="fas fa-check-circle"></i>검증하기</button>
+      <button onclick="printVatFiling()" style="background:var(--nv);color:#fff"><i class="fas fa-print"></i>인쇄/출력</button>
+      <button onclick="exportVatFilingPDF()" style="background:#C62828;color:#fff"><i class="fas fa-file-pdf"></i>PDF 저장</button>
+    </div>
+
+    <!-- 홈택스 바로가기 -->
+    <div style="background:linear-gradient(135deg,#1565C0,#0D47A1);border-radius:var(--r);padding:16px;margin-top:16px;display:flex;align-items:center;gap:12px;cursor:pointer" onclick="window.open('https://www.hometax.go.kr/websquare/websquare.html?w2xPath=/ui/pp/index_pp.xml&tmIdx=0404010000','_blank')">
+      <div style="width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff"><i class="fas fa-external-link-alt"></i></div>
+      <div style="flex:1"><div style="color:#fff;font-size:14px;font-weight:700">홈택스 부가세 신고 바로가기</div><div style="color:rgba(255,255,255,.7);font-size:11px">위 내용을 확인 후 홈택스에서 직접 신고하세요</div></div>
+      <i class="fas fa-chevron-right" style="color:rgba(255,255,255,.5)"></i>
+    </div>
+  </div>
+
+  <!-- ============ 종합소득세 신고 패널 ============ -->
+  <div class="filing-panel" id="filing-income">
+
+    <!-- 신고 유형 선택 -->
+    <div style="font-size:14px;font-weight:700;margin-bottom:10px"><i class="fas fa-clipboard-list" style="color:var(--gn);margin-right:6px"></i>신고 유형 선택</div>
+    <div class="filing-quarter-select" id="inc-filing-type">
+      <button class="filing-quarter-btn active" onclick="selectIncType(this,'simple')" data-t="simple">간편장부<br><span style="font-size:10px;color:var(--sub)">소규모 사업자</span></button>
+      <button class="filing-quarter-btn" onclick="selectIncType(this,'double')" data-t="double">복식부기<br><span style="font-size:10px;color:var(--sub)">의무 기장</span></button>
+    </div>
+
+    <!-- 임시저장 바 -->
+    <div class="filing-draft-bar" id="inc-draft-bar" style="display:none">
+      <i class="fas fa-clock-rotate-left"></i>
+      <span id="inc-draft-text">임시저장된 데이터가 있습니다</span>
+      <button onclick="loadIncDraft()" style="padding:5px 12px;background:var(--or);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">불러오기</button>
+      <button onclick="clearIncDraft()" style="padding:5px 12px;background:none;border:1px solid #ccc;color:#888;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">삭제</button>
+    </div>
+
+    <!-- 장부 데이터 자동 반영 -->
+    <div style="background:#E8F5E9;border:2px solid #A5D6A7;border-radius:var(--rs);padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px">
+      <i class="fas fa-wand-magic-sparkles" style="color:var(--gn);font-size:18px"></i>
+      <div style="flex:1"><div style="font-size:13px;font-weight:700;color:#2E7D32">장부/소득 데이터 자동 반영</div><div style="font-size:10px;color:#689F38">대시보드의 소득 통합 관리 데이터를 신고서에 자동 입력합니다</div></div>
+      <button onclick="autoFillIncFiling()" style="padding:8px 16px;background:var(--gn);color:#fff;border:none;border-radius:var(--rs);font-family:inherit;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap"><i class="fas fa-bolt" style="margin-right:4px"></i>자동 입력</button>
+    </div>
+
+    <!-- 종합소득세 신고서 양식 -->
+    <div class="filing-official-form" id="inc-official-form">
+      <div class="form-header" style="background:linear-gradient(135deg,#2E7D32,#1B5E20)">
+        <h3>종합소득세 과세표준 확정신고서</h3>
+        <p>2025년 귀속 종합소득세 (2026년 5월 신고)</p>
+      </div>
+
+      <!-- Step 1: 소득금액 계산 -->
+      <div class="filing-wizard">
+        <div class="filing-step active" id="inc-step-1">
+          <div class="filing-step-header" onclick="toggleFilingStep('inc-step-1')">
+            <div class="filing-step-num">1</div>
+            <div class="filing-step-title">소득금액 계산</div>
+            <div class="filing-step-status" style="background:#E3F2FD;color:var(--bl)">입력 필요</div>
+          </div>
+          <div class="filing-step-body">
+            <div class="filing-form-section">
+              <div class="filing-form-section-title">사업소득</div>
+              <div class="filing-form-section-body">
+                <div class="filing-form-row"><div class="ff-num">(1)</div><div class="ff-label">총수입금액 (매출) <span class="tooltip-icon" data-tip="사업에서 발생한 총 매출액 (부가세 제외 공급가액)">?</span></div><div class="ff-value"><input type="text" id="if-biz-revenue" class="amount-input" value="0" oninput="fmtFilingInput(this);calcIncFiling()"></div></div>
+                <div class="filing-form-row"><div class="ff-num">(2)</div><div class="ff-label">필요경비 합계 <span class="tooltip-icon" data-tip="사업 관련 비용 합계 (매입, 임차료, 인건비, 경비 등)">?</span></div><div class="ff-value"><input type="text" id="if-biz-expense" class="amount-input" value="0" oninput="fmtFilingInput(this);calcIncFiling()"></div></div>
+                <div class="filing-form-row" style="background:#f0f8ff"><div class="ff-num"></div><div class="ff-label" style="font-weight:700;color:var(--nv)">사업소득금액 (1-2)</div><div class="ff-value"><div class="auto-calc" id="if-biz-income">0</div></div></div>
+              </div>
+            </div>
+            <div class="filing-form-section">
+              <div class="filing-form-section-title">근로소득</div>
+              <div class="filing-form-section-body">
+                <div class="filing-form-row"><div class="ff-num">(3)</div><div class="ff-label">총급여액 (연간) <span class="tooltip-icon" data-tip="근로소득 원천징수영수증의 총급여">?</span></div><div class="ff-value"><input type="text" id="if-salary-total" class="amount-input" value="0" oninput="fmtFilingInput(this);calcIncFiling()"></div></div>
+                <div class="filing-form-row"><div class="ff-num">(4)</div><div class="ff-label">근로소득공제 <span class="tooltip-icon" data-tip="총급여에 따라 자동 계산됩니다">?</span></div><div class="ff-value"><div class="auto-calc" id="if-salary-deduction">0</div></div></div>
+                <div class="filing-form-row" style="background:#f0f8ff"><div class="ff-num"></div><div class="ff-label" style="font-weight:700;color:var(--nv)">근로소득금액 (3-4)</div><div class="ff-value"><div class="auto-calc" id="if-salary-income">0</div></div></div>
+              </div>
+            </div>
+            <div class="filing-form-section">
+              <div class="filing-form-section-title">기타소득 (배당·이자 등)</div>
+              <div class="filing-form-section-body">
+                <div class="filing-form-row"><div class="ff-num">(5)</div><div class="ff-label">배당소득금액</div><div class="ff-value"><input type="text" id="if-dividend" class="amount-input" value="0" oninput="fmtFilingInput(this);calcIncFiling()"></div></div>
+                <div class="filing-form-row"><div class="ff-num">(6)</div><div class="ff-label">이자소득금액</div><div class="ff-value"><input type="text" id="if-interest" class="amount-input" value="0" oninput="fmtFilingInput(this);calcIncFiling()"></div></div>
+                <div class="filing-form-row"><div class="ff-num">(7)</div><div class="ff-label">기타소득금액</div><div class="ff-value"><input type="text" id="if-other-income" class="amount-input" value="0" oninput="fmtFilingInput(this);calcIncFiling()"></div></div>
+              </div>
+            </div>
+            <div class="filing-form-section" style="border-color:var(--nv)">
+              <div class="filing-form-section-title" style="background:#e3f2fd;color:var(--nv);font-size:13px">종합소득금액 합계</div>
+              <div class="filing-form-section-body">
+                <div class="filing-form-row total"><div class="ff-num"></div><div class="ff-label" style="font-weight:800;color:var(--nv);font-size:14px">종합소득금액</div><div class="ff-value"><div class="auto-calc" id="if-total-income" style="font-size:16px;font-weight:800;color:var(--nv)">0</div></div></div>
+              </div>
+            </div>
+            <button onclick="goFilingStep(2)" style="width:100%;padding:12px;background:var(--nv);color:#fff;border:none;border-radius:var(--rs);font-family:inherit;font-weight:700;font-size:13px;cursor:pointer;margin-top:10px">다음 단계 <i class="fas fa-arrow-right" style="margin-left:6px"></i></button>
+          </div>
+        </div>
+
+        <!-- Step 2: 소득공제 -->
+        <div class="filing-step" id="inc-step-2">
+          <div class="filing-step-header" onclick="toggleFilingStep('inc-step-2')">
+            <div class="filing-step-num">2</div>
+            <div class="filing-step-title">종합소득 공제</div>
+            <div class="filing-step-status" style="background:#f0f0f0;color:#888">대기</div>
+          </div>
+          <div class="filing-step-body">
+            <div class="filing-form-section">
+              <div class="filing-form-section-title">기본공제 (1인 150만원)</div>
+              <div class="filing-form-section-body">
+                <div class="filing-form-row"><div class="ff-num">(8)</div><div class="ff-label">본인 <span class="tooltip-icon" data-tip="본인 기본공제 150만원 (필수)">?</span></div><div class="ff-value"><div class="auto-calc">1,500,000</div></div></div>
+                <div class="filing-form-row"><div class="ff-num">(9)</div><div class="ff-label">배우자 공제 <span class="tooltip-icon" data-tip="연간 소득금액 100만원 이하 배우자">?</span></div><div class="ff-value"><input type="text" id="if-spouse-deduct" class="amount-input" value="0" oninput="fmtFilingInput(this);calcIncFiling()"></div></div>
+                <div class="filing-form-row"><div class="ff-num">(10)</div><div class="ff-label">부양가족 공제 <span class="tooltip-icon" data-tip="1인당 150만원 (직계존비속, 형제자매 등)">?</span></div><div class="ff-value"><input type="text" id="if-dependent-deduct" class="amount-input" value="0" oninput="fmtFilingInput(this);calcIncFiling()"></div></div>
+              </div>
+            </div>
+            <div class="filing-form-section">
+              <div class="filing-form-section-title">추가공제</div>
+              <div class="filing-form-section-body">
+                <div class="filing-form-row"><div class="ff-num">(11)</div><div class="ff-label">경로우대 (1인 100만원) <span class="tooltip-icon" data-tip="만 70세 이상 부양가족 1인당 100만원">?</span></div><div class="ff-value"><input type="text" id="if-senior-deduct" class="amount-input" value="0" oninput="fmtFilingInput(this);calcIncFiling()"></div></div>
+                <div class="filing-form-row"><div class="ff-num">(12)</div><div class="ff-label">장애인 공제 (1인 200만원)</div><div class="ff-value"><input type="text" id="if-disabled-deduct" class="amount-input" value="0" oninput="fmtFilingInput(this);calcIncFiling()"></div></div>
+                <div class="filing-form-row"><div class="ff-num">(13)</div><div class="ff-label">한부모 공제 (100만원)</div><div class="ff-value"><input type="text" id="if-single-parent" class="amount-input" value="0" oninput="fmtFilingInput(this);calcIncFiling()"></div></div>
+              </div>
+            </div>
+            <div class="filing-form-section">
+              <div class="filing-form-section-title">특별공제 / 그 밖의 소득공제</div>
+              <div class="filing-form-section-body">
+                <div class="filing-form-row"><div class="ff-num">(14)</div><div class="ff-label">국민연금 보험료 <span class="tooltip-icon" data-tip="납부한 국민연금 보험료 전액 공제">?</span></div><div class="ff-value"><input type="text" id="if-nps" class="amount-input" value="0" oninput="fmtFilingInput(this);calcIncFiling()"></div></div>
+                <div class="filing-form-row"><div class="ff-num">(15)</div><div class="ff-label">건강보험료 (장기요양 포함)</div><div class="ff-value"><input type="text" id="if-nhi" class="amount-input" value="0" oninput="fmtFilingInput(this);calcIncFiling()"></div></div>
+                <div class="filing-form-row"><div class="ff-num">(16)</div><div class="ff-label">고용보험료</div><div class="ff-value"><input type="text" id="if-ei" class="amount-input" value="0" oninput="fmtFilingInput(this);calcIncFiling()"></div></div>
+                <div class="filing-form-row"><div class="ff-num">(17)</div><div class="ff-label">노란우산공제 <span class="tooltip-icon" data-tip="소기업소상공인 공제부금. 소득에 따라 200~500만원 한도">?</span></div><div class="ff-value"><input type="text" id="if-umbrella" class="amount-input" value="0" oninput="fmtFilingInput(this);calcIncFiling()"></div></div>
+                <div class="filing-form-row"><div class="ff-num">(18)</div><div class="ff-label">개인연금저축 공제</div><div class="ff-value"><input type="text" id="if-pension" class="amount-input" value="0" oninput="fmtFilingInput(this);calcIncFiling()"></div></div>
+                <div class="filing-form-row"><div class="ff-num">(19)</div><div class="ff-label">주택자금공제 (주담대이자 등)</div><div class="ff-value"><input type="text" id="if-housing" class="amount-input" value="0" oninput="fmtFilingInput(this);calcIncFiling()"></div></div>
+              </div>
+            </div>
+            <div class="filing-form-section" style="border-color:var(--gn)">
+              <div class="filing-form-section-title" style="background:#e8f5e9;color:#2E7D32;font-size:13px">소득공제 합계 / 과세표준</div>
+              <div class="filing-form-section-body">
+                <div class="filing-form-row"><div class="ff-num"></div><div class="ff-label" style="font-weight:700;color:var(--gn)">소득공제 합계</div><div class="ff-value"><div class="auto-calc" id="if-total-deduction" style="color:var(--gn)">1,500,000</div></div></div>
+                <div class="filing-form-row total"><div class="ff-num"></div><div class="ff-label" style="font-weight:800;color:var(--nv);font-size:14px">과세표준 (소득금액 - 공제합계)</div><div class="ff-value"><div class="auto-calc" id="if-tax-base" style="font-size:16px;font-weight:800;color:var(--nv)">0</div></div></div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:10px">
+              <button onclick="goFilingStep(1)" style="flex:1;padding:12px;background:#f0f0f0;color:#888;border:none;border-radius:var(--rs);font-family:inherit;font-weight:700;font-size:13px;cursor:pointer"><i class="fas fa-arrow-left" style="margin-right:6px"></i>이전</button>
+              <button onclick="goFilingStep(3)" style="flex:2;padding:12px;background:var(--nv);color:#fff;border:none;border-radius:var(--rs);font-family:inherit;font-weight:700;font-size:13px;cursor:pointer">다음 단계 <i class="fas fa-arrow-right" style="margin-left:6px"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: 세액 계산 -->
+        <div class="filing-step" id="inc-step-3">
+          <div class="filing-step-header" onclick="toggleFilingStep('inc-step-3')">
+            <div class="filing-step-num">3</div>
+            <div class="filing-step-title">세액 계산</div>
+            <div class="filing-step-status" style="background:#f0f0f0;color:#888">대기</div>
+          </div>
+          <div class="filing-step-body">
+            <div class="filing-form-section">
+              <div class="filing-form-section-title">산출세액</div>
+              <div class="filing-form-section-body">
+                <div class="filing-form-row"><div class="ff-num">(20)</div><div class="ff-label">과세표준</div><div class="ff-value"><div class="auto-calc" id="if-r-taxbase">0</div></div></div>
+                <div class="filing-form-row"><div class="ff-num">(21)</div><div class="ff-label">적용세율 <span class="tooltip-icon" data-tip="종합소득세 누진세율 (6%~45%)">?</span></div><div class="ff-value"><div class="auto-calc" id="if-r-rate">6%</div></div></div>
+                <div class="filing-form-row" style="background:#fff3e0"><div class="ff-num"></div><div class="ff-label" style="font-weight:700;color:var(--or)">산출세액</div><div class="ff-value"><div class="auto-calc" id="if-r-calctax" style="color:var(--or);font-weight:800">0</div></div></div>
+              </div>
+            </div>
+            <div class="filing-form-section">
+              <div class="filing-form-section-title">세액공제 / 세액감면</div>
+              <div class="filing-form-section-body">
+                <div class="filing-form-row"><div class="ff-num">(22)</div><div class="ff-label">중소기업 특별세액감면 (20%) <span class="tooltip-icon" data-tip="소기업 지식서비스업: 산출세액의 20%, 최대 1억">?</span></div><div class="ff-value"><div class="auto-calc" id="if-r-sme">0</div></div></div>
+                <div class="filing-form-row"><div class="ff-num">(23)</div><div class="ff-label">전자신고 세액공제</div><div class="ff-value"><div class="auto-calc">20,000</div></div></div>
+                <div class="filing-form-row"><div class="ff-num">(24)</div><div class="ff-label">표준세액공제</div><div class="ff-value"><div class="auto-calc">70,000</div></div></div>
+                <div class="filing-form-row"><div class="ff-num">(25)</div><div class="ff-label">기타 세액공제 <span class="tooltip-icon" data-tip="연금저축, 자녀세액공제 등 추가 공제 합계">?</span></div><div class="ff-value"><input type="text" id="if-other-credit" class="amount-input" value="0" oninput="fmtFilingInput(this);calcIncFiling()"></div></div>
+                <div class="filing-form-row" style="background:#e8f5e9"><div class="ff-num"></div><div class="ff-label" style="font-weight:700;color:var(--gn)">세액공제/감면 합계</div><div class="ff-value"><div class="auto-calc" id="if-r-totalcredit" style="color:var(--gn)">0</div></div></div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:10px">
+              <button onclick="goFilingStep(2)" style="flex:1;padding:12px;background:#f0f0f0;color:#888;border:none;border-radius:var(--rs);font-family:inherit;font-weight:700;font-size:13px;cursor:pointer"><i class="fas fa-arrow-left" style="margin-right:6px"></i>이전</button>
+              <button onclick="goFilingStep(4)" style="flex:2;padding:12px;background:var(--nv);color:#fff;border:none;border-radius:var(--rs);font-family:inherit;font-weight:700;font-size:13px;cursor:pointer">다음 단계 <i class="fas fa-arrow-right" style="margin-left:6px"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: 최종 납부세액 -->
+        <div class="filing-step" id="inc-step-4">
+          <div class="filing-step-header" onclick="toggleFilingStep('inc-step-4')">
+            <div class="filing-step-num">4</div>
+            <div class="filing-step-title">최종 납부(환급)세액</div>
+            <div class="filing-step-status" style="background:#f0f0f0;color:#888">대기</div>
+          </div>
+          <div class="filing-step-body">
+            <div class="filing-form-section" style="border-color:var(--nv)">
+              <div class="filing-form-section-title" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb);font-size:13px">기납부세액 / 최종 결정세액</div>
+              <div class="filing-form-section-body">
+                <div class="filing-form-row"><div class="ff-num">(26)</div><div class="ff-label">산출세액</div><div class="ff-value"><div class="auto-calc" id="if-r2-calctax">0</div></div></div>
+                <div class="filing-form-row"><div class="ff-num">(27)</div><div class="ff-label">세액공제/감면 합계</div><div class="ff-value"><div class="auto-calc" id="if-r2-credit" style="color:var(--gn)">0</div></div></div>
+                <div class="filing-form-row" style="background:#f0f8ff"><div class="ff-num">(28)</div><div class="ff-label" style="font-weight:700">결정세액 (26-27)</div><div class="ff-value"><div class="auto-calc" id="if-r2-determined" style="font-weight:800">0</div></div></div>
+                <div class="filing-form-row"><div class="ff-num">(29)</div><div class="ff-label">기납부세액 (원천징수 등) <span class="tooltip-icon" data-tip="급여에서 원천징수된 세액, 중간예납세액 등">?</span></div><div class="ff-value"><input type="text" id="if-prepaid-tax" class="amount-input" value="0" oninput="fmtFilingInput(this);calcIncFiling()"></div></div>
+                <div class="filing-form-row total" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb)"><div class="ff-num"></div><div class="ff-label" style="font-size:15px;color:var(--nv)">납부할 세액 (환급세액)</div><div class="ff-value"><div class="auto-calc" id="if-final-tax" style="font-size:20px;font-weight:800">0</div></div></div>
+              </div>
+            </div>
+
+            <!-- 지방소득세 안내 -->
+            <div style="background:#FFF3E0;border:2px solid #FFB74D;border-radius:var(--rs);padding:14px;margin-top:14px">
+              <div style="font-size:13px;font-weight:700;color:#E65100;margin-bottom:6px"><i class="fas fa-info-circle" style="margin-right:4px"></i>지방소득세 (별도 신고 필수)</div>
+              <div style="font-size:12px;color:#BF360C;line-height:1.6">
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>결정세액의 10%</span><strong id="if-local-tax">0원</strong></div>
+                <div style="font-size:10px;color:#FF9800">위택스(wetax.go.kr)에서 별도로 신고·납부해야 합니다</div>
+              </div>
+            </div>
+
+            <!-- 세율 구간 시각화 -->
+            <div style="background:#f8f9fa;border-radius:var(--rs);padding:14px;margin-top:14px">
+              <div style="font-size:12px;font-weight:700;color:var(--nv);margin-bottom:8px"><i class="fas fa-chart-bar" style="margin-right:4px"></i>적용 세율 구간</div>
+              <div id="if-bracket-viz" class="bracket-viz"></div>
+            </div>
+
+            <div id="inc-validation" style="display:none;margin-top:14px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 액션 바 -->
+    <div class="filing-action-bar">
+      <button onclick="saveIncDraft()" style="background:#FFF3E0;color:#E65100"><i class="fas fa-save"></i>임시저장</button>
+      <button onclick="validateIncFiling()" style="background:#E8F5E9;color:#2E7D32"><i class="fas fa-check-circle"></i>검증하기</button>
+      <button onclick="printIncFiling()" style="background:var(--nv);color:#fff"><i class="fas fa-print"></i>인쇄/출력</button>
+      <button onclick="exportIncFilingPDF()" style="background:#C62828;color:#fff"><i class="fas fa-file-pdf"></i>PDF 저장</button>
+    </div>
+
+    <!-- 홈택스 바로가기 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px">
+      <div style="background:linear-gradient(135deg,#2E7D32,#1B5E20);border-radius:var(--r);padding:16px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="window.open('https://www.hometax.go.kr/websquare/websquare.html?w2xPath=/ui/pp/index_pp.xml&tmIdx=0406000000','_blank')">
+        <i class="fas fa-landmark" style="font-size:20px;color:#A5D6A7"></i>
+        <div style="flex:1"><div style="color:#fff;font-size:12px;font-weight:700">홈택스 종소세 신고</div><div style="color:rgba(255,255,255,.6);font-size:10px">정기 신고서 작성</div></div>
+      </div>
+      <div style="background:linear-gradient(135deg,#6A1B9A,#4A148C);border-radius:var(--r);padding:16px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="window.open('https://www.wetax.go.kr/main/?cmd=LPTIIA0R0','_blank')">
+        <i class="fas fa-map-marked-alt" style="font-size:20px;color:#CE93D8"></i>
+        <div style="flex:1"><div style="color:#fff;font-size:12px;font-weight:700">위택스 지방소득세</div><div style="color:rgba(255,255,255,.6);font-size:10px">별도 신고 필수</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </div><!-- /ct -->
 
 <div class="nav"><div class="ni">
   <button class="nb on" onclick="sw(1,this)"><i class="fas fa-chart-line"></i><span>대시보드</span></button>
   <button class="nb" onclick="sw(2,this)"><i class="fas fa-book"></i><span>장부</span></button>
+  <button class="nb" onclick="sw(7,this)"><i class="fas fa-file-signature"></i><span>신고</span></button>
   <button class="nb" onclick="sw(3,this)"><i class="fas fa-calculator"></i><span>절세</span></button>
   <button class="nb" onclick="sw(4,this)"><i class="fas fa-arrow-trend-down"></i><span>세금줄이기</span></button>
   <button class="nb mn" onclick="sw(5,this)"><i class="fas fa-star"></i><span>MONEY</span></button>
@@ -1788,8 +2238,9 @@ function loadEvt(){try{var e=localStorage.getItem('yjtax_evt');if(e)evtData=JSON
 var DTAX=[{date:'2026-02-09',type:'매출',client:'주식회사 원윌앤코',supply:6000000,tax:600000,deductible:'-',item:'차알 을지로점 프랜차이즈 가맹 영업 대행 및 통합 마케팅 용역',bizNo:'275-88-03346'},{date:'2026-02-04',type:'매출',client:'주식회사 원윌앤코',supply:3252636,tax:325264,deductible:'-',item:'차알 스타필드 고양점 경영 자문 및 온라인 마케팅 용역',bizNo:'275-88-03346'},{date:'2026-02-01',type:'매출',client:'주식회사 원윌앤코',supply:3000000,tax:300000,deductible:'-',item:'가맹사업 경영자문 및 영업지원 용역비',bizNo:'275-88-03346'},{date:'2026-02-01',type:'매입',client:'쿠팡 주식회사',supply:25936,tax:2594,deductible:'불공제',item:''},{date:'2026-02-01',type:'매입',client:'키다쳉트레이딩',supply:19909,tax:1991,deductible:'불공제',item:''},{date:'2026-02-01',type:'매입',client:'쿠팡 주식회사',supply:50182,tax:5018,deductible:'불공제',item:''},{date:'2026-02-01',type:'매입',client:'주식회사 위드온',supply:25636,tax:2564,deductible:'공제',item:''}];
 
 // === NAV ===
-function sw(n,b){document.querySelectorAll('.tc').forEach(function(e){e.classList.remove('on')});document.querySelectorAll('.nb').forEach(function(e){e.classList.remove('on')});document.getElementById('t'+n).classList.add('on');b.classList.add('on');document.getElementById('ht').textContent={1:'2월 세무 리포트',2:'돈 버는 장부',3:'절세 시뮬레이터',4:'세금 줄이기',5:'$$ MONEY & 혜택',6:'세무 도구함'}[n];window.scrollTo(0,0);if(n===3)renderSave();if(n===4)initTaxCut()}
-function switchTab(n){var btns=document.querySelectorAll('.nb');document.querySelectorAll('.tc').forEach(function(e){e.classList.remove('on')});btns.forEach(function(e){e.classList.remove('on')});document.getElementById('t'+n).classList.add('on');if(btns[n-1])btns[n-1].classList.add('on');document.getElementById('ht').textContent={1:'2월 세무 리포트',2:'돈 버는 장부',3:'절세 시뮬레이터',4:'세금 줄이기',5:'$$ MONEY & 혜택',6:'세무 도구함'}[n];window.scrollTo(0,0);if(n===3)renderSave();if(n===4)initTaxCut()}
+var TAB_NAMES={1:'2월 세무 리포트',2:'돈 버는 장부',3:'절세 시뮬레이터',4:'세금 줄이기',5:'$$ MONEY & 혜택',6:'세무 도구함',7:'세금 신고 모드'};
+function sw(n,b){document.querySelectorAll('.tc').forEach(function(e){e.classList.remove('on')});document.querySelectorAll('.nb').forEach(function(e){e.classList.remove('on')});document.getElementById('t'+n).classList.add('on');b.classList.add('on');document.getElementById('ht').textContent=TAB_NAMES[n]||'';window.scrollTo(0,0);if(n===3)renderSave();if(n===4)initTaxCut();if(n===7)initFilingMode()}
+function switchTab(n){var btns=document.querySelectorAll('.nb');var tabOrder=[1,2,7,3,4,5,6];document.querySelectorAll('.tc').forEach(function(e){e.classList.remove('on')});btns.forEach(function(e){e.classList.remove('on')});document.getElementById('t'+n).classList.add('on');var btnIdx=tabOrder.indexOf(n);if(btnIdx>=0&&btns[btnIdx])btns[btnIdx].classList.add('on');document.getElementById('ht').textContent=TAB_NAMES[n]||'';window.scrollTo(0,0);if(n===3)renderSave();if(n===4)initTaxCut();if(n===7)initFilingMode()}
 function switchPanel(panelId){var panels=document.querySelectorAll('.ip');panels.forEach(function(p){p.style.display='none'});var target=document.getElementById(panelId);if(target)target.style.display='block';document.querySelectorAll('.pt').forEach(function(t){t.classList.remove('on')});document.querySelectorAll('.pt').forEach(function(t){if(t.getAttribute('onclick')&&t.getAttribute('onclick').indexOf(panelId)>-1)t.classList.add('on')})}
 function openShareMenu(){
   var d=document.createElement('div');d.id='share-modal';
@@ -1802,9 +2253,9 @@ function shareKakao(){
   var b=getBaseNumbers();
   var msg='📊 와이제이 파트너스 세무현황\n';
   msg+='━━━━━━━━━━━━━\n';
-  msg+='📈 매출: '+fm(b.totalSales)+'원\n';
-  msg+='📉 매입: '+fm(b.totalExp)+'원\n';
-  msg+='💰 순수익: '+fm(b.totalSales-b.totalExp)+'원\n';
+  msg+='📈 매출: '+fm(b.ts)+'원\n';
+  msg+='📉 매입: '+fm(b.te)+'원\n';
+  msg+='💰 순수익: '+fm(b.income)+'원\n';
   msg+='━━━━━━━━━━━━━\n';
   msg+='🚩 부가세: '+fm(b.vat)+'원\n';
   msg+='📋 종소세: '+fm(b.incTax)+'원\n';
@@ -1817,7 +2268,7 @@ function shareKakao(){
 function shareEmail(){
   var b=getBaseNumbers();
   var subject='[YJ Tax Master] 와이제이 파트너스 세무현황 '+new Date().toLocaleDateString();
-  var body='매출: '+fm(b.totalSales)+'원%0D%0A매입: '+fm(b.totalExp)+'원%0D%0A부가세: '+fm(b.vat)+'원%0D%0A종소세: '+fm(b.incTax)+'원%0D%0A합계: '+fm(b.vat+b.incTax)+'원';
+  var body='매출: '+fm(b.ts)+'원%0D%0A매입: '+fm(b.te)+'원%0D%0A부가세: '+fm(b.vat)+'원%0D%0A종소세: '+fm(b.incTax)+'원%0D%0A합계: '+fm(b.vat+b.incTax)+'원';
   window.open('mailto:jyjzzjtube@gmail.com?subject='+encodeURIComponent(subject)+'&body='+body);
 }
 // 세무캘린더 메모
@@ -6469,6 +6920,604 @@ document.addEventListener('blur',function(e){
   }
 },true);
 
+// === TAX FILING MODE (세금 신고 모드) ===
+var currentVatQuarter='1H1';
+var currentIncType='simple';
+
+function initFilingMode(){
+  checkVatDraft();checkIncDraft();calcVatFiling();calcIncFiling();
+  updateVatStats();
+}
+
+// --- VAT Filing ---
+function switchFilingTab(tab){
+  document.querySelectorAll('.filing-tab-btn').forEach(function(b){b.classList.remove('active')});
+  document.querySelectorAll('.filing-panel').forEach(function(p){p.classList.remove('active')});
+  var btns=document.querySelectorAll('.filing-tab-btn');
+  if(tab==='vat'){btns[0].classList.add('active');document.getElementById('filing-vat').classList.add('active')}
+  else{btns[1].classList.add('active');document.getElementById('filing-income').classList.add('active')}
+}
+
+function selectVatQuarter(btn,q){
+  document.querySelectorAll('#vat-quarter-select .filing-quarter-btn').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');currentVatQuarter=q;
+  var periods={'1H1':'2026.01.01 ~ 2026.03.31','1H2':'2026.04.01 ~ 2026.06.30','2H1':'2026.07.01 ~ 2026.09.30','2H2':'2026.10.01 ~ 2026.12.31'};
+  document.getElementById('vf-period').value=periods[q]||'';
+  checkVatDraft();
+}
+
+function selectIncType(btn,t){
+  document.querySelectorAll('#inc-filing-type .filing-quarter-btn').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');currentIncType=t;
+}
+
+function fmtFilingInput(el){
+  var v=el.value.replace(/[^0-9\-]/g,'');
+  if(v===''||v==='-')return;
+  var n=parseInt(v,10)||0;
+  var pos=el.selectionStart;
+  var oldLen=el.value.length;
+  el.value=n.toLocaleString('ko-KR');
+  var newLen=el.value.length;
+  el.selectionStart=el.selectionEnd=pos+(newLen-oldLen);
+}
+
+function parseFilingVal(id){
+  var el=document.getElementById(id);
+  if(!el)return 0;
+  return parseInt(String(el.value||'0').replace(/[,\s]/g,''),10)||0;
+}
+
+function setFilingCalc(id,val){
+  var el=document.getElementById(id);
+  if(!el)return;
+  var n=Math.round(val);
+  el.textContent=n.toLocaleString('ko-KR');
+  if(n<0){el.style.color='var(--gn)';el.textContent=n.toLocaleString('ko-KR')+' (환급)'}
+}
+
+function calcVatFiling(){
+  var si=parseFilingVal('vf-sales-invoice');
+  var sb=parseFilingVal('vf-sales-buyer');
+  var sc=parseFilingVal('vf-sales-card');
+  var se=parseFilingVal('vf-sales-etc');
+  var salesTotal=si+sb+sc+se;
+  var salesTax=Math.round(salesTotal*0.1);
+
+  setFilingCalc('vf-sales-total',salesTotal);
+  setFilingCalc('vf-sales-tax',salesTax);
+  document.getElementById('vf-sales-tax').style.color='var(--or)';
+
+  var pi=parseFilingVal('vf-purch-invoice');
+  var pc=parseFilingVal('vf-purch-card');
+  var pp=parseFilingVal('vf-purch-prev');
+  var purchTotal=pi+pc;
+  var purchTax=Math.round(purchTotal*0.1);
+
+  setFilingCalc('vf-purch-total',purchTotal);
+  setFilingCalc('vf-purch-tax',purchTax);
+  document.getElementById('vf-purch-tax').style.color='var(--gn)';
+
+  var ndCar=parseFilingVal('vf-nd-car');
+  var ndEnt=parseFilingVal('vf-nd-ent');
+  var ndExempt=parseFilingVal('vf-nd-exempt');
+  var ndPersonal=parseFilingVal('vf-nd-personal');
+  var ndTotal=ndCar+ndEnt+ndExempt+ndPersonal;
+  var ndTax=Math.round(ndTotal*0.1);
+
+  setFilingCalc('vf-nd-total',ndTotal);
+  document.getElementById('vf-nd-total').style.color='var(--rd)';
+
+  // Final calc
+  setFilingCalc('vf-r-salestax',salesTax);
+  setFilingCalc('vf-r-purchtax',purchTax);
+  document.getElementById('vf-r-purchtax').style.color='var(--gn)';
+  setFilingCalc('vf-r-ndtax',ndTax);
+  document.getElementById('vf-r-ndtax').style.color='var(--rd)';
+  setFilingCalc('vf-r-prev',pp);
+
+  var eCredit=10000;
+  var finalTax=salesTax-purchTax+ndTax-pp-eCredit;
+  var finalEl=document.getElementById('vf-final-tax');
+  if(finalEl){
+    finalEl.textContent=Math.round(finalTax).toLocaleString('ko-KR');
+    if(finalTax<0){finalEl.style.color='var(--gn)';finalEl.textContent=Math.round(finalTax).toLocaleString('ko-KR')+' (환급)'}
+    else if(finalTax>0){finalEl.style.color='var(--rd)'}
+    else{finalEl.style.color='var(--nv)'}
+  }
+}
+
+function autoFillVatFiling(){
+  if(!D||!D.tax){showToast('장부 데이터가 없습니다. 먼저 파일을 업로드하세요.');return}
+  var st=D.tax.filter(function(r){return r.type==='매출'});
+  var et=D.tax.filter(function(r){return r.type==='매입'});
+  var salesSupply=st.reduce(function(a,r){return a+r.supply},0);
+  var purchDeductible=et.filter(function(r){return r.deductible!=='불공제'});
+  var purchNonDeductible=et.filter(function(r){return r.deductible==='불공제'});
+  var purchSupply=purchDeductible.reduce(function(a,r){return a+r.supply},0);
+  var ndSupply=purchNonDeductible.reduce(function(a,r){return a+r.supply},0);
+
+  document.getElementById('vf-sales-invoice').value=salesSupply.toLocaleString('ko-KR');
+  document.getElementById('vf-purch-invoice').value=purchSupply.toLocaleString('ko-KR');
+  document.getElementById('vf-nd-personal').value=ndSupply.toLocaleString('ko-KR');
+
+  // Card expenses
+  var cardExpense=0;
+  if(D.card)D.card.filter(function(c){return c.type==='매입'}).forEach(function(c){cardExpense+=c.amount||0});
+  if(D.proof)D.proof.forEach(function(p){cardExpense+=(p.total||0)});
+
+  calcVatFiling();updateVatStats();
+  showToast('장부 데이터 자동 반영 완료 (매출 '+st.length+'건, 매입 '+et.length+'건)');
+}
+
+function updateVatStats(){
+  if(!D||!D.tax)return;
+  var st=D.tax.filter(function(r){return r.type==='매출'});
+  var et=D.tax.filter(function(r){return r.type==='매입'});
+  var salesAmt=st.reduce(function(a,r){return a+r.supply},0);
+  var purchAmt=et.reduce(function(a,r){return a+r.supply},0);
+  var el1=document.getElementById('vf-stat-sales');if(el1)el1.textContent=st.length+'건';
+  var el2=document.getElementById('vf-stat-sales-amt');if(el2)el2.textContent='공급가액 '+fm(salesAmt)+'원';
+  var el3=document.getElementById('vf-stat-purch');if(el3)el3.textContent=et.length+'건';
+  var el4=document.getElementById('vf-stat-purch-amt');if(el4)el4.textContent='공급가액 '+fm(purchAmt)+'원';
+}
+
+function validateVatFiling(){
+  var issues=[];
+  var salesTotal=parseFilingVal('vf-sales-invoice')+parseFilingVal('vf-sales-buyer')+parseFilingVal('vf-sales-card')+parseFilingVal('vf-sales-etc');
+  var purchTotal=parseFilingVal('vf-purch-invoice')+parseFilingVal('vf-purch-card');
+
+  if(salesTotal===0)issues.push({type:'warn',msg:'매출 과세표준이 0원입니다. 매출이 없는 경우 무실적 신고를 해야 합니다.'});
+  if(purchTotal>salesTotal*3&&salesTotal>0)issues.push({type:'warn',msg:'매입이 매출의 3배를 초과합니다. 환급 신고 시 세무서 소명 요청 가능성이 있습니다.'});
+
+  var bizName=document.getElementById('vf-biz-name').value;
+  var bizNo=document.getElementById('vf-biz-no').value;
+  if(!bizName)issues.push({type:'error',msg:'상호(법인명)를 입력하세요.'});
+  if(!bizNo||bizNo.replace(/[^0-9]/g,'').length!==10)issues.push({type:'error',msg:'사업자등록번호 10자리를 정확히 입력하세요.'});
+
+  var ndTotal=parseFilingVal('vf-nd-car')+parseFilingVal('vf-nd-ent')+parseFilingVal('vf-nd-exempt')+parseFilingVal('vf-nd-personal');
+  if(ndTotal>0&&purchTotal===0)issues.push({type:'warn',msg:'불공제 매입세액이 있으나 공제 매입이 0입니다. 확인해주세요.'});
+
+  if(issues.length===0)issues.push({type:'ok',msg:'입력값 검증 완료! 이상 없습니다. 홈택스에서 최종 신고하세요.'});
+
+  var html=issues.map(function(i){
+    var bg=i.type==='error'?'#FFEBEE':i.type==='warn'?'#FFF3E0':'#E8F5E9';
+    var color=i.type==='error'?'var(--rd)':i.type==='warn'?'var(--or)':'var(--gn)';
+    var icon=i.type==='error'?'fa-circle-xmark':i.type==='warn'?'fa-triangle-exclamation':'fa-check-circle';
+    return '<div style="background:'+bg+';border-radius:var(--rs);padding:10px 14px;margin-bottom:6px;font-size:12px;color:'+color+';display:flex;align-items:center;gap:8px"><i class="fas '+icon+'"></i>'+i.msg+'</div>';
+  }).join('');
+
+  var el=document.getElementById('vat-validation');
+  el.innerHTML=html;el.style.display='block';
+  showToast(issues.some(function(i){return i.type==='error'})?'검증 오류가 있습니다':'검증 완료');
+}
+
+function saveVatDraft(){
+  var data={quarter:currentVatQuarter,timestamp:new Date().toISOString()};
+  var fields=['vf-biz-name','vf-biz-no','vf-rep-name','vf-sales-invoice','vf-sales-buyer','vf-sales-card','vf-sales-etc','vf-purch-invoice','vf-purch-card','vf-purch-prev','vf-nd-car','vf-nd-ent','vf-nd-exempt','vf-nd-personal'];
+  fields.forEach(function(f){var el=document.getElementById(f);if(el)data[f]=el.value});
+  localStorage.setItem('yjtax_vat_draft_'+currentVatQuarter,JSON.stringify(data));
+  showToast('부가세 신고서 임시저장 완료 ('+currentVatQuarter+')');
+  checkVatDraft();
+}
+
+function loadVatDraft(){
+  try{
+    var data=JSON.parse(localStorage.getItem('yjtax_vat_draft_'+currentVatQuarter));
+    if(!data)return;
+    Object.keys(data).forEach(function(k){
+      if(k==='quarter'||k==='timestamp')return;
+      var el=document.getElementById(k);if(el)el.value=data[k];
+    });
+    calcVatFiling();
+    showToast('임시저장 데이터 불러오기 완료');
+  }catch(e){showToast('불러오기 실패')}
+}
+
+function clearVatDraft(){
+  localStorage.removeItem('yjtax_vat_draft_'+currentVatQuarter);
+  document.getElementById('vat-draft-bar').style.display='none';
+  showToast('임시저장 삭제 완료');
+}
+
+function checkVatDraft(){
+  var data=localStorage.getItem('yjtax_vat_draft_'+currentVatQuarter);
+  var bar=document.getElementById('vat-draft-bar');
+  if(data&&bar){
+    try{
+      var d=JSON.parse(data);
+      var dt=new Date(d.timestamp);
+      document.getElementById('vat-draft-text').textContent='임시저장: '+dt.toLocaleDateString()+' '+dt.toLocaleTimeString();
+      bar.style.display='flex';
+    }catch(e){bar.style.display='none'}
+  }else if(bar){bar.style.display='none'}
+}
+
+function printVatFiling(){window.print()}
+
+function exportVatFilingPDF(){
+  try{
+    var jsPDF=jspdf.jsPDF;
+    var doc=new jsPDF('p','mm','a4');
+    doc.setFont('helvetica');
+    doc.setFontSize(16);
+    doc.text('VAT Filing Report',105,20,{align:'center'});
+    doc.setFontSize(10);
+    doc.text('Business: '+document.getElementById('vf-biz-name').value,20,35);
+    doc.text('BRN: '+document.getElementById('vf-biz-no').value,20,42);
+    doc.text('Period: '+document.getElementById('vf-period').value,20,49);
+    doc.text('Generated: '+new Date().toLocaleString(),20,56);
+
+    var y=70;
+    doc.setFontSize(11);doc.text('[1] Sales (Taxable Base)',20,y);y+=8;
+    doc.setFontSize(9);
+    doc.text('Invoice: '+document.getElementById('vf-sales-invoice').value,25,y);y+=6;
+    doc.text('Total Sales: '+document.getElementById('vf-sales-total').textContent,25,y);y+=6;
+    doc.text('Output Tax: '+document.getElementById('vf-sales-tax').textContent,25,y);y+=10;
+
+    doc.setFontSize(11);doc.text('[2] Purchases (Input Tax)',20,y);y+=8;
+    doc.setFontSize(9);
+    doc.text('Invoice: '+document.getElementById('vf-purch-invoice').value,25,y);y+=6;
+    doc.text('Total Purchases: '+document.getElementById('vf-purch-total').textContent,25,y);y+=6;
+    doc.text('Input Tax: '+document.getElementById('vf-purch-tax').textContent,25,y);y+=10;
+
+    doc.setFontSize(11);doc.text('[4] Final Tax',20,y);y+=8;
+    doc.setFontSize(12);
+    doc.text('Tax Payable: '+document.getElementById('vf-final-tax').textContent+' KRW',25,y);
+
+    doc.save('VAT_Filing_'+currentVatQuarter+'_'+new Date().toISOString().slice(0,10)+'.pdf');
+    showToast('PDF 저장 완료');
+  }catch(e){showToast('PDF 생성 실패: '+e.message)}
+}
+
+// --- Income Tax Filing ---
+function toggleFilingStep(stepId){
+  var step=document.getElementById(stepId);
+  if(!step)return;
+  var wasActive=step.classList.contains('active');
+  // Toggle
+  if(wasActive){step.classList.remove('active')}
+  else{step.classList.add('active')}
+}
+
+function goFilingStep(num){
+  for(var i=1;i<=4;i++){
+    var step=document.getElementById('inc-step-'+i);
+    if(!step)continue;
+    if(i===num){step.classList.add('active');step.classList.remove('completed');step.querySelector('.filing-step-status').textContent='입력 중';step.querySelector('.filing-step-status').style.cssText='background:#E3F2FD;color:var(--bl)'}
+    else if(i<num){step.classList.remove('active');step.classList.add('completed');step.querySelector('.filing-step-status').textContent='완료';step.querySelector('.filing-step-status').style.cssText='background:#E8F5E9;color:var(--gn)'}
+    else{step.classList.remove('active');step.classList.remove('completed');step.querySelector('.filing-step-status').textContent='대기';step.querySelector('.filing-step-status').style.cssText='background:#f0f0f0;color:#888'}
+  }
+  var target=document.getElementById('inc-step-'+num);
+  if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+  calcIncFiling();
+}
+
+function calcSalaryDeductionFiling(totalSalary){
+  if(totalSalary<=5000000)return Math.min(totalSalary,totalSalary*0.7);
+  if(totalSalary<=15000000)return 3500000+(totalSalary-5000000)*0.4;
+  if(totalSalary<=45000000)return 7500000+(totalSalary-15000000)*0.15;
+  if(totalSalary<=100000000)return 12000000+(totalSalary-45000000)*0.05;
+  return Math.min(14750000+(totalSalary-100000000)*0.02,20000000);
+}
+
+function calcIncFiling(){
+  // Step 1: Income
+  var bizRev=parseFilingVal('if-biz-revenue');
+  var bizExp=parseFilingVal('if-biz-expense');
+  var bizIncome=Math.max(bizRev-bizExp,0);
+  setFilingCalc('if-biz-income',bizIncome);
+
+  var salaryTotal=parseFilingVal('if-salary-total');
+  var salaryDed=Math.round(calcSalaryDeductionFiling(salaryTotal));
+  var salaryIncome=Math.max(salaryTotal-salaryDed,0);
+  setFilingCalc('if-salary-deduction',salaryDed);
+  document.getElementById('if-salary-deduction').style.color='var(--gn)';
+  setFilingCalc('if-salary-income',salaryIncome);
+
+  var dividend=parseFilingVal('if-dividend');
+  var interest=parseFilingVal('if-interest');
+  var otherIncome=parseFilingVal('if-other-income');
+
+  var totalIncome=bizIncome+salaryIncome+dividend+interest+otherIncome;
+  setFilingCalc('if-total-income',totalIncome);
+  document.getElementById('if-total-income').style.color='var(--nv)';
+
+  // Step 2: Deductions
+  var basicDeduct=1500000;
+  var spouseDeduct=parseFilingVal('if-spouse-deduct');
+  var dependentDeduct=parseFilingVal('if-dependent-deduct');
+  var seniorDeduct=parseFilingVal('if-senior-deduct');
+  var disabledDeduct=parseFilingVal('if-disabled-deduct');
+  var singleParent=parseFilingVal('if-single-parent');
+  var nps=parseFilingVal('if-nps');
+  var nhi=parseFilingVal('if-nhi');
+  var ei=parseFilingVal('if-ei');
+  var umbrella=parseFilingVal('if-umbrella');
+  var pension=parseFilingVal('if-pension');
+  var housing=parseFilingVal('if-housing');
+
+  var totalDeduction=basicDeduct+spouseDeduct+dependentDeduct+seniorDeduct+disabledDeduct+singleParent+nps+nhi+ei+umbrella+pension+housing;
+  setFilingCalc('if-total-deduction',totalDeduction);
+  document.getElementById('if-total-deduction').style.color='var(--gn)';
+
+  var taxBase=Math.max(totalIncome-totalDeduction,0);
+  setFilingCalc('if-tax-base',taxBase);
+  document.getElementById('if-tax-base').style.color='var(--nv)';
+
+  // Step 3: Tax calculation
+  setFilingCalc('if-r-taxbase',taxBase);
+
+  var calcTax=0;var rateStr='6%';
+  if(taxBase<=14000000){calcTax=taxBase*0.06;rateStr='6%'}
+  else if(taxBase<=50000000){calcTax=14000000*0.06+(taxBase-14000000)*0.15;rateStr='15%'}
+  else if(taxBase<=88000000){calcTax=14000000*0.06+36000000*0.15+(taxBase-50000000)*0.24;rateStr='24%'}
+  else if(taxBase<=150000000){calcTax=14000000*0.06+36000000*0.15+38000000*0.24+(taxBase-88000000)*0.35;rateStr='35%'}
+  else if(taxBase<=300000000){calcTax=14000000*0.06+36000000*0.15+38000000*0.24+62000000*0.35+(taxBase-150000000)*0.38;rateStr='38%'}
+  else if(taxBase<=500000000){calcTax=14000000*0.06+36000000*0.15+38000000*0.24+62000000*0.35+150000000*0.38+(taxBase-300000000)*0.40;rateStr='40%'}
+  else if(taxBase<=1000000000){calcTax=14000000*0.06+36000000*0.15+38000000*0.24+62000000*0.35+150000000*0.38+200000000*0.40+(taxBase-500000000)*0.42;rateStr='42%'}
+  else{calcTax=14000000*0.06+36000000*0.15+38000000*0.24+62000000*0.35+150000000*0.38+200000000*0.40+500000000*0.42+(taxBase-1000000000)*0.45;rateStr='45%'}
+  calcTax=Math.round(calcTax);
+
+  document.getElementById('if-r-rate').textContent=rateStr;
+  setFilingCalc('if-r-calctax',calcTax);
+  document.getElementById('if-r-calctax').style.color='var(--or)';
+
+  var smeReduction=Math.min(Math.round(calcTax*0.20),100000000);
+  setFilingCalc('if-r-sme',smeReduction);
+  document.getElementById('if-r-sme').style.color='var(--gn)';
+
+  var otherCredit=parseFilingVal('if-other-credit');
+  var totalCredit=smeReduction+20000+70000+otherCredit;
+  setFilingCalc('if-r-totalcredit',totalCredit);
+  document.getElementById('if-r-totalcredit').style.color='var(--gn)';
+
+  // Step 4: Final
+  setFilingCalc('if-r2-calctax',calcTax);
+  setFilingCalc('if-r2-credit',totalCredit);
+  document.getElementById('if-r2-credit').style.color='var(--gn)';
+
+  var determined=Math.max(calcTax-totalCredit,0);
+  setFilingCalc('if-r2-determined',determined);
+
+  var prepaid=parseFilingVal('if-prepaid-tax');
+  var finalTax=determined-prepaid;
+
+  var finalEl=document.getElementById('if-final-tax');
+  if(finalEl){
+    finalEl.textContent=Math.round(finalTax).toLocaleString('ko-KR');
+    if(finalTax<0){finalEl.style.color='var(--gn)';finalEl.textContent=Math.round(finalTax).toLocaleString('ko-KR')+' (환급)'}
+    else if(finalTax>0){finalEl.style.color='var(--rd)'}
+    else{finalEl.style.color='var(--nv)'}
+  }
+
+  // Local tax
+  var localTaxEl=document.getElementById('if-local-tax');
+  if(localTaxEl)localTaxEl.textContent=fm(Math.max(Math.round(determined*0.1),0))+'원';
+
+  // Bracket visualization
+  renderFilingBracketViz(taxBase);
+}
+
+function renderFilingBracketViz(taxBase){
+  var brackets=[
+    {limit:14000000,rate:6,color:'#4CAF50',label:'~1,400만'},
+    {limit:50000000,rate:15,color:'#8BC34A',label:'~5,000만'},
+    {limit:88000000,rate:24,color:'#FFC107',label:'~8,800만'},
+    {limit:150000000,rate:35,color:'#FF9800',label:'~1.5억'},
+    {limit:300000000,rate:38,color:'#FF5722',label:'~3억'},
+    {limit:500000000,rate:40,color:'#F44336',label:'~5억'},
+    {limit:1000000000,rate:42,color:'#E91E63',label:'~10억'},
+    {limit:Infinity,rate:45,color:'#9C27B0',label:'10억~'}
+  ];
+  var html='';var prev=0;var maxBase=Math.max(taxBase,50000000);
+  brackets.forEach(function(br){
+    if(prev>=maxBase*1.2&&prev>taxBase)return;
+    var inBracket=Math.min(Math.max(taxBase-prev,0),br.limit-prev);
+    var bracketSize=Math.min(br.limit-prev,maxBase);
+    var fillPct=bracketSize>0?Math.max(Math.round(inBracket/bracketSize*100),0):0;
+    var isActive=taxBase>prev;
+    var isCurrent=taxBase>prev&&taxBase<=br.limit;
+    html+='<div class="bracket-bar" style="opacity:'+(isActive?'1':'0.4')+'">';
+    html+='<div class="bracket-rate" style="'+(isCurrent?'color:var(--rd);font-weight:800':'')+'">'+br.rate+'%</div>';
+    html+='<div style="flex:1;background:#f0f0f0;border-radius:4px;overflow:hidden;height:22px">';
+    html+='<div class="bracket-fill" style="width:'+fillPct+'%;background:'+br.color+'">'+(inBracket>0?fm(inBracket)+'원':'')+'</div>';
+    html+='</div><div class="bracket-label">'+br.label+'</div></div>';
+    prev=br.limit;
+  });
+  var el=document.getElementById('if-bracket-viz');
+  if(el)el.innerHTML=html;
+}
+
+function autoFillIncFiling(){
+  try{
+    // Business income from ledger
+    var st=D.tax.filter(function(r){return r.type==='매출'});
+    var et=D.tax.filter(function(r){return r.type==='매입'});
+    var bizTs=st.reduce(function(a,r){return a+r.supply},0);
+    var bizTe=et.reduce(function(a,r){return a+r.supply},0);
+    try{bizTs+=parseInt(document.getElementById('biz-manual-revenue').value||0)*10000;bizTe+=parseInt(document.getElementById('biz-manual-expense').value||0)*10000}catch(e){}
+
+    document.getElementById('if-biz-revenue').value=bizTs.toLocaleString('ko-KR');
+    document.getElementById('if-biz-expense').value=bizTe.toLocaleString('ko-KR');
+
+    // Salary
+    var salaryMonthly=parseInt(document.getElementById('salary-monthly').value||0)*10000;
+    if(!salaryMonthly)salaryMonthly=2000000;
+    var salaryAnnual=salaryMonthly*12;
+
+    // Bonus salary
+    var bt=getBonusByType();
+    if(bt&&bt.salary)salaryAnnual+=bt.salary;
+
+    document.getElementById('if-salary-total').value=salaryAnnual.toLocaleString('ko-KR');
+
+    // Dividend
+    if(bt&&bt.dividend>0){
+      document.getElementById('if-dividend').value=bt.dividend.toLocaleString('ko-KR');
+    }
+
+    // Insurance deductions (estimate from salary)
+    var monthlyNps=Math.floor(salaryMonthly*0.045);
+    var monthlyNhi=Math.floor(salaryMonthly*0.03545);
+    var monthlyLtc=Math.floor(monthlyNhi*0.9182/7.09/10)*10;
+    var monthlyEi=Math.round(salaryMonthly*0.009);
+
+    document.getElementById('if-nps').value=(monthlyNps*12).toLocaleString('ko-KR');
+    document.getElementById('if-nhi').value=((monthlyNhi+monthlyLtc)*12).toLocaleString('ko-KR');
+    document.getElementById('if-ei').value=(monthlyEi*12).toLocaleString('ko-KR');
+
+    // Prepaid tax estimate
+    var keys=Object.keys(salaryLog||{}).map(Number);
+    var avgDeduct=0;
+    if(keys.length){
+      var totalDeduct=0;
+      keys.forEach(function(m){totalDeduct+=salaryMonthly-(salaryLog[m]?salaryLog[m].net:0)});
+      avgDeduct=Math.round(totalDeduct/keys.length*0.13);
+    }else{
+      var mTax=0;
+      if(salaryMonthly<=1060000)mTax=0;
+      else if(salaryMonthly<=1500000)mTax=Math.round(salaryMonthly*0.003);
+      else if(salaryMonthly<=2000000)mTax=Math.round((salaryMonthly-1500000)*0.04);
+      else if(salaryMonthly<=3000000)mTax=Math.round(19520+(salaryMonthly-2000000)*0.05);
+      else mTax=Math.round(69520+(salaryMonthly-3000000)*0.08);
+      avgDeduct=mTax+Math.round(mTax*0.1);
+    }
+    var prepaid=avgDeduct*12;
+    if(bt&&bt.salary)prepaid+=Math.round(bt.salary*0.033);
+    if(bt&&bt.dividend)prepaid+=Math.round(bt.dividend*0.154);
+    document.getElementById('if-prepaid-tax').value=prepaid.toLocaleString('ko-KR');
+
+    calcIncFiling();
+    goFilingStep(1);
+    showToast('소득/장부 데이터 자동 반영 완료');
+  }catch(e){showToast('자동 반영 실패: '+e.message)}
+}
+
+function saveIncDraft(){
+  var data={type:currentIncType,timestamp:new Date().toISOString()};
+  var fields=['if-biz-revenue','if-biz-expense','if-salary-total','if-dividend','if-interest','if-other-income','if-spouse-deduct','if-dependent-deduct','if-senior-deduct','if-disabled-deduct','if-single-parent','if-nps','if-nhi','if-ei','if-umbrella','if-pension','if-housing','if-other-credit','if-prepaid-tax'];
+  fields.forEach(function(f){var el=document.getElementById(f);if(el)data[f]=el.value});
+  localStorage.setItem('yjtax_inc_draft',JSON.stringify(data));
+  showToast('종소세 신고서 임시저장 완료');
+  checkIncDraft();
+}
+
+function loadIncDraft(){
+  try{
+    var data=JSON.parse(localStorage.getItem('yjtax_inc_draft'));
+    if(!data)return;
+    Object.keys(data).forEach(function(k){
+      if(k==='type'||k==='timestamp')return;
+      var el=document.getElementById(k);if(el)el.value=data[k];
+    });
+    calcIncFiling();
+    showToast('임시저장 데이터 불러오기 완료');
+  }catch(e){showToast('불러오기 실패')}
+}
+
+function clearIncDraft(){
+  localStorage.removeItem('yjtax_inc_draft');
+  document.getElementById('inc-draft-bar').style.display='none';
+  showToast('임시저장 삭제 완료');
+}
+
+function checkIncDraft(){
+  var data=localStorage.getItem('yjtax_inc_draft');
+  var bar=document.getElementById('inc-draft-bar');
+  if(data&&bar){
+    try{
+      var d=JSON.parse(data);
+      var dt=new Date(d.timestamp);
+      document.getElementById('inc-draft-text').textContent='임시저장: '+dt.toLocaleDateString()+' '+dt.toLocaleTimeString();
+      bar.style.display='flex';
+    }catch(e){bar.style.display='none'}
+  }else if(bar){bar.style.display='none'}
+}
+
+function validateIncFiling(){
+  var issues=[];
+  var totalIncome=parseFilingVal('if-biz-revenue')-parseFilingVal('if-biz-expense')+parseFilingVal('if-salary-total')+parseFilingVal('if-dividend')+parseFilingVal('if-interest')+parseFilingVal('if-other-income');
+
+  if(totalIncome<=0)issues.push({type:'warn',msg:'종합소득금액이 0 이하입니다. 무실적이라도 신고는 필요합니다.'});
+
+  var bizExp=parseFilingVal('if-biz-expense');
+  var bizRev=parseFilingVal('if-biz-revenue');
+  if(bizExp>bizRev&&bizRev>0)issues.push({type:'warn',msg:'필요경비가 수입금액을 초과합니다. 사업소득 결손금 발생.'});
+
+  var salaryTotal=parseFilingVal('if-salary-total');
+  if(salaryTotal>0&&parseFilingVal('if-nps')===0)issues.push({type:'warn',msg:'급여소득이 있으나 국민연금 공제가 0입니다. 납부확인서를 확인하세요.'});
+
+  var prepaid=parseFilingVal('if-prepaid-tax');
+  if(salaryTotal>0&&prepaid===0)issues.push({type:'warn',msg:'급여소득이 있으나 기납부세액이 0입니다. 원천징수영수증을 확인하세요.'});
+
+  var umbrella=parseFilingVal('if-umbrella');
+  if(umbrella>5000000)issues.push({type:'error',msg:'노란우산공제 한도는 연 500만원입니다. 금액을 확인하세요.'});
+
+  if(issues.length===0)issues.push({type:'ok',msg:'입력값 검증 완료! 홈택스에서 최종 신고를 진행하세요.'});
+
+  var html=issues.map(function(i){
+    var bg=i.type==='error'?'#FFEBEE':i.type==='warn'?'#FFF3E0':'#E8F5E9';
+    var color=i.type==='error'?'var(--rd)':i.type==='warn'?'var(--or)':'var(--gn)';
+    var icon=i.type==='error'?'fa-circle-xmark':i.type==='warn'?'fa-triangle-exclamation':'fa-check-circle';
+    return '<div style="background:'+bg+';border-radius:var(--rs);padding:10px 14px;margin-bottom:6px;font-size:12px;color:'+color+';display:flex;align-items:center;gap:8px"><i class="fas '+icon+'"></i>'+i.msg+'</div>';
+  }).join('');
+
+  var el=document.getElementById('inc-validation');
+  el.innerHTML=html;el.style.display='block';
+  goFilingStep(4);
+  showToast(issues.some(function(i){return i.type==='error'})?'검증 오류가 있습니다':'검증 완료');
+}
+
+function printIncFiling(){window.print()}
+
+function exportIncFilingPDF(){
+  try{
+    var jsPDF=jspdf.jsPDF;
+    var doc=new jsPDF('p','mm','a4');
+    doc.setFont('helvetica');
+    doc.setFontSize(16);
+    doc.text('Income Tax Filing Report',105,20,{align:'center'});
+    doc.setFontSize(9);
+    doc.text('Generated: '+new Date().toLocaleString(),20,30);
+
+    var y=40;
+    var items=[
+      ['[1] Income Calculation',''],
+      ['Business Revenue',document.getElementById('if-biz-revenue').value],
+      ['Business Expense',document.getElementById('if-biz-expense').value],
+      ['Business Income',document.getElementById('if-biz-income').textContent],
+      ['Salary Total',document.getElementById('if-salary-total').value],
+      ['Salary Income',document.getElementById('if-salary-income').textContent],
+      ['Dividend',document.getElementById('if-dividend').value],
+      ['Total Income',document.getElementById('if-total-income').textContent],
+      ['',''],
+      ['[2] Deductions',''],
+      ['Total Deduction',document.getElementById('if-total-deduction').textContent],
+      ['Tax Base',document.getElementById('if-tax-base').textContent],
+      ['',''],
+      ['[3] Tax Calculation',''],
+      ['Calculated Tax',document.getElementById('if-r-calctax').textContent],
+      ['Total Credit',document.getElementById('if-r-totalcredit').textContent],
+      ['',''],
+      ['[4] Final',''],
+      ['Determined Tax',document.getElementById('if-r2-determined').textContent],
+      ['Prepaid Tax',document.getElementById('if-prepaid-tax').value],
+      ['FINAL TAX',document.getElementById('if-final-tax').textContent]
+    ];
+
+    items.forEach(function(item){
+      if(item[0].startsWith('[')){doc.setFontSize(11);doc.setFont('helvetica','bold');doc.text(item[0],20,y);doc.setFont('helvetica','normal');y+=7}
+      else if(item[0]==='FINAL TAX'){doc.setFontSize(12);doc.setFont('helvetica','bold');doc.text(item[0]+': '+item[1]+' KRW',20,y);y+=8}
+      else if(item[0]){doc.setFontSize(9);doc.text(item[0]+': '+item[1],25,y);y+=5}
+      else{y+=3}
+    });
+
+    doc.save('Income_Tax_Filing_'+new Date().toISOString().slice(0,10)+'.pdf');
+    showToast('PDF 저장 완료');
+  }catch(e){showToast('PDF 생성 실패: '+e.message)}
+}
+
 // === 19. MEMORY MANAGEMENT - Cleanup old data ===
 (function(){
   // Clean up old snapshots beyond 7 days
@@ -6483,7 +7532,7 @@ document.addEventListener('blur',function(e){
   }catch(e){}
 })();
 
-console.log('[YJ Tax Master v8 Pro] All enhancements loaded successfully');
+console.log('[YJ Tax Master v8.5 Pro] All enhancements loaded + Tax Filing Mode (세금 신고 모드) added');
 </script>
 </body>
 </html>
