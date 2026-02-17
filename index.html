@@ -449,7 +449,7 @@ input:focus,select:focus,textarea:focus,button:focus-visible{
       <div style="background:#F3E5F5;padding:10px;border-radius:var(--rs);cursor:pointer" onclick="switchTab(3)"><div style="color:#6A1B9A;font-weight:600">절세한 금액</div><div style="font-size:15px;font-weight:800;color:#4A148C" id="kpi-saved">0원</div><div style="color:#AB47BC;font-size:9px">감면+공제 합계 ▶</div></div>
     </div>
   </div>
-  <div class="vat fi d3"><div class="vat-t">🚩 예정 부가가치세</div><div style="font-size:11px;color:#C62828;margin-bottom:4px" id="vat-period">2026년 1월~6월 → 7월 25일 납부</div><div class="vat-a" id="v-a">0 원</div><div class="vat-d" id="v-d">파일 업로드 시 자동 계산</div></div>
+  <div class="vat fi d3"><div class="vat-t">🚩 부가가치세 (확정신고)</div><div style="font-size:11px;color:#C62828;margin-bottom:4px" id="vat-period">1기: 1~6월분 → 7/25 신고 | 2기: 7~12월분 → 1/25 신고</div><div class="vat-a" id="v-a">0 원</div><div class="vat-d" id="v-d">파일 업로드 시 자동 계산</div></div>
   <div class="fi d3" id="inc-box" style="background:linear-gradient(135deg,#EBF5FB,#D6EAF8);border:3px solid var(--bl);border-radius:var(--r);padding:28px;text-align:center;margin:0 0 18px;position:relative;overflow:hidden"><div style="position:absolute;top:-30px;left:-30px;width:100px;height:100px;background:rgba(46,134,193,.1);border-radius:50%"></div><div style="font-size:14px;color:#456;font-weight:600;position:relative">📋 예정 종합소득세 (전체 소득 합산)</div><div style="font-size:11px;color:#1565C0;margin:4px 0" id="inc-period">2025년 1월~12월 → 2026년 5월 31일 신고</div><div style="font-size:40px;font-weight:800;margin:8px 0;position:relative;color:var(--nv)" id="inc-a">0 원</div><div style="font-size:12px;color:#789;position:relative" id="inc-d">3개 소득 합산 · 기납부세액 차감</div><div style="display:flex;justify-content:center;gap:12px;margin-top:12px;position:relative;flex-wrap:wrap"><div style="background:#fff;padding:8px 14px;border-radius:var(--rs);font-size:11px;cursor:pointer" onclick="switchTab(3)"><span style="color:var(--sub)">과세표준</span><br><strong id="inc-base">0원</strong></div><div style="background:#fff;padding:8px 14px;border-radius:var(--rs);font-size:11px;cursor:pointer" onclick="switchTab(3)"><span style="color:var(--sub)">산출세액</span><br><strong id="inc-calc">0원</strong></div><div style="background:#fff;padding:8px 14px;border-radius:var(--rs);font-size:11px;cursor:pointer" onclick="switchTab(3)"><span style="color:var(--sub)">기납부세액</span><br><strong id="inc-prepaid" style="color:var(--bl)">-0원</strong></div></div></div>
 
   <!-- 소득 통합 관리 -->
@@ -822,6 +822,19 @@ input:focus,select:focus,textarea:focus,button:focus-visible{
   <!-- 절세 액션플랜 -->
   <div style="font-size:16px;font-weight:700;margin:24px 0 14px" class="fi d4"><i class="fas fa-bolt" style="color:var(--gd);margin-right:8px"></i>지금 실행할 절세 액션</div>
   <div id="action-list"></div>
+
+  <!-- ★ 절세 결과 → 신고서 자동 반영 -->
+  <div class="cd fi d5" style="border:2px solid var(--gn);margin-top:20px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <div style="width:44px;height:44px;border-radius:12px;background:#E8F5E9;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--gn)"><i class="fas fa-link"></i></div>
+      <div><div style="font-size:15px;font-weight:700;color:var(--gn)">절세 결과 → 신고서 자동 반영</div><div style="font-size:11px;color:var(--sub)">절세 시뮬레이터 분석 결과를 신고서에 즉시 연동합니다</div></div>
+    </div>
+    <div id="sync-preview" style="background:#f8f9fa;border-radius:var(--rs);padding:14px;margin-bottom:12px;font-size:12px;color:var(--sub)">
+      절세 분석을 실행하면 연동할 항목이 표시됩니다.
+    </div>
+    <button onclick="applySavingToFiling()" style="width:100%;padding:14px;background:var(--gn);color:#fff;border:none;border-radius:var(--rs);font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px"><i class="fas fa-arrow-right-to-bracket"></i> 절세 결과 → 부가세 신고서에 반영</button>
+    <button onclick="applySavingToIncFiling()" style="width:100%;padding:14px;background:var(--bl);color:#fff;border:none;border-radius:var(--rs);font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px"><i class="fas fa-arrow-right-to-bracket"></i> 절세 결과 → 종소세 신고서에 반영</button>
+  </div>
 </div>
 
 <!-- TAB4: 세금 줄이기 실전 시뮬레이터 -->
@@ -1292,7 +1305,7 @@ input:focus,select:focus,textarea:focus,button:focus-visible{
       </div>
       <div class="tool-item" onclick="window.open('https://www.8899.or.kr','_blank')">
         <div class="tool-item-icon" style="background:#E8F5E9;color:#2E7D32"><i class="fas fa-umbrella"></i></div>
-        <div class="tool-item-info"><div class="tool-item-name">노란우산공제</div><div class="tool-item-desc">소기업 대표 퇴직금 적립 + 소득공제 (연 200~500만원)</div><div class="tool-item-use">▸ 가입하면 연 최대 500만원 소득공제. 사업소득 4천만 이하 시 300만원 공제</div></div>
+        <div class="tool-item-info"><div class="tool-item-name">노란우산공제</div><div class="tool-item-desc">소기업 대표 퇴직금 적립 + 소득공제 (연 200~600만원)</div><div class="tool-item-use">▸ 가입하면 연 최대 600만원 소득공제 (2025년~). 사업소득 4천만 이하 시 600만원</div></div>
         <i class="fas fa-external-link-alt" style="color:#aaa;font-size:12px"></i>
       </div>
       <div class="tool-item" onclick="window.open('https://sminfo.mss.go.kr','_blank')">
@@ -1550,10 +1563,8 @@ input:focus,select:focus,textarea:focus,button:focus-visible{
     <!-- 신고기간 선택 -->
     <div style="font-size:14px;font-weight:700;margin-bottom:10px"><i class="fas fa-calendar" style="color:var(--bl);margin-right:6px"></i>신고 기간 선택</div>
     <div class="filing-quarter-select" id="vat-quarter-select">
-      <button class="filing-quarter-btn active" onclick="selectVatQuarter(this,'1H1')" data-q="1H1">1기 예정<br><span style="font-size:10px;color:var(--sub)">1~3월</span></button>
-      <button class="filing-quarter-btn" onclick="selectVatQuarter(this,'1H2')" data-q="1H2">1기 확정<br><span style="font-size:10px;color:var(--sub)">4~6월</span></button>
-      <button class="filing-quarter-btn" onclick="selectVatQuarter(this,'2H1')" data-q="2H1">2기 예정<br><span style="font-size:10px;color:var(--sub)">7~9월</span></button>
-      <button class="filing-quarter-btn" onclick="selectVatQuarter(this,'2H2')" data-q="2H2">2기 확정<br><span style="font-size:10px;color:var(--sub)">10~12월</span></button>
+      <button class="filing-quarter-btn active" onclick="selectVatQuarter(this,'1H')" data-q="1H">1기 확정<br><span style="font-size:10px;color:var(--sub)">1~6월 (7월 신고)</span></button>
+      <button class="filing-quarter-btn" onclick="selectVatQuarter(this,'2H')" data-q="2H">2기 확정<br><span style="font-size:10px;color:var(--sub)">7~12월 (1월 신고)</span></button>
     </div>
 
     <!-- 임시저장 바 -->
@@ -1588,7 +1599,7 @@ input:focus,select:focus,textarea:focus,button:focus-visible{
           </div>
           <div class="filing-row">
             <div class="filing-field"><label>대표자명</label><input type="text" id="vf-rep-name" value="지윤진" onchange="calcVatFiling()"></div>
-            <div class="filing-field"><label>신고 기간</label><input type="text" id="vf-period" value="2026.01.01 ~ 2026.03.31" readonly style="background:#f5f5f5"></div>
+            <div class="filing-field"><label>신고 기간</label><input type="text" id="vf-period" value="2026.01.01 ~ 2026.06.30" readonly style="background:#f5f5f5"></div>
           </div>
         </div>
       </div>
@@ -1612,7 +1623,7 @@ input:focus,select:focus,textarea:focus,button:focus-visible{
         <div class="filing-form-section-body">
           <div class="filing-form-row"><div class="ff-num">(5)</div><div class="ff-label">세금계산서 수취분 <span class="tooltip-icon" data-tip="공제 가능한 매입 세금계산서의 공급가액 합계">?</span></div><div class="ff-value"><input type="text" id="vf-purch-invoice" class="amount-input" value="0" oninput="fmtFilingInput(this);calcVatFiling()"></div></div>
           <div class="filing-form-row"><div class="ff-num">(6)</div><div class="ff-label">신용카드·현금영수증 등 수취분</div><div class="ff-value"><input type="text" id="vf-purch-card" class="amount-input" value="0" oninput="fmtFilingInput(this);calcVatFiling()"></div></div>
-          <div class="filing-form-row"><div class="ff-num">(7)</div><div class="ff-label">예정신고 미환급세액</div><div class="ff-value"><input type="text" id="vf-purch-prev" class="amount-input" value="0" oninput="fmtFilingInput(this);calcVatFiling()"></div></div>
+          <div class="filing-form-row"><div class="ff-num">(7)</div><div class="ff-label">예정고지세액 (기납부세액)</div><div class="ff-value"><input type="text" id="vf-purch-prev" class="amount-input" value="0" oninput="fmtFilingInput(this);calcVatFiling()"></div></div>
           <div class="filing-form-row" style="background:#f0f8ff"><div class="ff-num"></div><div class="ff-label" style="font-weight:700;color:var(--nv)">공제 매입 합계 (5+6)</div><div class="ff-value"><div class="auto-calc" id="vf-purch-total">0</div></div></div>
           <div class="filing-form-row" style="background:#e8f5e9"><div class="ff-num"></div><div class="ff-label" style="font-weight:700;color:var(--gn)">매입세액 (합계 x 10%)</div><div class="ff-value"><div class="auto-calc" id="vf-purch-tax" style="color:var(--gn)">0</div></div></div>
         </div>
@@ -1637,7 +1648,7 @@ input:focus,select:focus,textarea:focus,button:focus-visible{
           <div class="filing-form-row"><div class="ff-num">(12)</div><div class="ff-label">매출세액</div><div class="ff-value"><div class="auto-calc" id="vf-r-salestax">0</div></div></div>
           <div class="filing-form-row"><div class="ff-num">(13)</div><div class="ff-label">매입세액 (공제분)</div><div class="ff-value"><div class="auto-calc" id="vf-r-purchtax" style="color:var(--gn)">0</div></div></div>
           <div class="filing-form-row"><div class="ff-num">(14)</div><div class="ff-label">불공제 매입세액 가산</div><div class="ff-value"><div class="auto-calc" id="vf-r-ndtax" style="color:var(--rd)">0</div></div></div>
-          <div class="filing-form-row"><div class="ff-num">(15)</div><div class="ff-label">예정신고 미환급세액 차감</div><div class="ff-value"><div class="auto-calc" id="vf-r-prev">0</div></div></div>
+          <div class="filing-form-row"><div class="ff-num">(15)</div><div class="ff-label">예정고지세액 (기납부세액) 차감</div><div class="ff-value"><div class="auto-calc" id="vf-r-prev">0</div></div></div>
           <div class="filing-form-row"><div class="ff-num">(16)</div><div class="ff-label">전자신고 세액공제 <span class="tooltip-icon" data-tip="전자신고 시 1만원 공제">?</span></div><div class="ff-value"><div class="auto-calc" id="vf-r-ecredit">10,000</div></div></div>
           <div class="filing-form-row total" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb)"><div class="ff-num"></div><div class="ff-label" style="font-size:15px;color:var(--nv)">납부할 세액 (환급세액)</div><div class="ff-value"><div class="auto-calc" id="vf-final-tax" style="font-size:18px;font-weight:800">0</div></div></div>
         </div>
@@ -1782,7 +1793,7 @@ input:focus,select:focus,textarea:focus,button:focus-visible{
                 <div class="filing-form-row"><div class="ff-num">(14)</div><div class="ff-label">국민연금 보험료 <span class="tooltip-icon" data-tip="납부한 국민연금 보험료 전액 공제">?</span></div><div class="ff-value"><input type="text" id="if-nps" class="amount-input" value="0" oninput="fmtFilingInput(this);calcIncFiling()"></div></div>
                 <div class="filing-form-row"><div class="ff-num">(15)</div><div class="ff-label">건강보험료 (장기요양 포함)</div><div class="ff-value"><input type="text" id="if-nhi" class="amount-input" value="0" oninput="fmtFilingInput(this);calcIncFiling()"></div></div>
                 <div class="filing-form-row"><div class="ff-num">(16)</div><div class="ff-label">고용보험료</div><div class="ff-value"><input type="text" id="if-ei" class="amount-input" value="0" oninput="fmtFilingInput(this);calcIncFiling()"></div></div>
-                <div class="filing-form-row"><div class="ff-num">(17)</div><div class="ff-label">노란우산공제 <span class="tooltip-icon" data-tip="소기업소상공인 공제부금. 소득에 따라 200~500만원 한도">?</span></div><div class="ff-value"><input type="text" id="if-umbrella" class="amount-input" value="0" oninput="fmtFilingInput(this);calcIncFiling()"></div></div>
+                <div class="filing-form-row"><div class="ff-num">(17)</div><div class="ff-label">노란우산공제 <span class="tooltip-icon" data-tip="소기업소상공인 공제부금. 2025년~ 소득에 따라 200~600만원 한도">?</span></div><div class="ff-value"><input type="text" id="if-umbrella" class="amount-input" value="0" oninput="fmtFilingInput(this);calcIncFiling()"></div></div>
                 <div class="filing-form-row"><div class="ff-num">(18)</div><div class="ff-label">개인연금저축 공제</div><div class="ff-value"><input type="text" id="if-pension" class="amount-input" value="0" oninput="fmtFilingInput(this);calcIncFiling()"></div></div>
                 <div class="filing-form-row"><div class="ff-num">(19)</div><div class="ff-label">주택자금공제 (주담대이자 등)</div><div class="ff-value"><input type="text" id="if-housing" class="amount-input" value="0" oninput="fmtFilingInput(this);calcIncFiling()"></div></div>
               </div>
@@ -2319,11 +2330,9 @@ function renderDD(){
   var now=new Date();now.setHours(0,0,0,0);var y=now.getFullYear();var m=now.getMonth();
   var nxM=new Date(y,m+1,10);var nxM2=new Date(y,m+1,10);
   var evts=[
-    {nm:'부가세 확정신고',dt:new Date(y,0,25),ic:'fa-receipt'},
-    {nm:'부가세 1기 예정',dt:new Date(y,3,25),ic:'fa-receipt'},
+    {nm:'부가세 2기 확정신고 (7~12월분)',dt:new Date(y,0,25),ic:'fa-receipt'},
     {nm:'종합소득세 신고',dt:new Date(y,4,31),ic:'fa-landmark'},
-    {nm:'부가세 확정신고',dt:new Date(y,6,25),ic:'fa-receipt'},
-    {nm:'부가세 2기 예정',dt:new Date(y,9,25),ic:'fa-receipt'},
+    {nm:'부가세 1기 확정신고 (1~6월분)',dt:new Date(y,6,25),ic:'fa-receipt'},
     {nm:'원천세 납부',dt:nxM,ic:'fa-hand-holding-dollar'},
     {nm:'4대보험 납부',dt:nxM2,ic:'fa-shield-halved'},
     {nm:'종합소득세',dt:new Date(y+1,4,31),ic:'fa-landmark'}
@@ -2346,7 +2355,7 @@ var BENEFITS=[
   {n:'②',t:'소상공인 대리대출 (은행 경유)',st:'상시',sc:'st-a',si:'✅',tags:['시중은행','최대7천만','상시접수'],d:'NH농협·신한 등 시중은행 경유. <b>최대 7천만 원</b>. 상시 접수 가능.',am:'💰 최대 7천만 원',url:'https://ols.semas.or.kr',ul:'대리대출 조회'},
   {n:'③',t:'1인 창조기업 마케팅 지원',st:'신청 가능',sc:'st-v',si:'📌',tags:['광고·컨설팅','최대2천만'],d:'프랜차이즈 컨설팅 = 1인 창조기업. <b>마케팅비 최대 2,000만 원</b> 지원.',am:'💰 최대 2,000만 원',url:'https://www.k-startup.go.kr',ul:'K-Startup'},
   {n:'④',t:'중소기업 특별세액감면',st:'자동 적용',sc:'st-a',si:'✅',tags:['경영컨설팅','소득세20%','소기업'],d:'조특법§7. 소기업·지식서비스업. <b>소득세 20% 감면</b>. 홈택스에서 선택.',am:'💸 소득세 20%',url:'https://www.nts.go.kr',ul:'국세청'},
-  {n:'⑤',t:'노란우산공제 소득공제',st:'가입 가능',sc:'st-v',si:'📌',tags:['연300만공제','퇴직금효과','소기업'],d:'사업소득 4천만↓ 시 <b>연 300만원 소득공제</b>. 사업자 퇴직금 효과.',am:'💸 연 300만 공제',url:'https://www.8899.or.kr',ul:'노란우산 가입'},
+  {n:'⑤',t:'노란우산공제 소득공제',st:'가입 가능',sc:'st-v',si:'📌',tags:['연600만공제','퇴직금효과','소기업'],d:'사업소득 4천만↓ 시 <b>연 600만원 소득공제</b> (2025년~ 개정). 사업자 퇴직금 효과.',am:'💸 연 최대 600만 공제',url:'https://www.8899.or.kr',ul:'노란우산 가입'},
   {n:'⑥',t:'경기도 소상공인 경영안정자금',st:'확인 필요',sc:'st-c',si:'🔍',tags:['경기도','구리시','최대3천만'],d:'경기도 소재 소상공인. <b>최대 3천만 원</b> 저금리. 수시 접수.',am:'💰 최대 3천만 원',url:'https://www.sbiz.or.kr',ul:'소상공인마당'},
   {n:'⑦',t:'소상공인 역량강화 교육',st:'상시',sc:'st-a',si:'✅',tags:['무료교육','온라인','경영·세무'],d:'소진공 무료 경영·세무·마케팅 교육. <b>온라인/오프라인</b>.',am:'🎓 무료',url:'https://edu.semas.or.kr',ul:'교육 신청'},
   {n:'⑧',t:'기업마당 통합지원사업 검색',st:'실시간',sc:'st-a',si:'✅',tags:['통합검색','700+사업','맞춤추천'],d:'정부 지원사업 <b>700개+</b> 통합검색. 업종·지역·규모별 필터링.',am:'🔍 통합검색',url:'https://www.bizinfo.go.kr',ul:'기업마당'}
@@ -4189,8 +4198,10 @@ function calcIncSim(){
   // 현재 종소세
   var curBase=Math.max(b.income-1500000,0);
   var curTax=Math.round(calcIncomeTax(curBase));
+  // 중소기업특별세액감면: 소기업 기준 20% (업종·지역에 따라 5~30%, 한도 1억)
   var curSme=Math.min(Math.round(curTax*0.20),100000000);
-  var curFinal=Math.max(curTax-curSme-70000-20000,0);
+  // 전자신고 세액공제: 종소세 2만원
+  var curFinal=Math.max(curTax-curSme-20000,0);
 
   // 추가 경비 합산
   var addExp=0;
@@ -4211,9 +4222,9 @@ function calcIncSim(){
   });
   // 소득공제 추가
   var umbrella=(parseInt(document.getElementById('inc-umbrella').value)||0)*10000*12;
-  // 노란우산공제 한도: 소득 4천만 이하 500만, 4천~1억 300만, 1억 초과 200만
-  if(b.income<=40000000)umbrella=Math.min(umbrella,5000000);
-  else if(b.income<=100000000)umbrella=Math.min(umbrella,3000000);
+  // 노란우산공제 한도 (2025년~ 개정): 소득 4천만 이하 600만, 4천~1억 400만, 1억 초과 200만
+  if(b.income<=40000000)umbrella=Math.min(umbrella,6000000);
+  else if(b.income<=100000000)umbrella=Math.min(umbrella,4000000);
   else umbrella=Math.min(umbrella,2000000);
   var deps=(parseInt(document.getElementById('inc-dependents').value)||0)*1500000;
 
@@ -4223,7 +4234,7 @@ function calcIncSim(){
   var newBase=Math.max(newIncome-newDeduct,0);
   var newTax=Math.round(calcIncomeTax(newBase));
   var newSme=Math.min(Math.round(newTax*0.20),100000000);
-  var newFinal=Math.max(newTax-newSme-70000-20000,0);
+  var newFinal=Math.max(newTax-newSme-20000,0); // 전자신고 세액공제 2만원
 
   var saved=curFinal-newFinal;
 
@@ -4233,7 +4244,7 @@ function calcIncSim(){
   document.getElementById('inc-sim-base1').textContent=fm(curBase)+'원';
   document.getElementById('inc-sim-base2').textContent=fm(newBase)+'원';
   // 세율 변화
-  function getRate(base){return base<=14000000?'6%':base<=50000000?'15%':base<=88000000?'24%':base<=150000000?'35%':'38%+'}
+  function getRate(base){return base<=14000000?'6%':base<=50000000?'15%':base<=88000000?'24%':base<=150000000?'35%':base<=300000000?'38%':base<=500000000?'40%':base<=1000000000?'42%':'45%'}
   document.getElementById('inc-sim-rate').textContent=getRate(curBase)+' → '+getRate(newBase);
   document.getElementById('inc-sim-sme').textContent='-'+fm(newSme)+'원';
 
@@ -4242,20 +4253,116 @@ function calcIncSim(){
 
 function updateTotalOpt(){
   var b=getBaseNumbers();var totalNow=b.vat+b.incTax;
-  // 매입 추가 절세
-  var rows=document.querySelectorAll('.add-row');var addTotal=0;
-  rows.forEach(function(r){var inp=r.querySelector('input');if(inp){var v=parseInt(String(inp.value).replace(/[,\s]/g,''),10);if(v>0)addTotal+=v}});
+
+  // 부가세 절세: 추가매입으로 인한 매입세액 증가
+  var expenseTotal=0;
+  document.querySelectorAll('.expense-row').forEach(function(r){
+    var inp=r.querySelector('input');
+    if(inp){var v=parseInt(String(inp.value).replace(/[,\s]/g,''),10);if(v>0)expenseTotal+=v}
+  });
+  var cardTotal=0;
+  document.querySelectorAll('.card-item-wrap[data-on="1"]').forEach(function(wrap){
+    cardTotal+=parseInt(wrap.getAttribute('data-amount'))||0;
+  });
+  var addTotal=expenseTotal+cardTotal;
   var vatSave=Math.min(Math.round(addTotal*0.1),b.vat);
+
   // 불공제 전환
   var et=D.tax.filter(function(r){return r.type==='매입'&&r.deductible==='불공제'});
-  var ndSave=0;Object.keys(ndToggles).forEach(function(k){if(ndToggles[k]&&et[k])ndSave+=et[k].tax});
+  var ndSave=0;Object.keys(ndToggles||{}).forEach(function(k){if(ndToggles[k]&&et[k])ndSave+=et[k].tax});
 
-  var totalSave=vatSave+ndSave;
+  // 종소세 절세 계산
+  var incSave=0;
+  var incNow=document.getElementById('inc-sim-now');
+  var incAfter=document.getElementById('inc-sim-after');
+  if(incNow&&incAfter){
+    var nowVal=parseInt((incNow.textContent||'0').replace(/[^0-9]/g,''))||0;
+    var afterVal=parseInt((incAfter.textContent||'0').replace(/[^0-9]/g,''))||0;
+    incSave=Math.max(nowVal-afterVal,0);
+  }
+
+  var totalSave=vatSave+ndSave+incSave;
   var optTotal=Math.max(totalNow-totalSave,0);
   document.getElementById('tx-now').textContent=fm(totalNow)+'원';
   document.getElementById('tx-opt').textContent=fm(optTotal)+'원';
   document.getElementById('tx-saved').textContent='절세액: '+fm(totalSave)+'원';
+
+  // 절세→신고서 연동 프리뷰 업데이트
+  updateSyncPreview(addTotal,ndSave,incSave,vatSave);
   renderLimits();
+}
+
+// ★ 절세→신고서 연동 프리뷰
+function updateSyncPreview(addPurchase,ndSave,incSave,vatSave){
+  var el=document.getElementById('sync-preview');
+  if(!el)return;
+  var items=[];
+  if(addPurchase>0)items.push('📦 추가 매입 공급가액: +'+fm(addPurchase)+'원 → 매입세액 +'+fm(Math.round(addPurchase*0.1))+'원');
+  if(ndSave>0)items.push('🔄 불공제→공제 전환 세액: '+fm(ndSave)+'원');
+  if(incSave>0)items.push('📊 종소세 추가 경비 절세: '+fm(incSave)+'원');
+  if(vatSave>0)items.push('💰 부가세 절감 예상: -'+fm(vatSave)+'원');
+  if(items.length===0){el.innerHTML='<div style="color:var(--sub)">세금줄이기 탭에서 항목을 입력하면 연동 결과가 표시됩니다.</div>';return}
+  el.innerHTML=items.map(function(i){return '<div style="padding:4px 0;border-bottom:1px solid #eee">'+i+'</div>'}).join('');
+}
+
+// ★ 절세 결과 → 부가세 신고서 반영
+function applySavingToFiling(){
+  var expenseTotal=0;
+  document.querySelectorAll('.expense-row').forEach(function(r){
+    var inp=r.querySelector('input');
+    if(inp){var v=parseInt(String(inp.value).replace(/[,\s]/g,''),10);if(v>0)expenseTotal+=v}
+  });
+  var cardTotal=0;
+  document.querySelectorAll('.card-item-wrap[data-on="1"]').forEach(function(wrap){
+    cardTotal+=parseInt(wrap.getAttribute('data-amount'))||0;
+  });
+  var addTotal=expenseTotal+cardTotal;
+
+  if(addTotal===0){showToast('반영할 절세 항목이 없습니다. 세금줄이기 탭에서 매입 항목을 먼저 입력하세요.');return}
+
+  // 현재 매입 공급가액에 추가 매입 합산
+  var curPurch=parseFilingVal('vf-purch-invoice');
+  var newPurch=curPurch+addTotal;
+  document.getElementById('vf-purch-invoice').value=newPurch.toLocaleString('ko-KR');
+  calcVatFiling();
+
+  // 신고서 탭으로 이동
+  var filingBtn=document.querySelector('[data-tab="filing"]');
+  if(filingBtn)filingBtn.click();
+
+  showToast('✅ 추가 매입 '+fm(addTotal)+'원이 부가세 신고서에 반영되었습니다!');
+}
+
+// ★ 절세 결과 → 종소세 신고서 반영
+function applySavingToIncFiling(){
+  var addExp=0;
+  document.querySelectorAll('.inc-expense-row').forEach(function(row){
+    var sel=row.querySelector('.inc-expense-select');
+    var inp=row.querySelector('input[type="text"]');
+    if(sel&&sel.value&&inp){
+      var val=parseInt((inp.value||'0').replace(/,/g,''))||0;
+      if(sel.value.indexOf('50%')>-1)val=Math.round(val*0.5);
+      else if(sel.value.indexOf('70%')>-1)val=Math.round(val*0.7);
+      addExp+=val;
+    }
+  });
+  document.querySelectorAll('.inc-card-check:checked').forEach(function(cb){
+    addExp+=parseInt(cb.dataset.amt)||0;
+  });
+
+  if(addExp===0){showToast('반영할 절세 항목이 없습니다. 세금줄이기 탭에서 경비 항목을 먼저 입력하세요.');return}
+
+  // 종소세 신고서의 필요경비 합계에 반영
+  var curExp=parseFilingVal('if-expenses');
+  var newExp=curExp+addExp;
+  var el=document.getElementById('if-expenses');
+  if(el){el.value=newExp.toLocaleString('ko-KR');calcIncFiling()}
+
+  // 신고서 탭으로 이동
+  var filingBtn=document.querySelector('[data-tab="filing"]');
+  if(filingBtn)filingBtn.click();
+
+  showToast('✅ 추가 경비 '+fm(addExp)+'원이 종소세 신고서에 반영되었습니다!');
 }
 
 // === 불공제 자동 추천 ===
@@ -4482,12 +4589,12 @@ function processAI(q){
   if(/순수익|순이익|이익|수익/.test(ql))return'💰 <b>순수익: '+fm(income)+'원</b><br><br>매출 '+fm(ts)+'원 - 매입 '+fm(te)+'원<br>수익률: '+(ts>0?Math.round(income/ts*100):0)+'%';
 
   // 부가세
-  if(/부가세|vat|부가가치/.test(ql))return'🚩 <b>예정 부가가치세: '+fm(vat)+'원</b><br><br>▸ 매출세액: '+fm(sTx)+'원<br>▸ 공제매입세액: '+fm(dTx)+'원<br>▸ 불공제: '+fm(ndTx)+'원 ('+et.filter(function(r){return r.deductible==='불공제'}).length+'건)<br><br>💡 불공제 항목을 공제로 전환하면 <b>'+fm(ndTx)+'원 추가 절세</b> 가능!';
+  if(/부가세|vat|부가가치/.test(ql))return'🚩 <b>부가가치세 확정: '+fm(vat)+'원</b><br>※ 개인사업자: 1기(1~6월) 7월 신고 | 2기(7~12월) 1월 신고<br><br>▸ 매출세액: '+fm(sTx)+'원<br>▸ 공제매입세액: '+fm(dTx)+'원<br>▸ 불공제: '+fm(ndTx)+'원 ('+et.filter(function(r){return r.deductible==='불공제'}).length+'건)<br><br>💡 불공제 항목을 공제로 전환하면 <b>'+fm(ndTx)+'원 추가 절세</b> 가능!';
 
   // 종소세
   if(/종소세|종합소득|소득세/.test(ql)){
     var taxBase=Math.max(income-1500000,0);var calcTax=Math.round(calcIncomeTax(taxBase));var finalTax=Math.round(calcTax);
-    return'📋 <b>예정 종합소득세: '+fm(finalTax)+'원</b><br><br>▸ 소득금액: '+fm(income)+'원<br>▸ 기본공제: -1,500,000원<br>▸ 과세표준: '+fm(taxBase)+'원<br>▸ 산출세액: '+fm(calcTax)+'원<br>▸ 세액공제: <span style="color:var(--gn)">-'+fm(calcTax-finalTax)+'원</span><br><br>💡 절세 탭에서 추가 매입 시뮬레이션을 확인하세요!';
+    return'📋 <b>종합소득세 (5월 신고): '+fm(finalTax)+'원</b><br><br>▸ 소득금액: '+fm(income)+'원<br>▸ 기본공제: -1,500,000원<br>▸ 과세표준: '+fm(taxBase)+'원<br>▸ 산출세액: '+fm(calcTax)+'원<br>▸ 세액공제: <span style="color:var(--gn)">-'+fm(calcTax-finalTax)+'원</span><br><br>💡 절세 탭에서 추가 경비 시뮬레이션을 확인하세요!';
   }
 
   // 불공제
@@ -4533,7 +4640,7 @@ function processAI(q){
   // D-Day
   if(/디데이|d-day|일정|마감|신고/.test(ql)){
     var now=new Date();now.setHours(0,0,0,0);var y=now.getFullYear();
-    var evts=[{nm:'부가세 1기 예정',dt:new Date(y,3,25)},{nm:'종소세 신고',dt:new Date(y,4,31)},{nm:'부가세 확정',dt:new Date(y,6,25)}];
+    var evts=[{nm:'부가세 2기 확정 (7~12월분)',dt:new Date(y,0,25)},{nm:'종소세 신고',dt:new Date(y,4,31)},{nm:'부가세 1기 확정 (1~6월분)',dt:new Date(y,6,25)}];
     return'📅 <b>다가오는 세무 일정</b><br><br>'+evts.map(function(e){var diff=Math.ceil((e.dt-now)/86400000);return(diff>0?'D-'+diff:'D+'+Math.abs(diff))+' | '+e.nm+' ('+(e.dt.getMonth()+1)+'/'+e.dt.getDate()+')'}).join('<br>')+'<br><br>대시보드 상단에서 실시간 확인 가능!';
   }
 
@@ -4547,14 +4654,15 @@ function processAI(q){
 // === 세무 캘린더 ===
 var calMonth=new Date().getMonth(),calYear=new Date().getFullYear();
 var TAX_EVENTS=[
-  {m:0,d:10,nm:'원천세 납부',c:'#E53935'},{m:0,d:25,nm:'부가세 확정신고',c:'#E53935'},
+  // 개인사업자 세금 캘린더 (팩트 기반)
+  {m:0,d:10,nm:'원천세 납부',c:'#F57C00'},{m:0,d:25,nm:'부가세 2기 확정신고 (7~12월분)',c:'#E53935'},
   {m:1,d:10,nm:'원천세 납부',c:'#F57C00'},{m:2,d:10,nm:'원천세 납부',c:'#F57C00'},
-  {m:3,d:10,nm:'원천세 납부',c:'#F57C00'},{m:3,d:25,nm:'부가세 예정신고',c:'#E53935'},
-  {m:4,d:10,nm:'원천세 납부',c:'#F57C00'},{m:4,d:31,nm:'종합소득세 신고',c:'#C62828'},
+  {m:3,d:10,nm:'원천세 납부',c:'#F57C00'},{m:3,d:25,nm:'부가세 예정고지 납부',c:'#FF9800'},
+  {m:4,d:10,nm:'원천세 납부',c:'#F57C00'},{m:4,d:31,nm:'종합소득세 확정신고',c:'#C62828'},
   {m:5,d:10,nm:'원천세 납부',c:'#F57C00'},{m:6,d:10,nm:'원천세 납부',c:'#F57C00'},
-  {m:6,d:25,nm:'부가세 확정신고',c:'#E53935'},{m:7,d:10,nm:'원천세 납부',c:'#F57C00'},
+  {m:6,d:25,nm:'부가세 1기 확정신고 (1~6월분)',c:'#E53935'},{m:7,d:10,nm:'원천세 납부',c:'#F57C00'},
   {m:8,d:10,nm:'원천세 납부',c:'#F57C00'},{m:9,d:10,nm:'원천세 납부',c:'#F57C00'},
-  {m:9,d:25,nm:'부가세 예정신고',c:'#E53935'},{m:10,d:10,nm:'원천세 납부',c:'#F57C00'},
+  {m:9,d:25,nm:'부가세 예정고지 납부',c:'#FF9800'},{m:10,d:10,nm:'원천세 납부',c:'#F57C00'},
   {m:10,d:30,nm:'종소세 중간예납',c:'#C62828'},{m:11,d:10,nm:'원천세 납부',c:'#F57C00'}
 ];
 function calNav(dir){calMonth+=dir;if(calMonth>11){calMonth=0;calYear++}if(calMonth<0){calMonth=11;calYear--}renderCal()}
@@ -5095,7 +5203,7 @@ function generateTaxReport(){
   // Sheet 1: 부가가치세 신고서 (홈택스 양식 매칭)
   // ================================================================
   var v=[];
-  var now=new Date();var vatPeriod=now.getMonth()<6?'1기':'2기';var vatType=now.getMonth()%6<3?'예정':'확정';
+  var now=new Date();var vatPeriod=now.getMonth()<6?'1기':'2기';var vatType='확정'; // 개인사업자는 확정신고만
   v.push(['','일반과세자 부가가치세 신고서','','','','']);
   v.push(['','사업자: 와이제이 파트너스 (365-35-00893) 지윤진','','신고기간: '+now.getFullYear()+'년 '+vatPeriod+' '+vatType,'','']);
   v.push(['']);
@@ -5127,7 +5235,7 @@ function generateTaxReport(){
   v.push(['납부(환급)세액 계산','','','','금액','']);
   v.push(['══════════════════════════════════════════','','','','','']);
   v.push(['(53) 차감·가감계 (매출세액-매입세액)','','','',vat,'← 홈택스에 자동 계산']);
-  v.push(['(62) 예정신고 미환급세액','','','',0,'전기 미환급 있으면 입력']);
+  v.push(['(62) 예정고지세액 (기납부세액)','','','',0,'전기 미환급 있으면 입력']);
   v.push(['(64) 예정고지세액','','','',0,'고지서 금액 입력']);
   v.push(['(65) 전자신고 세액공제','','','',10000,'홈택스 전자신고 시 (조특법§104조의8)']);
   var vatFinal=Math.max(vat-10000,0);
@@ -5339,7 +5447,7 @@ function generateTaxReport(){
   t.push(['Ⅲ. 과세표준 및 세액','','금액','']);
   t.push(['══════════════════════════════','','','']);
   t.push(['⑪ 과세표준','',taxBase,'④ - ⑩']);
-  var rateStr=taxBase<=14000000?'6%':taxBase<=50000000?'15%':taxBase<=88000000?'24%':taxBase<=150000000?'35%':'38%~';
+  var rateStr=taxBase<=14000000?'6%':taxBase<=50000000?'15%':taxBase<=88000000?'24%':taxBase<=150000000?'35%':taxBase<=300000000?'38%':taxBase<=500000000?'40%':taxBase<=1000000000?'42%':'45%';
   t.push(['⑫ 적용세율','',rateStr,'소득세법§55 누진세율']);
   t.push(['⑬ 산출세액','',calcTax,fm(calcTax)+'원']);
   t.push(['']);
@@ -5405,7 +5513,7 @@ function generateTaxReport(){
   t.push(['1. 중소기업 특별세액감면 신청','',smeReduction,'홈택스→세액감면→중소기업 선택']);
   t.push(['2. 불공제→공제 전환','',ndTx,'적격증빙 확보 → 세금계산서 재발급']);
   t.push(['3. 사업용 신용카드 등록','','','홈택스→사업용신용카드→등록 (매입세액공제)']);
-  t.push(['4. 노란우산공제 가입','',Math.min(bizNet>40000000?2000000:3000000,5000000),'소득공제 연 200~300만원 (소기업 기준)']);
+  t.push(['4. 노란우산공제 가입','',bizNet<=40000000?6000000:bizNet<=100000000?4000000:2000000,'소득공제 연 200~600만원 (2025년~ 개정)']);
   t.push(['5. 사업용 경비 증빙 확보','','','부족한 매입은 연말까지 세금계산서 수취']);
   if(bookCredit>0){
     t.push(['6. 기장세액공제','',bookCredit,'간편장부 대상자→복식부기 기장 시']);
@@ -5713,7 +5821,8 @@ function generateTaxReport(){
   var txt='';
   txt+='═══════════════════════════════════════════════\n';
   txt+='  홈택스 부가가치세 신고 - 복사 붙여넣기용\n';
-  txt+='  와이제이파트너스 지윤진 | 2026년 1기 확정\n';
+  var curQ=new Date().getMonth()<6?'1기':'2기';
+  txt+='  와이제이파트너스 지윤진 | '+new Date().getFullYear()+'년 '+curQ+' 확정\n';
   txt+='═══════════════════════════════════════════════\n\n';
   
   txt+='【작성 요령】\n';
@@ -5882,7 +5991,8 @@ function calcIncomeTax(taxBase){
   if(taxBase<=150000000)return 14000000*0.06+36000000*0.15+38000000*0.24+(taxBase-88000000)*0.35;
   if(taxBase<=300000000)return 14000000*0.06+36000000*0.15+38000000*0.24+62000000*0.35+(taxBase-150000000)*0.38;
   if(taxBase<=500000000)return 14000000*0.06+36000000*0.15+38000000*0.24+62000000*0.35+150000000*0.38+(taxBase-300000000)*0.40;
-  return 14000000*0.06+36000000*0.15+38000000*0.24+62000000*0.35+150000000*0.38+200000000*0.40+(taxBase-500000000)*0.42;
+  if(taxBase<=1000000000)return 14000000*0.06+36000000*0.15+38000000*0.24+62000000*0.35+150000000*0.38+200000000*0.40+(taxBase-500000000)*0.42;
+  return 14000000*0.06+36000000*0.15+38000000*0.24+62000000*0.35+150000000*0.38+200000000*0.40+500000000*0.42+(taxBase-1000000000)*0.45;
 }
 
 function renderSave(){
@@ -6030,7 +6140,10 @@ function renderSave(){
   else if(taxBase2<=50000000)calcTax2=Math.round(840000+(taxBase2-14000000)*0.15);
   else if(taxBase2<=88000000)calcTax2=Math.round(6240000+(taxBase2-50000000)*0.24);
   else if(taxBase2<=150000000)calcTax2=Math.round(15360000+(taxBase2-88000000)*0.35);
-  else calcTax2=Math.round(37060000+(taxBase2-150000000)*0.38);
+  else if(taxBase2<=300000000)calcTax2=Math.round(37060000+(taxBase2-150000000)*0.38);
+  else if(taxBase2<=500000000)calcTax2=Math.round(94060000+(taxBase2-300000000)*0.40);
+  else if(taxBase2<=1000000000)calcTax2=Math.round(174060000+(taxBase2-500000000)*0.42);
+  else calcTax2=Math.round(384060000+(taxBase2-1000000000)*0.45);
   var finalTax2=Math.max(calcTax2-20000,0);
 
   function cpBtn(val){return'<button onclick="navigator.clipboard.writeText(\''+val+'\');this.textContent=\'✅\';var b=this;setTimeout(function(){b.textContent=\'📋\'},800)" style="background:none;border:1px solid #ddd;border-radius:4px;padding:2px 6px;cursor:pointer;font-size:11px;margin-left:4px" title="복사">📋</button>'}
@@ -6631,7 +6744,7 @@ function renderTaxTips(){
   var b=getBaseNumbers();
   var tips=[
     {icon:'fa-receipt',bg:'#E8F5E9',color:'#2E7D32',title:'사업용 신용카드 등록',desc:'홈택스에 사업용 카드를 등록하면 매입세액 자동 공제. 개인 카드로 결제해도 사업용 등록만 하면 OK.',save:b.ndTx>0?fm(b.ndTx)+'원 절세 가능':'등록 필수'},
-    {icon:'fa-umbrella',bg:'#E3F2FD',color:'#1565C0',title:'노란우산공제 가입',desc:'월 5~50만원 납입 시 연 최대 500만원 소득공제. 사업자의 퇴직금 역할도 겸합니다.',save:'연 최대 500만원 공제'},
+    {icon:'fa-umbrella',bg:'#E3F2FD',color:'#1565C0',title:'노란우산공제 가입',desc:'월 5~100만원 납입 시 연 최대 600만원 소득공제 (2025년~ 개정). 사업자의 퇴직금 역할도 겸합니다.',save:'연 최대 600만원 공제'},
     {icon:'fa-building',bg:'#FFF3E0',color:'#E65100',title:'자택 사업장 경비 인정',desc:'관리비/전기세(50%), 인터넷(100%), 핸드폰(70%)를 사업경비로 인정받으세요.',save:'연 100~200만원 절세'},
     {icon:'fa-car',bg:'#F3E5F5',color:'#6A1B9A',title:'업무용 차량 경비 처리',desc:'업무용 사용비율에 따라 차량유지비, 주유비, 보험료 경비 처리 가능.',save:'차량비 50~70% 경비'},
     {icon:'fa-graduation-cap',bg:'#E0F7FA',color:'#00695C',title:'교육비/도서 구매',desc:'사업 관련 교육, 세미나, 도서 구매비는 100% 경비 인정.',save:'전액 경비 인정'},
@@ -6807,11 +6920,9 @@ function checkUpcomingDeadlines(){
   var now=new Date();now.setHours(0,0,0,0);
   var y=now.getFullYear();
   var deadlines=[
-    {date:new Date(y,0,25),name:'부가세 확정신고 마감',icon:'fa-receipt'},
-    {date:new Date(y,3,25),name:'부가세 1기 예정 마감',icon:'fa-receipt'},
+    {date:new Date(y,0,25),name:'부가세 2기 확정신고 마감 (7~12월분)',icon:'fa-receipt'},
     {date:new Date(y,4,31),name:'종합소득세 신고 마감',icon:'fa-landmark'},
-    {date:new Date(y,6,25),name:'부가세 확정신고 마감',icon:'fa-receipt'},
-    {date:new Date(y,9,25),name:'부가세 2기 예정 마감',icon:'fa-receipt'}
+    {date:new Date(y,6,25),name:'부가세 1기 확정신고 마감 (1~6월분)',icon:'fa-receipt'}
   ];
   deadlines.forEach(function(dl){
     var diff=Math.ceil((dl.date-now)/(86400000));
@@ -6921,7 +7032,7 @@ document.addEventListener('blur',function(e){
 },true);
 
 // === TAX FILING MODE (세금 신고 모드) ===
-var currentVatQuarter='1H1';
+var currentVatQuarter='1H'; // 개인사업자: 1기(1~6월), 2기(7~12월)
 var currentIncType='simple';
 
 function initFilingMode(){
@@ -6941,7 +7052,9 @@ function switchFilingTab(tab){
 function selectVatQuarter(btn,q){
   document.querySelectorAll('#vat-quarter-select .filing-quarter-btn').forEach(function(b){b.classList.remove('active')});
   btn.classList.add('active');currentVatQuarter=q;
-  var periods={'1H1':'2026.01.01 ~ 2026.03.31','1H2':'2026.04.01 ~ 2026.06.30','2H1':'2026.07.01 ~ 2026.09.30','2H2':'2026.10.01 ~ 2026.12.31'};
+  // 개인사업자: 1기(1~6월, 7월25일까지 신고), 2기(7~12월, 다음해 1월25일까지 신고)
+  var y=new Date().getFullYear();
+  var periods={'1H':y+'.01.01 ~ '+y+'.06.30','2H':y+'.07.01 ~ '+y+'.12.31'};
   document.getElementById('vf-period').value=periods[q]||'';
   checkVatDraft();
 }
@@ -7452,7 +7565,7 @@ function validateIncFiling(){
   if(salaryTotal>0&&prepaid===0)issues.push({type:'warn',msg:'급여소득이 있으나 기납부세액이 0입니다. 원천징수영수증을 확인하세요.'});
 
   var umbrella=parseFilingVal('if-umbrella');
-  if(umbrella>5000000)issues.push({type:'error',msg:'노란우산공제 한도는 연 500만원입니다. 금액을 확인하세요.'});
+  if(umbrella>6000000)issues.push({type:'error',msg:'노란우산공제 한도는 연 600만원입니다 (2025년~ 개정). 소득 구간에 따라 200~600만원.'});
 
   if(issues.length===0)issues.push({type:'ok',msg:'입력값 검증 완료! 홈택스에서 최종 신고를 진행하세요.'});
 
