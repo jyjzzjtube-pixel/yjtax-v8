@@ -4722,12 +4722,12 @@ var trendChart=null;
 function renderTrend(){
   var months={};
   D.tax.forEach(function(r){
-    var key=(String(r.date).substring(0,7)||'2026-02').replace(/\//g,'-');
+    var key=(String(r.date).substring(0,7)||'2026-02').replace(/[\/\.]/g,'-');
     if(!months[key])months[key]={sales:0,expense:0};
     if(r.type==='매출')months[key].sales+=r.supply;else months[key].expense+=r.supply;
   });
   D.bank.forEach(function(r){
-    var key=(String(r.date).substring(0,7)||'2026-02').replace(/\//g,'-');
+    var key=(String(r.date).substring(0,7)||'2026-02').replace(/[\/\.]/g,'-');
     if(!months[key])months[key]={sales:0,expense:0};
     months[key].sales+=r.inAmt;months[key].expense+=r.outAmt;
   });
