@@ -4734,7 +4734,7 @@ function renderTrend(){
   var keys=Object.keys(months).sort();
   if(!keys.length)keys=['2026-02'];
   if(!months['2026-02'])months['2026-02']={sales:0,expense:0};
-  var labels=keys.map(function(k){var p=k.split('-');return p[1]+'월'});
+  var labels=keys.map(function(k){var p=k.split('-');return (p.length>=2?parseInt(p[1]):'?')+'월'});
   var salesData=keys.map(function(k){return months[k].sales});
   var expData=keys.map(function(k){return months[k].expense});
   var profitData=keys.map(function(k){return months[k].sales-months[k].expense});
@@ -4749,7 +4749,9 @@ function renderTrend(){
   if(keys.length>=2){
     var last=months[keys[keys.length-1]],prev=months[keys[keys.length-2]];
     var sChg=prev.sales>0?Math.round((last.sales-prev.sales)/prev.sales*100):0;
+    sChg=Math.max(-999,Math.min(999,sChg));
     var eChg=prev.expense>0?Math.round((last.expense-prev.expense)/prev.expense*100):0;
+    eChg=Math.max(-999,Math.min(999,eChg));
     document.getElementById('trend-analysis').innerHTML='<b>📊 자동 분석</b><br>▸ 매출: 전월 대비 <b style="color:'+(sChg>=0?'var(--bl)':'var(--rd)')+'">'+sChg+'%</b> '+(sChg>=0?'증가':'감소')+'<br>▸ 매입: 전월 대비 <b style="color:'+(eChg>=0?'var(--rd)':'var(--gn)')+'">'+eChg+'%</b> '+(eChg>=0?'증가':'감소');
   }else document.getElementById('trend-analysis').innerHTML='<div style="color:var(--sub)">2개월 이상 데이터가 있으면 추세 분석이 표시됩니다.</div>';
 }
@@ -5995,7 +5997,7 @@ if(loaded&&!D.isDemo){setTimeout(function(){
   if(dataCount>0)showToast('🔒 데이터 안전 ('+dataCount+'건 · 자동백업 ✅)');
 },2000)}
 if(!loaded){D.tax=DTAX.slice();D.isDemo=true}
-rAll();renderDD();renderMoney();renderSave();initTaxCut();renderCal();renderTrend();checkMismatch();renderClients();checkCalAlarms();
+rAll();renderDD();renderMoney();renderSave();initTaxCut();renderCal();checkCalAlarms();
 // 데이터 있으면 해당 탭 자동 활성화
 setTimeout(function(){
   var btns=document.querySelectorAll('.ib');
