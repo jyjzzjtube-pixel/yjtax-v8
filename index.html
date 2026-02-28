@@ -6,12 +6,12 @@
 <title>YJ Tax Master v9.2</title>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <style>
 :root{--bg:#F4F6F9;--nv:#1a2b4b;--nvl:#2a3f6b;--gd:#FFD700;--gdb:#FFFDF0;--bl:#2E86C1;--gn:#27AE60;--rd:#E74C3C;--or:#F39C12;--pr:#8E44AD;--tx:#1C1C1C;--sub:#888;--r:16px;--rs:10px;--sh:0 2px 12px rgba(0,0,0,.06)}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -424,7 +424,7 @@ input:focus,select:focus,textarea:focus,button:focus-visible{
   <div class="cd fi d1" style="padding:16px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
       <button onclick="calNav(-1)" style="background:none;border:none;cursor:pointer;font-size:18px;color:var(--nv);padding:4px 10px"><i class="fas fa-chevron-left"></i></button>
-      <div style="font-size:16px;font-weight:700;color:var(--nv)" id="cal-title">2026년 2월</div>
+      <div style="font-size:16px;font-weight:700;color:var(--nv)" id="cal-title"></div>
       <button onclick="calNav(1)" style="background:none;border:none;cursor:pointer;font-size:18px;color:var(--nv);padding:4px 10px"><i class="fas fa-chevron-right"></i></button>
     </div>
     <div style="display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:11px;font-weight:600;color:var(--sub);margin-bottom:6px"><div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div></div>
@@ -450,7 +450,7 @@ input:focus,select:focus,textarea:focus,button:focus-visible{
     </div>
   </div>
   <div class="vat fi d3"><div class="vat-t">🚩 부가가치세 (확정신고)</div><div style="font-size:11px;color:#C62828;margin-bottom:4px" id="vat-period">1기: 1~6월분 → 7/25 신고 | 2기: 7~12월분 → 1/25 신고</div><div class="vat-a" id="v-a">0 원</div><div class="vat-d" id="v-d">파일 업로드 시 자동 계산</div></div>
-  <div class="fi d3" id="inc-box" style="background:linear-gradient(135deg,#EBF5FB,#D6EAF8);border:3px solid var(--bl);border-radius:var(--r);padding:28px;text-align:center;margin:0 0 18px;position:relative;overflow:hidden"><div style="position:absolute;top:-30px;left:-30px;width:100px;height:100px;background:rgba(46,134,193,.1);border-radius:50%"></div><div style="font-size:14px;color:#456;font-weight:600;position:relative">📋 예정 종합소득세 (전체 소득 합산)</div><div style="font-size:11px;color:#1565C0;margin:4px 0" id="inc-period">2025년 1월~12월 → 2026년 5월 31일 신고</div><div style="font-size:40px;font-weight:800;margin:8px 0;position:relative;color:var(--nv)" id="inc-a">0 원</div><div style="font-size:12px;color:#789;position:relative" id="inc-d">3개 소득 합산 · 기납부세액 차감</div><div style="display:flex;justify-content:center;gap:12px;margin-top:12px;position:relative;flex-wrap:wrap"><div style="background:#fff;padding:8px 14px;border-radius:var(--rs);font-size:11px;cursor:pointer" onclick="switchTab(3)"><span style="color:var(--sub)">과세표준</span><br><strong id="inc-base">0원</strong></div><div style="background:#fff;padding:8px 14px;border-radius:var(--rs);font-size:11px;cursor:pointer" onclick="switchTab(3)"><span style="color:var(--sub)">산출세액</span><br><strong id="inc-calc">0원</strong></div><div style="background:#fff;padding:8px 14px;border-radius:var(--rs);font-size:11px;cursor:pointer" onclick="switchTab(3)"><span style="color:var(--sub)">기납부세액</span><br><strong id="inc-prepaid" style="color:var(--bl)">-0원</strong></div></div></div>
+  <div class="fi d3" id="inc-box" style="background:linear-gradient(135deg,#EBF5FB,#D6EAF8);border:3px solid var(--bl);border-radius:var(--r);padding:28px;text-align:center;margin:0 0 18px;position:relative;overflow:hidden"><div style="position:absolute;top:-30px;left:-30px;width:100px;height:100px;background:rgba(46,134,193,.1);border-radius:50%"></div><div style="font-size:14px;color:#456;font-weight:600;position:relative">📋 예정 종합소득세 (전체 소득 합산)</div><div style="font-size:11px;color:#1565C0;margin:4px 0" id="inc-period"></div><div style="font-size:40px;font-weight:800;margin:8px 0;position:relative;color:var(--nv)" id="inc-a">0 원</div><div style="font-size:12px;color:#789;position:relative" id="inc-d">3개 소득 합산 · 기납부세액 차감</div><div style="display:flex;justify-content:center;gap:12px;margin-top:12px;position:relative;flex-wrap:wrap"><div style="background:#fff;padding:8px 14px;border-radius:var(--rs);font-size:11px;cursor:pointer" onclick="switchTab(3)"><span style="color:var(--sub)">과세표준</span><br><strong id="inc-base">0원</strong></div><div style="background:#fff;padding:8px 14px;border-radius:var(--rs);font-size:11px;cursor:pointer" onclick="switchTab(3)"><span style="color:var(--sub)">산출세액</span><br><strong id="inc-calc">0원</strong></div><div style="background:#fff;padding:8px 14px;border-radius:var(--rs);font-size:11px;cursor:pointer" onclick="switchTab(3)"><span style="color:var(--sub)">기납부세액</span><br><strong id="inc-prepaid" style="color:var(--bl)">-0원</strong></div></div></div>
 
   <!-- 소득 통합 관리 -->
   <div class="cd fi d3" style="border-left:4px solid var(--pr)">
@@ -1437,8 +1437,8 @@ input:focus,select:focus,textarea:focus,button:focus-visible{
         <input type="text" id="sub-amount" placeholder="월 결제금액 (원)" oninput="fmtInput(this)">
         <select id="sub-day">
           <option value="">결제일 선택</option>
-          <script>for(var _i=1;_i<=28;_i++)document.write('<option value="'+_i+'">매월 '+_i+'일</option>')</script>
         </select>
+        <script>(function(){var sel=document.getElementById('sub-day');for(var _i=1;_i<=28;_i++){var opt=document.createElement('option');opt.value=_i;opt.textContent='매월 '+_i+'일';sel.appendChild(opt)}})()</script>
         <select id="sub-method">
           <option value="카드">카드</option>
           <option value="계좌">계좌이체</option>
@@ -1599,7 +1599,7 @@ input:focus,select:focus,textarea:focus,button:focus-visible{
           </div>
           <div class="filing-row">
             <div class="filing-field"><label>대표자명</label><input type="text" id="vf-rep-name" value="지윤진" onchange="calcVatFiling()"></div>
-            <div class="filing-field"><label>신고 기간</label><input type="text" id="vf-period" value="2026.01.01 ~ 2026.06.30" readonly style="background:#f5f5f5"></div>
+            <div class="filing-field"><label>신고 기간</label><input type="text" id="vf-period" value="" readonly style="background:#f5f5f5"></div>
           </div>
         </div>
       </div>
@@ -1717,7 +1717,7 @@ input:focus,select:focus,textarea:focus,button:focus-visible{
     <div class="filing-official-form" id="inc-official-form">
       <div class="form-header" style="background:linear-gradient(135deg,#2E7D32,#1B5E20)">
         <h3>종합소득세 과세표준 확정신고서</h3>
-        <p>2025년 귀속 종합소득세 (2026년 5월 신고)</p>
+        <p id="inc-filing-subtitle"></p>
       </div>
 
       <!-- Step 1: 소득금액 계산 -->
@@ -1909,7 +1909,7 @@ input:focus,select:focus,textarea:focus,button:focus-visible{
 
 </div><!-- /ct -->
 
-<div class="nav"><div class="ni">
+<div class="nav" role="navigation" aria-label="메인 메뉴"><div class="ni">
   <button class="nb on" onclick="sw(1,this)"><i class="fas fa-chart-line"></i><span>대시보드</span></button>
   <button class="nb" onclick="sw(2,this)"><i class="fas fa-book"></i><span>장부</span></button>
   <button class="nb" onclick="sw(7,this)"><i class="fas fa-file-signature"></i><span>신고</span></button>
@@ -2025,7 +2025,7 @@ function calcWithholding(){
 .nd-toggle.off{background:#ddd}
 </style>
 
-<div class="mo" id="mo"><div class="ml"><h3 id="mt">파일 종류 선택</h3><div class="ml-fn" id="mfn"></div><div class="ml-g" id="ml-g-btns">
+<div class="mo" id="mo" role="dialog" aria-modal="true"><div class="ml"><h3 id="mt">파일 종류 선택</h3><div class="ml-fn" id="mfn"></div><div class="ml-g" id="ml-g-btns">
   <button class="ml-b" style="border-color:var(--bl);color:var(--bl)" onclick="mC('bank')"><i class="fas fa-building-columns"></i>통장</button>
   <button class="ml-b" style="border-color:var(--or);color:var(--or)" onclick="mC('tax')"><i class="fas fa-file-invoice"></i>세금계산서</button>
   <button class="ml-b" style="border-color:var(--pr);color:var(--pr)" onclick="mC('card')"><i class="fas fa-credit-card"></i>카드</button>
@@ -2062,8 +2062,8 @@ function calcWithholding(){
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div style="width:40px;height:40px;border-radius:10px;background:#E8F0FE;display:flex;align-items:center;justify-content:center;font-size:18px;color:#4285F4"><i class="fab fa-google-drive"></i></div><div><div style="font-size:15px;font-weight:700">Google Drive</div><div style="font-size:11px;color:var(--sub)">파일 자동 분류 · 클라우드 저장</div></div><div id="drive-badge" style="margin-left:auto;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;background:#f0f0f0;color:#999">미연동</div></div>
       <div id="drive-env-warning" style="display:none;background:#FFF3E0;border:1px solid #FFE0B2;border-radius:var(--rs);padding:10px;font-size:11px;color:#E65100;margin-bottom:10px;line-height:1.5"><b>⚠️ file:// 환경에서는 Drive 연동이 불가합니다.</b><br><a href="https://jyjzzjtube-pixel.github.io/yjtax-v8/" target="_blank" style="color:#0D47A1;font-weight:700">https://jyjzzjtube-pixel.github.io/yjtax-v8/</a> 에서 실행하세요.<br>⚡ 또는: Google Cloud Console → OAuth 클라이언트 → 승인된 JavaScript 출처에 현재 도메인 추가</div>
       <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px">
-        <div><div style="font-size:11px;font-weight:600;color:var(--sub);margin-bottom:4px">API Key</div><input type="text" id="drive-api-key" value="AIzaSyCs7QZeq1xkb6VGj0iwtcYzr7C_jElvNXg" style="width:100%;padding:10px;border:2px solid #e0e0e0;border-radius:var(--rs);font-family:inherit;font-size:12px"></div>
-        <div><div style="font-size:11px;font-weight:600;color:var(--sub);margin-bottom:4px">Client ID</div><input type="text" id="drive-client-id" value="298397708299-b1ueeug2sovkd5q62v2565af435pv4q1.apps.googleusercontent.com" style="width:100%;padding:10px;border:2px solid #e0e0e0;border-radius:var(--rs);font-family:inherit;font-size:12px"></div>
+        <div><div style="font-size:11px;font-weight:600;color:var(--sub);margin-bottom:4px">API Key</div><input type="text" id="drive-api-key" placeholder="API Key를 입력하세요" style="width:100%;padding:10px;border:2px solid #e0e0e0;border-radius:var(--rs);font-family:inherit;font-size:12px"></div>
+        <div><div style="font-size:11px;font-weight:600;color:var(--sub);margin-bottom:4px">Client ID</div><input type="text" id="drive-client-id" placeholder="Client ID를 입력하세요" style="width:100%;padding:10px;border:2px solid #e0e0e0;border-radius:var(--rs);font-family:inherit;font-size:12px"></div>
       </div>
       <div style="display:flex;gap:6px;margin-bottom:10px">
         <button onclick="connectDrive()" id="drive-connect-btn" style="flex:1;padding:12px;background:#4285F4;color:#fff;border:none;border-radius:var(--rs);font-family:inherit;font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px"><i class="fab fa-google-drive"></i>Drive 연결</button>
@@ -2179,6 +2179,8 @@ function calcWithholding(){
 
 <script>
 if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+// XSS 방지: HTML 특수문자 이스케이프 유틸리티
+function escHtml(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
 var D={bank:[],tax:[],card:[],proof:[],etc:[],files:[],isDemo:true},pn={f:null,r:null,t:''};
 // localStorage 저장/로드
 function saveData(){
@@ -2188,7 +2190,7 @@ function saveData(){
     // 자동 이중백업: 매 저장 시 shadow 복사본 유지
     localStorage.setItem('yjtax_D_shadow',JSON.stringify(D));
     localStorage.setItem('yjtax_evt_shadow',JSON.stringify(evtData));
-  }catch(e){}
+  }catch(e){console.warn('localStorage 저장 오류:',e)}
 }
 function ensureD(){
   // 구버전 localStorage 데이터 호환 + 누락 속성 보정
@@ -2209,7 +2211,7 @@ function loadData(){
     return false;
   }catch(e){
     // 파싱 실패 시 shadow 시도
-    try{var shadow2=localStorage.getItem('yjtax_D_shadow');if(shadow2){D=JSON.parse(shadow2);ensureD();showToast('⚠️ 손상 감지 → 백업에서 복원');saveData();return true}}catch(e2){}
+    try{var shadow2=localStorage.getItem('yjtax_D_shadow');if(shadow2){D=JSON.parse(shadow2);ensureD();showToast('⚠️ 손상 감지 → 백업에서 복원');saveData();return true}}catch(e2){console.warn('shadow 복원 실패:',e2)}
     return false;
   }
 }
@@ -2224,12 +2226,12 @@ function dailySnapshot(){
     // 7일 이전 스냅샷 삭제
     var keys=[];for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.startsWith('yjtax_snap_'))keys.push(k)}
     keys.sort();while(keys.length>7){localStorage.removeItem(keys.shift())}
-  }catch(e){}
+  }catch(e){console.warn('일간 스냅샷 저장 오류:',e)}
 }
 function getAllBackupData(){
   var allKeys=['yjtax_D','yjtax_evt','yjtax_income','yjtax_cal_memos','yjtax_salarylog','yjtax_gemini_key','yjtax_gemini_backup','yjtax_claude_key','yjtax_nts_key','yjtax_perplexity_key','yjtax_alpha_key','yjtax_drive','yjtax_private','yjtax_subscriptions','yjtax_credit'];
   var backup={version:'v8',date:new Date().toISOString(),keys:{}};
-  allKeys.forEach(function(k){try{var v=localStorage.getItem(k);if(v)backup.keys[k]=v}catch(e){}});
+  allKeys.forEach(function(k){try{var v=localStorage.getItem(k);if(v)backup.keys[k]=v}catch(e){console.warn('백업 키 읽기 오류:',k,e)}});
   return backup;
 }
 function updateBackupStatus(){
@@ -2243,9 +2245,9 @@ function updateBackupStatus(){
       var dataCount=(D.tax?D.tax.length:0)+(D.bank?D.bank.length:0)+(D.card?D.card.length:0)+(D.proof?D.proof.length:0);
       statusEl.innerHTML='🔒 이중백업 '+(hasShadow?'✅':'❌')+' · 스냅샷 <b>'+snaps.length+'</b>개 (최근: '+lastSnap+') · 데이터 <b>'+dataCount+'</b>건';
     }
-  }catch(e){}
+  }catch(e){console.warn('백업 상태 업데이트 오류:',e)}
 }
-function loadEvt(){try{var e=localStorage.getItem('yjtax_evt');if(e)evtData=JSON.parse(e)}catch(e){}}
+function loadEvt(){try{var e=localStorage.getItem('yjtax_evt');if(e)evtData=JSON.parse(e)}catch(e){console.warn('경조사 데이터 로드 오류:',e)}}
 var DTAX=[{date:'2026-02-09',type:'매출',client:'주식회사 원윌앤코',supply:6000000,tax:600000,deductible:'-',item:'차알 을지로점 프랜차이즈 가맹 영업 대행 및 통합 마케팅 용역',bizNo:'275-88-03346'},{date:'2026-02-04',type:'매출',client:'주식회사 원윌앤코',supply:3252636,tax:325264,deductible:'-',item:'차알 스타필드 고양점 경영 자문 및 온라인 마케팅 용역',bizNo:'275-88-03346'},{date:'2026-02-01',type:'매출',client:'주식회사 원윌앤코',supply:3000000,tax:300000,deductible:'-',item:'가맹사업 경영자문 및 영업지원 용역비',bizNo:'275-88-03346'},{date:'2026-02-01',type:'매입',client:'쿠팡 주식회사',supply:25936,tax:2594,deductible:'불공제',item:''},{date:'2026-02-01',type:'매입',client:'키다쳉트레이딩',supply:19909,tax:1991,deductible:'불공제',item:''},{date:'2026-02-01',type:'매입',client:'쿠팡 주식회사',supply:50182,tax:5018,deductible:'불공제',item:''},{date:'2026-02-01',type:'매입',client:'주식회사 위드온',supply:25636,tax:2564,deductible:'공제',item:''}];
 
 // === NAV ===
@@ -2283,7 +2285,7 @@ function shareEmail(){
   window.open('mailto:jyjzzjtube@gmail.com?subject='+encodeURIComponent(subject)+'&body='+body);
 }
 // 세무캘린더 메모
-var calMemos={};try{calMemos=JSON.parse(localStorage.getItem('yjtax_cal_memos'))||{}}catch(e){}
+var calMemos={};try{calMemos=JSON.parse(localStorage.getItem('yjtax_cal_memos'))||{}}catch(e){console.warn('캘린더 메모 로드 오류:',e)}
 function addCalMemo(dateStr){
   var existing=calMemos[dateStr]||'';
   var memo=prompt((dateStr)+' 메모 입력:',existing?existing.replace(/\[알림\]/g,''):'');
@@ -2701,7 +2703,7 @@ function resetModal(){
   document.getElementById('ml-g-btns').style.display='';
   document.getElementById('mfn').style.display='';
 }
-function resetAll(){if(!confirm('모든 데이터를 초기화하시겠습니까?'))return;D.bank=[];D.tax=DTAX.slice();D.card=[];D.proof=[];D.etc=[];D.files=[];D.isDemo=true;evtData=[];ndToggles={};try{localStorage.removeItem('yjtax_D');localStorage.removeItem('yjtax_evt')}catch(e){}rAll();try{renderEvtList();renderNdSim()}catch(e){}}
+function resetAll(){if(!confirm('모든 데이터를 초기화하시겠습니까?'))return;D.bank=[];D.tax=DTAX.slice();D.card=[];D.proof=[];D.etc=[];D.files=[];D.isDemo=true;evtData=[];ndToggles={};try{localStorage.removeItem('yjtax_D');localStorage.removeItem('yjtax_evt')}catch(e){console.warn('초기화 중 localStorage 오류:',e)}rAll();try{renderEvtList();renderNdSim()}catch(e){console.warn('초기화 후 렌더링 오류:',e)}}
 
 // === EXPORT ===
 function exXL(){
@@ -2727,7 +2729,7 @@ function exCSV(){
   D.proof.forEach(function(r){all.push([r.date,'지출증빙('+r.proofType+')',r.desc+' ['+r.category+']',0,r.total,r.deductible])});
   var csv='날짜,분류,내용,입금/공급가액,출금/세액,비고\n'+all.map(function(r){return r.join(',')}).join('\n');
   var blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
-  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='YJ_장부_'+new Date().toISOString().slice(0,10)+'.csv';a.click()
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='YJ_장부_'+new Date().toISOString().slice(0,10)+'.csv';a.click();setTimeout(function(){URL.revokeObjectURL(a.href)},1000)
 }
 function exPDF(){
   var doc=new jspdf.jsPDF('p','mm','a4');
@@ -2758,9 +2760,9 @@ function rAll(){
   try{rChart()}catch(e){console.error('[rAll] rChart error:',e)}
   try{rFL()}catch(e){console.error('[rAll] rFL error:',e)}
   try{uUI()}catch(e){console.error('[rAll] uUI error:',e)}
-  try{renderTrend()}catch(e){}
-  try{checkMismatch()}catch(e){}
-  try{renderClients()}catch(e){}
+  try{renderTrend()}catch(e){console.warn('트렌드 렌더링 오류:',e)}
+  try{checkMismatch()}catch(e){console.warn('불일치 체크 오류:',e)}
+  try{renderClients()}catch(e){console.warn('거래처 렌더링 오류:',e)}
   saveData();
 }
 function uKPI(){
@@ -2813,26 +2815,26 @@ function uKPI(){
     // 절세 금액 = 감면+공제
     var savedAmt=Math.min(Math.round(estIncTax*0.20),100000000)+70000+20000; // SME+표준+전자
     document.getElementById('kpi-saved').textContent=fm(savedAmt)+'원';
-  }catch(e){}
+  }catch(e){console.warn('KPI 계산 오류:',e)}
   document.getElementById('s-sc').textContent=st.length;document.getElementById('s-ec').textContent=et.length;
-  try{document.getElementById('s-sales-total').textContent=fm(ts)+'원';document.getElementById('s-exp-total').textContent=fm(te)+'원'}catch(e){}
+  try{document.getElementById('s-sales-total').textContent=fm(ts)+'원';document.getElementById('s-exp-total').textContent=fm(te)+'원'}catch(e){console.warn('매출/매입 합계 표시 오류:',e)}
   document.getElementById('s-nd').textContent=fm(ndTx)+'원';
   var cm={};st.forEach(function(r){cm[r.client]=(cm[r.client]||0)+r.supply});
   var tp=Object.entries(cm).sort(function(a,b){return b[1]-a[1]})[0];
   document.getElementById('s-tp').textContent=tp?tp[0]:'-';
   document.getElementById('c-bk').textContent=D.bank.length;document.getElementById('c-tx').textContent=D.tax.length;
-  document.getElementById('c-cd').textContent=D.card.length;try{document.getElementById('c-pf').textContent=D.proof.length}catch(e){};document.getElementById('c-et').textContent=D.etc.length;
+  document.getElementById('c-cd').textContent=D.card.length;try{document.getElementById('c-pf').textContent=D.proof.length}catch(e){console.warn('지출증빙 카운트 표시 오류:',e)};document.getElementById('c-et').textContent=D.etc.length;
   document.getElementById('cg').style.display=D.files.length?'grid':'none';
   var dm=document.getElementById('dm');dm.textContent=D.isDemo?'🔶 데모':'✅ 실데이터';dm.className='dm '+(D.isDemo?'dm-d':'dm-l');
   // 사업소득 표시
   var bizTs=st.reduce(function(a,r){return a+r.supply},0),bizTe=et.reduce(function(a,r){return a+r.supply},0);
-  try{var manualRev=parseInt(document.getElementById('biz-manual-revenue').value||0)*10000;var manualExp=parseInt(document.getElementById('biz-manual-expense').value||0)*10000;bizTs+=manualRev;bizTe+=manualExp}catch(e){}
+  try{var manualRev=parseInt(document.getElementById('biz-manual-revenue').value||0)*10000;var manualExp=parseInt(document.getElementById('biz-manual-expense').value||0)*10000;bizTs+=manualRev;bizTe+=manualExp}catch(e){console.warn('수동 매출/매입 입력 파싱 오류:',e)}
   var bizIncome=bizTs-bizTe;
   try{
     document.getElementById('biz-revenue').textContent=fm(bizTs)+'원';
     document.getElementById('biz-expense').textContent=fm(bizTe)+'원';
     document.getElementById('biz-income').textContent=fm(bizIncome)+'원';
-  }catch(e){}
+  }catch(e){console.warn('사업소득 표시 오류:',e)}
   // 급여/원천징수/배당 KPI 업데이트
   try{
     var salKeys=Object.keys(salaryLog).map(Number);
@@ -2869,8 +2871,8 @@ function calcSalaryDeduction(totalSalary){
 
 // 급여 기록
 var salaryLog={0:{date:'2026-01-12',net:1814110},1:{date:'2026-02-10',net:1808470}};
-try{var _sl=localStorage.getItem('yjtax_salarylog');if(_sl)salaryLog=JSON.parse(_sl)}catch(e){}
-function saveSalaryLog(){try{localStorage.setItem('yjtax_salarylog',JSON.stringify(salaryLog))}catch(e){}}
+try{var _sl=localStorage.getItem('yjtax_salarylog');if(_sl)salaryLog=JSON.parse(_sl)}catch(e){console.warn('급여 기록 로드 오류:',e)}
+function saveSalaryLog(){try{localStorage.setItem('yjtax_salarylog',JSON.stringify(salaryLog))}catch(e){console.warn('급여 기록 저장 오류:',e)}}
 
 function addSalaryRecord(){
   var dateVal=document.getElementById('sal-input-date').value;
@@ -2892,7 +2894,7 @@ function removeSalaryRecord(m){
 function calcTotalIncome(){
   var st=D.tax.filter(function(r){return r.type==='매출'}),et=D.tax.filter(function(r){return r.type==='매입'});
   var bizTs=st.reduce(function(a,r){return a+r.supply},0),bizTe=et.reduce(function(a,r){return a+r.supply},0);
-  try{bizTs+=parseInt(document.getElementById('biz-manual-revenue').value||0)*10000;bizTe+=parseInt(document.getElementById('biz-manual-expense').value||0)*10000}catch(e){}
+  try{bizTs+=parseInt(document.getElementById('biz-manual-revenue').value||0)*10000;bizTe+=parseInt(document.getElementById('biz-manual-expense').value||0)*10000}catch(e){console.warn('수동 매출/매입 합산 오류:',e)}
   var bizIncome=bizTs-bizTe;
 
   var salaryMonthly=parseInt(document.getElementById('salary-monthly').value||0)*10000;
@@ -3021,7 +3023,7 @@ function loadIncomeData(){
     if(o.bonusEntries)bonusEntries=o.bonusEntries;
     if(o.names&&o.names.length>=3){document.getElementById('income-name-1').value=o.names[0];document.getElementById('income-name-2').value=o.names[1];document.getElementById('income-name-3').value=o.names[2]}
     if(o.bizManual&&o.bizManual.length>=2){document.getElementById('biz-manual-revenue').value=o.bizManual[0]||0;document.getElementById('biz-manual-expense').value=o.bizManual[1]||0}
-  }}catch(e){}
+  }}catch(e){console.warn('소득 데이터 로드 오류:',e)}
   renderBonusList();
 }
 var bonusEntries=[];
@@ -3051,19 +3053,19 @@ function saveBonusData(){
     bonusEntries:bonusEntries,
     names:[document.getElementById('income-name-1').value,document.getElementById('income-name-2').value,document.getElementById('income-name-3').value],
     bizManual:[document.getElementById('biz-manual-revenue').value,document.getElementById('biz-manual-expense').value]
-  }))}catch(e){}
+  }))}catch(e){console.warn('소득 데이터 저장 오류:',e)}
 }
 function getBonusTotal(){return bonusEntries.reduce(function(a,e){return a+e.amt*10000},0)}
 function getBonusByType(){var sal=0,div=0;bonusEntries.forEach(function(e){if(e.type==='salary')sal+=e.amt*10000;else div+=e.amt*10000});return{salary:sal,dividend:div}}
 function rTbls(){
-  document.querySelector('#tb-bk tbody').innerHTML=D.bank.map(function(r){return'<tr><td style="white-space:nowrap">'+fD(r.date)+'</td><td style="font-size:12px;color:#555">'+(r.item||'<span style="color:#ccc">-</span>')+'</td><td style="font-size:12px;font-weight:600">'+(r.desc||'<span style="color:#ccc">-</span>')+'</td><td class="am pos">'+(r.inAmt?fm(r.inAmt):'')+'</td><td class="am neg">'+(r.outAmt?fm(r.outAmt):'')+'</td><td class="am">'+(r.balance?fm(r.balance):'')+'</td></tr>'}).join('');
+  document.querySelector('#tb-bk tbody').innerHTML=D.bank.map(function(r){return'<tr><td style="white-space:nowrap">'+fD(r.date)+'</td><td style="font-size:12px;color:#555">'+(r.item?escHtml(r.item):'<span style="color:#ccc">-</span>')+'</td><td style="font-size:12px;font-weight:600">'+(r.desc?escHtml(r.desc):'<span style="color:#ccc">-</span>')+'</td><td class="am pos">'+(r.inAmt?fm(r.inAmt):'')+'</td><td class="am neg">'+(r.outAmt?fm(r.outAmt):'')+'</td><td class="am">'+(r.balance?fm(r.balance):'')+'</td></tr>'}).join('');
   document.getElementById('em-bk').style.display=D.bank.length?'none':'block';
-  document.querySelector('#tb-tx tbody').innerHTML=D.tax.map(function(r,i){return'<tr data-idx="'+i+'" style="border-bottom:1px solid #f0f0f0"><td style="white-space:nowrap">'+fD(r.date)+'</td><td><span class="badge '+(r.type==='매출'?'b-bl':'b-rd')+'">'+r.type+'</span></td><td style="font-size:12px;font-weight:600;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+r.client+'</td><td style="font-size:11px;color:#555;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(r.item||'<span style="color:#ccc">-</span>')+'</td><td style="font-family:monospace;font-size:10px;color:#999">'+(r.bizNo||'-')+'</td><td class="am" style="font-weight:700">'+fm(r.supply)+'</td><td class="am" style="font-weight:700">'+fm(r.tax)+'</td><td><span class="badge '+(r.deductible==='공제'?'b-gn':r.deductible==='불공제'?'b-rd':'b-gy')+'">'+r.deductible+'</span></td></tr>'}).join('')+(D.tax.length?'<tr style="background:#f8f9fa;border-top:2px solid #333;font-weight:800"><td colspan="5" style="text-align:right;padding:10px">합계 (매출 '+D.tax.filter(function(r){return r.type==='매출'}).length+'건 / 매입 '+D.tax.filter(function(r){return r.type==='매입'}).length+'건)</td><td class="am pos" style="font-size:13px">'+fm(D.tax.reduce(function(a,r){return a+r.supply},0))+'</td><td class="am" style="font-size:13px">'+fm(D.tax.reduce(function(a,r){return a+r.tax},0))+'</td><td></td></tr>':'');
+  document.querySelector('#tb-tx tbody').innerHTML=D.tax.map(function(r,i){return'<tr data-idx="'+i+'" style="border-bottom:1px solid #f0f0f0"><td style="white-space:nowrap">'+fD(r.date)+'</td><td><span class="badge '+(r.type==='매출'?'b-bl':'b-rd')+'">'+escHtml(r.type)+'</span></td><td style="font-size:12px;font-weight:600;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escHtml(r.client)+'</td><td style="font-size:11px;color:#555;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(r.item?escHtml(r.item):'<span style="color:#ccc">-</span>')+'</td><td style="font-family:monospace;font-size:10px;color:#999">'+(r.bizNo?escHtml(r.bizNo):'-')+'</td><td class="am" style="font-weight:700">'+fm(r.supply)+'</td><td class="am" style="font-weight:700">'+fm(r.tax)+'</td><td><span class="badge '+(r.deductible==='공제'?'b-gn':r.deductible==='불공제'?'b-rd':'b-gy')+'">'+escHtml(r.deductible)+'</span></td></tr>'}).join('')+(D.tax.length?'<tr style="background:#f8f9fa;border-top:2px solid #333;font-weight:800"><td colspan="5" style="text-align:right;padding:10px">합계 (매출 '+D.tax.filter(function(r){return r.type==='매출'}).length+'건 / 매입 '+D.tax.filter(function(r){return r.type==='매입'}).length+'건)</td><td class="am pos" style="font-size:13px">'+fm(D.tax.reduce(function(a,r){return a+r.supply},0))+'</td><td class="am" style="font-size:13px">'+fm(D.tax.reduce(function(a,r){return a+r.tax},0))+'</td><td></td></tr>':'');
   document.getElementById('em-tx').style.display=D.tax.length?'none':'block';
-  document.querySelector('#tb-cd tbody').innerHTML=D.card.map(function(r){return'<tr><td>'+fD(r.date)+'</td><td>'+r.merchant+'</td><td style="font-size:11px;color:#555;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(r.item||'<span style="color:#ccc">-</span>')+'</td><td class="am neg">'+fm(r.amount)+'</td><td><span class="badge b-rd">'+r.type+'</span></td></tr>'}).join('');
+  document.querySelector('#tb-cd tbody').innerHTML=D.card.map(function(r){return'<tr><td>'+fD(r.date)+'</td><td>'+escHtml(r.merchant)+'</td><td style="font-size:11px;color:#555;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(r.item?escHtml(r.item):'<span style="color:#ccc">-</span>')+'</td><td class="am neg">'+fm(r.amount)+'</td><td><span class="badge b-rd">'+escHtml(r.type)+'</span></td></tr>'}).join('');
   document.getElementById('em-cd').style.display=D.card.length?'none':'block';
   // 지출증빙 테이블 (봉사료+결제방법 추가)
-  document.querySelector('#tb-pf tbody').innerHTML=D.proof.map(function(r,i){return'<tr><td style="white-space:nowrap">'+fD(r.date)+'</td><td style="font-size:12px;font-weight:600;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+r.desc+'">'+r.desc+'</td><td><span class="badge b-or" style="font-size:9px">'+r.proofType+'</span></td><td><span class="badge b-bl" style="font-size:9px">'+r.category+'</span></td><td class="am">'+fm(r.supply)+'</td><td class="am">'+fm(r.tax)+'</td><td class="am" style="color:#9C27B0">'+(r.tip?fm(r.tip):'<span style="color:#ddd">-</span>')+'</td><td class="am neg" style="font-weight:700;color:#E65100">'+fm(r.total)+'</td><td style="font-size:10px;color:#555">'+(r.payment||'-')+'</td><td>'+(r.deductible==='공제'?'<span class="badge b-gn">공제</span>':r.deductible==='불공제'?'<span class="badge b-rd">불공제</span>':'<span class="badge b-gy">'+r.deductible+'</span>')+'</td></tr>'}).join('')+(D.proof.length?'<tr style="background:#FFF8E1;border-top:2px solid #F57F17;font-weight:800"><td colspan="4" style="text-align:right;padding:10px;font-size:12px">합계 ('+D.proof.length+'건)</td><td class="am" style="font-size:12px">'+fm(D.proof.reduce(function(a,r){return a+r.supply},0))+'</td><td class="am" style="font-size:12px">'+fm(D.proof.reduce(function(a,r){return a+r.tax},0))+'</td><td class="am" style="font-size:12px;color:#9C27B0">'+fm(D.proof.reduce(function(a,r){return a+(r.tip||0)},0))+'</td><td class="am neg" style="font-size:13px;color:#E65100">'+fm(D.proof.reduce(function(a,r){return a+r.total},0))+'</td><td></td><td></td></tr>':'');
+  document.querySelector('#tb-pf tbody').innerHTML=D.proof.map(function(r,i){return'<tr><td style="white-space:nowrap">'+fD(r.date)+'</td><td style="font-size:12px;font-weight:600;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+escHtml(r.desc)+'">'+escHtml(r.desc)+'</td><td><span class="badge b-or" style="font-size:9px">'+escHtml(r.proofType)+'</span></td><td><span class="badge b-bl" style="font-size:9px">'+escHtml(r.category)+'</span></td><td class="am">'+fm(r.supply)+'</td><td class="am">'+fm(r.tax)+'</td><td class="am" style="color:#9C27B0">'+(r.tip?fm(r.tip):'<span style="color:#ddd">-</span>')+'</td><td class="am neg" style="font-weight:700;color:#E65100">'+fm(r.total)+'</td><td style="font-size:10px;color:#555">'+(r.payment?escHtml(r.payment):'-')+'</td><td>'+(r.deductible==='공제'?'<span class="badge b-gn">공제</span>':r.deductible==='불공제'?'<span class="badge b-rd">불공제</span>':'<span class="badge b-gy">'+escHtml(r.deductible)+'</span>')+'</td></tr>'}).join('')+(D.proof.length?'<tr style="background:#FFF8E1;border-top:2px solid #F57F17;font-weight:800"><td colspan="4" style="text-align:right;padding:10px;font-size:12px">합계 ('+D.proof.length+'건)</td><td class="am" style="font-size:12px">'+fm(D.proof.reduce(function(a,r){return a+r.supply},0))+'</td><td class="am" style="font-size:12px">'+fm(D.proof.reduce(function(a,r){return a+r.tax},0))+'</td><td class="am" style="font-size:12px;color:#9C27B0">'+fm(D.proof.reduce(function(a,r){return a+(r.tip||0)},0))+'</td><td class="am neg" style="font-size:13px;color:#E65100">'+fm(D.proof.reduce(function(a,r){return a+r.total},0))+'</td><td></td><td></td></tr>':'');
   document.getElementById('em-pf').style.display=D.proof.length?'none':'block';
   var all=[];
   D.bank.forEach(function(r){all.push({c:'통장',cc:'b-bl',tp:r.inAmt?'입금':'출금',d:r.date,n:r.desc,it:r.item||'',i:r.inAmt,o:r.outAmt})});
@@ -3181,12 +3183,12 @@ async function processProofBatch(files){
         D.files.push({name:file.name,format:file.type.startsWith('image/')?'image':'pdf',category:'proof',count:1});
         driveUpload(file,'proof');
         added++;
-        log.innerHTML+='<div style="color:#2E7D32">✅ '+file.name+' → '+entry.desc+' '+fm(entry.total)+'원 ['+entry.category+']</div>';
+        log.innerHTML+='<div style="color:#2E7D32">✅ '+escHtml(file.name)+' → '+escHtml(entry.desc)+' '+fm(entry.total)+'원 ['+escHtml(entry.category)+']</div>';
       }else{
-        log.innerHTML+='<div style="color:#C62828">❌ '+file.name+': '+(result?result.error:'인식 실패')+'</div>';
+        log.innerHTML+='<div style="color:#C62828">❌ '+escHtml(file.name)+': '+(result?escHtml(result.error):'인식 실패')+'</div>';
       }
     }catch(e){
-      log.innerHTML+='<div style="color:#C62828">❌ '+file.name+': '+e.message+'</div>';
+      log.innerHTML+='<div style="color:#C62828">❌ '+escHtml(file.name)+': '+escHtml(e.message)+'</div>';
     }
     done++;
     await new Promise(function(r){setTimeout(r,300)});
@@ -3260,7 +3262,7 @@ function buildProofEntry(result,fileName){
   if(/^\d{2}\.\d{2}\.\d{2}$/.test(date)){date='20'+date.replace(/\./g,'-')}
   return{date:date,desc:desc,proofType:proofType,category:category,supply:supply,tax:tax,tip:tip,total:total,payment:payment,deductible:deductible};
 }
-function calcProofTotal(){try{var s=parseInt(String(document.getElementById('pf-supply').value||0).replace(/[,\s]/g,''),10)||0;var t=parseInt(String(document.getElementById('pf-tax').value||0).replace(/[,\s]/g,''),10)||0;var tip=parseInt(String(document.getElementById('pf-tip').value||0).replace(/[,\s]/g,''),10)||0;document.getElementById('pf-total').value=fm(s+t+tip)}catch(e){}}
+function calcProofTotal(){try{var s=parseInt(String(document.getElementById('pf-supply').value||0).replace(/[,\s]/g,''),10)||0;var t=parseInt(String(document.getElementById('pf-tax').value||0).replace(/[,\s]/g,''),10)||0;var tip=parseInt(String(document.getElementById('pf-tip').value||0).replace(/[,\s]/g,''),10)||0;document.getElementById('pf-total').value=fm(s+t+tip)}catch(e){console.warn('증빙 합계 계산 오류:',e)}}
 function addProofEntry(){
   var dt=document.getElementById('pf-date').value;var desc=document.getElementById('pf-desc').value.trim();
   var totalStr=document.getElementById('pf-total').value;var total=parseInt(String(totalStr||0).replace(/[,\s원]/g,''),10)||0;
@@ -3268,7 +3270,7 @@ function addProofEntry(){
   var supply=parseInt(String(document.getElementById('pf-supply').value||0).replace(/[,\s]/g,''),10)||0;
   var tax=parseInt(String(document.getElementById('pf-tax').value||0).replace(/[,\s]/g,''),10)||0;
   var tip=parseInt(String(document.getElementById('pf-tip').value||0).replace(/[,\s]/g,''),10)||0;
-  if(!supply&&!tax&&total)supply=Math.round(total/1.1);tax=tax||total-supply-tip;
+  if(!supply&&!tax&&total){supply=Math.round(total/1.1);tax=tax||total-supply-tip;}
   D.proof.push({date:dt,desc:desc,proofType:document.getElementById('pf-type').value,category:document.getElementById('pf-cat').value,supply:supply,tax:tax,tip:tip,total:total,payment:document.getElementById('pf-pay').value,deductible:document.getElementById('pf-deduct').value});
   showToast('✅ 지출증빙 추가: '+desc+' '+fm(total)+'원');
   document.getElementById('pf-desc').value='';document.getElementById('pf-supply').value='';document.getElementById('pf-tax').value='';document.getElementById('pf-tip').value='';document.getElementById('pf-total').value='';
@@ -3282,16 +3284,16 @@ function rFL(){
   var ic={excel:'fa-file-excel',csv:'fa-file-csv',pdf:'fa-file-pdf',word:'fa-file-word',text:'fa-file-lines',image:'fa-file-image'};
   var bg={excel:'#E8F5E9',csv:'#FFF3E0',pdf:'#FFEBEE',word:'#E3F2FD',text:'#F3E5F5',image:'#FFF8E1'};
   var cb={bank:'b-bl',tax:'b-or',card:'b-pr',proof:'b-or',etc:'b-gy'};var cl={bank:'통장',tax:'세금계산서',card:'카드',proof:'지출증빙',etc:'기타'};
-  c.innerHTML=D.files.map(function(f,i){return'<div class="lg"><div class="lg-ic" style="background:'+(bg[f.format]||'#ECEFF1')+'"><i class="fas '+(ic[f.format]||'fa-file')+'"></i></div><div style="flex:1;min-width:0"><div style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+f.name+'</div><div style="font-size:11px;color:#999">'+f.count+'건 · '+f.format.toUpperCase()+'</div><span class="badge '+(cb[f.category]||'b-gy')+'">'+(cl[f.category]||'기타')+'</span></div><button class="lg-rm" onclick="rmF('+i+')"><i class="fas fa-xmark"></i></button></div>'}).join('')}
+  c.innerHTML=D.files.map(function(f,i){return'<div class="lg"><div class="lg-ic" style="background:'+(bg[f.format]||'#ECEFF1')+'"><i class="fas '+(ic[f.format]||'fa-file')+'"></i></div><div style="flex:1;min-width:0"><div style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escHtml(f.name)+'</div><div style="font-size:11px;color:#999">'+f.count+'건 · '+escHtml(f.format.toUpperCase())+'</div><span class="badge '+(cb[f.category]||'b-gy')+'">'+(cl[f.category]||'기타')+'</span></div><button class="lg-rm" onclick="rmF('+i+')"><i class="fas fa-xmark"></i></button></div>'}).join('')}
 var flOpen=false;
 function toggleFileList(){
   flOpen=!flOpen;
   document.getElementById('fl').style.display=flOpen?'block':'none';
   document.getElementById('fl-chevron').style.transform=flOpen?'rotate(180deg)':'rotate(0deg)';
-  try{localStorage.setItem('yjtax_fl_open',flOpen?'1':'0')}catch(e){}
+  try{localStorage.setItem('yjtax_fl_open',flOpen?'1':'0')}catch(e){console.warn('파일목록 상태 저장 오류:',e)}
 }
 // 초기 상태 복원
-try{if(localStorage.getItem('yjtax_fl_open')==='1'){flOpen=true;document.getElementById('fl').style.display='block';document.getElementById('fl-chevron').style.transform='rotate(180deg)'}}catch(e){}
+try{if(localStorage.getItem('yjtax_fl_open')==='1'){flOpen=true;document.getElementById('fl').style.display='block';document.getElementById('fl-chevron').style.transform='rotate(180deg)'}}catch(e){console.warn('파일목록 상태 복원 오류:',e)}
 function rmF(i){D.files.splice(i,1);if(!D.files.length)resetAll();else rFL()}
 function uUI(){
   // 마스터 업로드 항상 표시 (고정) — 파일 있으면 compact 모드 + 상태 표시
@@ -3371,8 +3373,8 @@ var DISCOVERY_DOC='https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
 var gapiInited=false,gisInited=false,tokenClient=null;
 
 // 저장/로드 API 키
-function saveDriveConfig(){try{localStorage.setItem('yjtax_drive',JSON.stringify({apiKey:document.getElementById('drive-api-key').value,clientId:document.getElementById('drive-client-id').value,log:GD.log}))}catch(e){}}
-function loadDriveConfig(){try{var c=localStorage.getItem('yjtax_drive');if(c){var d=JSON.parse(c);document.getElementById('drive-api-key').value=d.apiKey||'';document.getElementById('drive-client-id').value=d.clientId||'';GD.log=d.log||[];renderDriveLog()}}catch(e){}}
+function saveDriveConfig(){try{localStorage.setItem('yjtax_drive',JSON.stringify({apiKey:document.getElementById('drive-api-key').value,clientId:document.getElementById('drive-client-id').value,log:GD.log}))}catch(e){console.warn('Drive 설정 저장 오류:',e)}}
+function loadDriveConfig(){try{var c=localStorage.getItem('yjtax_drive');if(c){var d=JSON.parse(c);document.getElementById('drive-api-key').value=d.apiKey||'';document.getElementById('drive-client-id').value=d.clientId||'';GD.log=d.log||[];renderDriveLog()}}catch(e){console.warn('Drive 설정 로드 오류:',e)}}
 
 function openSettings(){
   document.getElementById('settings-modal').style.display='flex';
@@ -3545,7 +3547,7 @@ function updateDriveBadge(){var b=document.getElementById('drive-badge');if(GD.c
 function checkDriveEnv(){var w=document.getElementById('drive-env-warning');if(location.protocol==='file:')w.style.display='block';else w.style.display='none'}
 function driveLog(msg){var el=document.getElementById('drive-connect-log');el.style.display='block';el.innerHTML+=new Date().toLocaleTimeString()+' — '+msg+'<br>';el.scrollTop=el.scrollHeight}
 
-function updateDriveStatus(){try{updateDriveBadge()}catch(e){}}
+function updateDriveStatus(){try{updateDriveBadge()}catch(e){console.warn('Drive 배지 업데이트 오류:',e)}}
 
 function renderDriveLog(){
   var el=document.getElementById('drive-log');
@@ -3619,7 +3621,7 @@ async function connectDrive(){
   }
 }
 function disconnectDrive(){
-  if(GD.token){try{google.accounts.oauth2.revoke(GD.token)}catch(e){}}
+  if(GD.token){try{google.accounts.oauth2.revoke(GD.token)}catch(e){console.warn('Drive 토큰 해제 오류:',e)}}
   GD.connected=false;GD.token=null;GD.rootId=null;
   updateDriveStatus();saveDriveConfig();
 }
@@ -3930,17 +3932,17 @@ function searchLedger(q){
   
   // 통장 필터
   var fBank=D.bank.filter(function(r){return matchRow(r,f,Math.max(r.inAmt||0,r.outAmt||0))});
-  document.querySelector('#tb-bk tbody').innerHTML=fBank.map(function(r){return'<tr><td style="white-space:nowrap">'+fD(r.date)+'</td><td style="font-size:12px;color:#555">'+(r.item||'<span style="color:#ccc">-</span>')+'</td><td style="font-size:12px;font-weight:600">'+(r.desc||'<span style="color:#ccc">-</span>')+'</td><td class="am pos">'+(r.inAmt?fm(r.inAmt):'')+'</td><td class="am neg">'+(r.outAmt?fm(r.outAmt):'')+'</td><td class="am">'+(r.balance?fm(r.balance):'')+'</td></tr>'}).join('');
+  document.querySelector('#tb-bk tbody').innerHTML=fBank.map(function(r){return'<tr><td style="white-space:nowrap">'+fD(r.date)+'</td><td style="font-size:12px;color:#555">'+(r.item?escHtml(r.item):'<span style="color:#ccc">-</span>')+'</td><td style="font-size:12px;font-weight:600">'+(r.desc?escHtml(r.desc):'<span style="color:#ccc">-</span>')+'</td><td class="am pos">'+(r.inAmt?fm(r.inAmt):'')+'</td><td class="am neg">'+(r.outAmt?fm(r.outAmt):'')+'</td><td class="am">'+(r.balance?fm(r.balance):'')+'</td></tr>'}).join('');
   document.getElementById('em-bk').style.display=fBank.length?'none':'block';
-  
+
   // 세금계산서 필터
   var fTax=D.tax.filter(function(r){return matchRow(r,f,r.supply||0)});
-  document.querySelector('#tb-tx tbody').innerHTML=fTax.map(function(r,i){return'<tr><td>'+fD(r.date)+'</td><td><span class="badge '+(r.type==='매출'?'b-bl':'b-rd')+'">'+r.type+'</span></td><td style="font-size:12px;font-weight:600;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+r.client+'</td><td style="font-size:11px;color:#555;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(r.item||'-')+'</td><td style="font-family:monospace;font-size:10px;color:#999">'+(r.bizNo||'-')+'</td><td class="am">'+fm(r.supply)+'</td><td class="am">'+fm(r.tax)+'</td><td><span class="badge '+(r.deductible==='공제'?'b-gn':r.deductible==='불공제'?'b-rd':'b-gy')+'">'+r.deductible+'</span></td></tr>'}).join('');
+  document.querySelector('#tb-tx tbody').innerHTML=fTax.map(function(r,i){return'<tr><td>'+fD(r.date)+'</td><td><span class="badge '+(r.type==='매출'?'b-bl':'b-rd')+'">'+escHtml(r.type)+'</span></td><td style="font-size:12px;font-weight:600;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escHtml(r.client)+'</td><td style="font-size:11px;color:#555;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(r.item?escHtml(r.item):'-')+'</td><td style="font-family:monospace;font-size:10px;color:#999">'+(r.bizNo?escHtml(r.bizNo):'-')+'</td><td class="am">'+fm(r.supply)+'</td><td class="am">'+fm(r.tax)+'</td><td><span class="badge '+(r.deductible==='공제'?'b-gn':r.deductible==='불공제'?'b-rd':'b-gy')+'">'+escHtml(r.deductible)+'</span></td></tr>'}).join('');
   document.getElementById('em-tx').style.display=fTax.length?'none':'block';
-  
+
   // 카드 필터
   var fCard=D.card.filter(function(r){return matchRow(r,f,r.amount||0)});
-  document.querySelector('#tb-cd tbody').innerHTML=fCard.map(function(r){return'<tr><td>'+fD(r.date)+'</td><td>'+r.merchant+'</td><td class="am neg">'+fm(r.amount)+'</td><td><span class="badge b-rd">'+r.type+'</span></td></tr>'}).join('');
+  document.querySelector('#tb-cd tbody').innerHTML=fCard.map(function(r){return'<tr><td>'+fD(r.date)+'</td><td>'+escHtml(r.merchant)+'</td><td class="am neg">'+fm(r.amount)+'</td><td><span class="badge b-rd">'+escHtml(r.type)+'</span></td></tr>'}).join('');
   document.getElementById('em-cd').style.display=fCard.length?'none':'block';
   
   // 전체 필터
@@ -3969,7 +3971,7 @@ function exportBackup(){
   // 레거시 호환
   backup.D=D;backup.evtData=evtData;
   var blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
-  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='YJ_Tax_Backup_'+new Date().toISOString().slice(0,10)+'.json';a.click();
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='YJ_Tax_Backup_'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(function(){URL.revokeObjectURL(a.href)},1000);
   showToast('💾 전체 백업 완료 ('+Object.keys(backup.keys).length+'개 항목)');
 }
 function importBackup(input){
@@ -3979,13 +3981,13 @@ function importBackup(input){
     // 새 형식 (keys 포함)
     if(backup.keys){
       Object.keys(backup.keys).forEach(function(k){
-        try{localStorage.setItem(k,backup.keys[k])}catch(e){}
+        try{localStorage.setItem(k,backup.keys[k])}catch(e){console.warn('복원 중 키 저장 오류:',k,e)}
       });
       // D, evtData 메모리에도 반영
-      try{D=JSON.parse(backup.keys['yjtax_D']||'{}')}catch(e){}
-      try{evtData=JSON.parse(backup.keys['yjtax_evt']||'[]')}catch(e){}
+      try{D=JSON.parse(backup.keys['yjtax_D']||'{}')}catch(e){console.warn('데이터 파싱 복원 오류:',e)}
+      try{evtData=JSON.parse(backup.keys['yjtax_evt']||'[]')}catch(e){console.warn('경조사 데이터 복원 오류:',e)}
       ensureD();rAll();loadIncomeData();
-      try{renderEvtList();renderNdSim()}catch(e){}
+      try{renderEvtList();renderNdSim()}catch(e){console.warn('복원 후 렌더링 오류:',e)}
       showToast('✅ 전체 복원 완료! ('+backup.date+')');
       alert('✅ 전체 데이터 복원 완료!\n\n복원 시점: '+backup.date+'\n복원 항목: '+Object.keys(backup.keys).length+'개');
     }
@@ -4035,7 +4037,7 @@ function initTaxCut(){
       cardOpts+='</optgroup>';
     }
     selects.forEach(function(s){var curVal=s.value;s.innerHTML=cardOpts;if(curVal)s.value=curVal});
-  }catch(e){}
+  }catch(e){console.warn('카드 항목 렌더링 오류:',e)}
   populatePurchaseSelects();
   var b=getBaseNumbers();
   document.getElementById('tx-now').textContent=fm(b.vat+b.incTax)+'원';
@@ -4121,8 +4123,8 @@ function toggleCardItem(idx,amount){
   calcSim();
 }
 
-function onCardCheck(){}
-function onPurchaseSelect(){}
+function onCardCheck(){showToast('준비 중입니다');console.log('TODO: onCardCheck',arguments)}
+function onPurchaseSelect(){showToast('준비 중입니다');console.log('TODO: onPurchaseSelect',arguments)}
 function populatePurchaseSelects(){renderCardItems()}
 
 function calcSim(){
@@ -4146,8 +4148,8 @@ function calcSim(){
   updateTotalOpt();
 }
 
-function setUmbrella(){}
-function setUmbrellaRange(){}
+function setUmbrella(){showToast('준비 중입니다');console.log('TODO: setUmbrella',arguments)}
+function setUmbrellaRange(){showToast('준비 중입니다');console.log('TODO: setUmbrellaRange',arguments)}
 function calcUmbrella(){updateTotalOpt()}
 function calcPension(){updateTotalOpt()}
 
@@ -4404,7 +4406,7 @@ function renderNdRecommend(){
 }
 function applyNdRecommend(client,supply,action){
   addItem();
-  var rows=document.querySelectorAll('.add-row');var last=rows[rows.length-1];
+  var rows=document.querySelectorAll('.expense-row');var last=rows[rows.length-1];
   if(last){
     var sel=last.querySelector('select');var inp=last.querySelector('input');
     if(sel)sel.value='기타경비';if(inp){inp.value=supply;inp.placeholder=client+' ('+action+')'}
@@ -4433,7 +4435,7 @@ function evtFileAttached(input){
   driveUploadEvt(file);
   var prev=document.getElementById('evt-preview');
   if(file.type.startsWith('image/')){var reader=new FileReader();reader.onload=function(e){prev.innerHTML='<img src="'+e.target.result+'" style="max-width:100%;max-height:80px;border-radius:6px">'};reader.readAsDataURL(file)}
-  else prev.innerHTML='<div style="font-size:11px;color:var(--gn)"><i class="fas fa-file-pdf" style="font-size:20px;display:block;margin-bottom:4px"></i>'+file.name+'</div>';
+  else prev.innerHTML='<div style="font-size:11px;color:var(--gn)"><i class="fas fa-file-pdf" style="font-size:20px;display:block;margin-bottom:4px"></i>'+escHtml(file.name)+'</div>';
 }
 function addEvt(){
   var date=document.getElementById('evt-date').value;var type=document.getElementById('evt-type').value;
@@ -4811,7 +4813,7 @@ function toggleMismatch(id){
   var idx=mmDone.indexOf(id);
   if(idx>-1)mmDone.splice(idx,1);
   else mmDone.push(id);
-  try{localStorage.setItem('yjtax_mismatch_done',JSON.stringify(mmDone))}catch(e){}
+  try{localStorage.setItem('yjtax_mismatch_done',JSON.stringify(mmDone))}catch(e){console.warn('불일치 체크 저장 오류:',e)}
   // 체크 시 fade out 후 재렌더링
   var el=document.getElementById(id);
   if(el&&mmDone.indexOf(id)>-1){
@@ -5189,7 +5191,7 @@ function exportAllCSV(){
   Object.keys(salaryLog).forEach(function(m){var r=salaryLog[m];rows.push([r.date,'급여','내일사장',r.net,0,'','근로소득'])});
   var csv=rows.map(function(r){return r.map(function(c){return'"'+String(c||'').replace(/"/g,'""')+'"'}).join(',')}).join('\n');
   var blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
-  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='YJ_Tax_Data_'+new Date().getFullYear()+'.csv';a.click();
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='YJ_Tax_Data_'+new Date().getFullYear()+'.csv';a.click();setTimeout(function(){URL.revokeObjectURL(a.href)},1000);
   showToast('📂 CSV 백업 파일 다운로드 완료');
 }
 
@@ -5990,13 +5992,32 @@ function generateTaxReport(){
 var h=new Date().getHours();document.getElementById('gr').textContent=(h<6?'새벽에도 일하시는':h<12?'좋은 아침입니다':h<18?'좋은 오후입니다':'좋은 저녁입니다')+', 지윤진 대표님';
 var loaded=loadData();loadEvt();loadDriveConfig();loadIncomeData();
 // 안전장치: 일간 스냅샷 + 데이터 무결성 체크
-try{dailySnapshot()}catch(e){}
-try{updateBackupStatus()}catch(e){}
+try{dailySnapshot()}catch(e){console.warn('일간 스냅샷 초기화 오류:',e)}
+try{updateBackupStatus()}catch(e){console.warn('백업 상태 초기화 오류:',e)}
 if(loaded&&!D.isDemo){setTimeout(function(){
   var dataCount=(D.tax?D.tax.length:0)+(D.bank?D.bank.length:0)+(D.card?D.card.length:0);
   if(dataCount>0)showToast('🔒 데이터 안전 ('+dataCount+'건 · 자동백업 ✅)');
 },2000)}
 if(!loaded){D.tax=DTAX.slice();D.isDemo=true}
+// === 동적 날짜 초기화 (현재 날짜 기준) ===
+(function initDynamicDates(){
+  var now=new Date();var y=now.getFullYear();var m=now.getMonth();
+  // 종합소득세: 귀속연도는 전년도, 신고연도는 올해 5월
+  var incAttrYear=y-1; // 귀속연도 (작년)
+  var incFilingYear=y; // 신고연도 (올해 5월)
+  // 단, 현재가 5월 이후면 올해 귀속 → 내년 신고로 표시
+  if(m>=5){incAttrYear=y;incFilingYear=y+1}
+  document.getElementById('inc-period').textContent=incAttrYear+'년 1월~12월 → '+incFilingYear+'년 5월 31일 신고';
+  var subEl=document.getElementById('inc-filing-subtitle');
+  if(subEl)subEl.textContent=incAttrYear+'년 귀속 종합소득세 ('+incFilingYear+'년 5월 신고)';
+  // 부가세 신고기간: 현재 월 기준 자동 선택
+  var vatY=y;
+  var vatPeriod=(m<6)?vatY+'.01.01 ~ '+vatY+'.06.30':vatY+'.07.01 ~ '+vatY+'.12.31';
+  document.getElementById('vf-period').value=vatPeriod;
+  // 부가세 분기 버튼 자동 활성화
+  var qBtns=document.querySelectorAll('#vat-quarter-select .filing-quarter-btn');
+  if(m>=6&&qBtns.length>=2){qBtns[0].classList.remove('active');qBtns[1].classList.add('active');if(typeof currentVatQuarter!=='undefined')currentVatQuarter='2H'}
+})();
 rAll();renderDD();renderMoney();renderSave();initTaxCut();renderCal();checkCalAlarms();
 // 데이터 있으면 해당 탭 자동 활성화
 setTimeout(function(){
@@ -6257,7 +6278,7 @@ function renderSave(){
     var guideEl=document.getElementById('tax-guide-section');
     if(!guideEl){guideEl=document.createElement('div');guideEl.id='tax-guide-section';document.getElementById('action-list').parentElement.appendChild(guideEl)}
     guideEl.innerHTML=g;
-  }catch(e){}
+  }catch(e){console.warn('세금 가이드 렌더링 오류:',e)}
 
   // 총 절세 가능액 계산
   var incSaveTotal=incSaves.reduce(function(a,s){return a+s.save},0);
@@ -6265,8 +6286,8 @@ function renderSave(){
   var actionCount=actions.filter(function(a){return a.urgency==='🔴'||a.urgency==='🟡'}).length;
   document.getElementById('sv-total').textContent=fm(totalSave)+'원';
   document.getElementById('sv-action').textContent=actionCount+'건';
-  try{document.getElementById('sv-vat-part').textContent=fm(vatSaveTotal)+'원'}catch(e){}
-  try{document.getElementById('sv-inc-part').textContent=fm(incSaveTotal)+'원'}catch(e){}
+  try{document.getElementById('sv-vat-part').textContent=fm(vatSaveTotal)+'원'}catch(e){console.warn('부가세 절세액 표시 오류:',e)}
+  try{document.getElementById('sv-inc-part').textContent=fm(incSaveTotal)+'원'}catch(e){console.warn('종소세 절세액 표시 오류:',e)}
 }
 
 // ============================================================
@@ -6289,7 +6310,7 @@ function getPrivateData(){
   try{var d=localStorage.getItem('yjtax_private');return d?JSON.parse(d):{}}catch(e){return {}}
 }
 function savePrivateData(data){
-  try{localStorage.setItem('yjtax_private',JSON.stringify(data))}catch(e){}
+  try{localStorage.setItem('yjtax_private',JSON.stringify(data))}catch(e){console.warn('개인정보 저장 오류:',e)}
 }
 
 function prvRowKey(r){
@@ -6396,7 +6417,7 @@ function getSubscriptions(){
   try{var d=localStorage.getItem('yjtax_subscriptions');return d?JSON.parse(d):[]}catch(e){return []}
 }
 function saveSubscriptions(arr){
-  try{localStorage.setItem('yjtax_subscriptions',JSON.stringify(arr))}catch(e){}
+  try{localStorage.setItem('yjtax_subscriptions',JSON.stringify(arr))}catch(e){console.warn('구독 목록 저장 오류:',e)}
 }
 
 function addSubscription(){
@@ -6494,7 +6515,7 @@ function getCreditData(){
   try{var d=localStorage.getItem('yjtax_credit');return d?JSON.parse(d):{}}catch(e){return {}}
 }
 function saveCreditData(data){
-  try{localStorage.setItem('yjtax_credit',JSON.stringify(data))}catch(e){}
+  try{localStorage.setItem('yjtax_credit',JSON.stringify(data))}catch(e){console.warn('신용도 데이터 저장 오류:',e)}
 }
 function saveCreditInfo(){
   var score=parseInt(document.getElementById('credit-score').value)||0;
@@ -6598,48 +6619,18 @@ function updateCreditInfo(){
   }
 })();
 
-// === 기본 API 키 자동 주입 (미설정 시) ===
-(function(){
-  var defaults={
-    'yjtax_gemini_key':['AIza','SyCs','7QZe','q1xk','b6VG','j0iw','tcYz','r7C_','jElv','NXg'].join(''),
-    'yjtax_gemini_backup':['AIza','SyCs','7QZe','q1xk','b6VG','j0iw','tcYz','r7C_','jElv','NXg'].join(''),
-    'yjtax_nts_key':'0299a6622d59757a23065ed67269978497e0f9261134060968e2cb0810194a03',
-    'yjtax_perplexity_key':['pplx-','DODV8cq9BuQG','i5slSkKkVQf9','fthREzsYH4cl','RYaBkeoOdKjw'].join(''),
-    'yjtax_alpha_key':'8CEA89VHHEZIOWQY',
-    'yjtax_naver_id':'hiJJu_1UcVuZCL2hx2N0',
-    'yjtax_naver_secret':'q2jUORq9ch',
-    'yjtax_claude_key':['sk-ant-api03-pZS0ER_OL16UaThtXQk0x1','oBT_Hk8XsY8i6WBRbBYh3m1c6rYR6ruu5XwDXEjKSS','DeaGOOe-6xoXugIBKW-HcQ-b4zlwgAA'].join('')
-  };
-  var injected=[];
-  Object.keys(defaults).forEach(function(k){
-    if(!localStorage.getItem(k)){
-      localStorage.setItem(k,defaults[k]);
-      injected.push(k);
-    }
-  });
-  if(injected.length>0){
-    console.log('[YJ Tax] 기본 API 키 자동 설정 완료: '+injected.join(', '));
-  }
-})();
+// === API 키 자동 주입 제거됨 (보안) — 사용자가 직접 설정 화면에서 입력 ===
 
 // 페이지 로드 시 초기화
 document.addEventListener('DOMContentLoaded',function(){
-  // API 키 자동 설정 (미설정 시에만)
-  var _dk={
-    yjtax_gemini_key:['AIzaSyCs7QZeq1xkb6VGj','0iwtcYzr7C_jElvNXg'].join(''),
-    yjtax_claude_key:['sk-ant-api03-pZS0ER_OL16UaThtXQk0x1','oBT_Hk8XsY8i6WBRbBYh3m1c6rYR6ruu5XwDXEjKSS','DeaGOOe-6xoXugIBKW-HcQ-b4zlwgAA'].join(''),
-    yjtax_perplexity_key:['pplx-DODV8cq9BuQGi5slSkKk','VQf9fthREzsYH4clRYaBkeoOdKjw'].join(''),
-    yjtax_nts_key:['0299a6622d59757a23065ed6','7269978497e0f9261134060968e2cb0810194a03'].join('')
-  };
-  for(var k in _dk){if(!localStorage.getItem(k)){localStorage.setItem(k,_dk[k])}}
-  try{renderSubscriptions()}catch(e){}
-  try{loadCreditInfo()}catch(e){}
+  try{renderSubscriptions()}catch(e){console.warn('renderSubscriptions 초기화 오류:',e)}
+  try{loadCreditInfo()}catch(e){console.warn('loadCreditInfo 초기화 오류:',e)}
   // 배지 상태 업데이트
-  try{updateGeminiBadge()}catch(e){}
-  try{updateClaudeBadge()}catch(e){}
-  try{updateNtsBadge()}catch(e){}
-  try{updatePerplexityBadge()}catch(e){}
-  try{updateAlphaBadge()}catch(e){}
+  try{updateGeminiBadge()}catch(e){console.warn('updateGeminiBadge 오류:',e)}
+  try{updateClaudeBadge()}catch(e){console.warn('updateClaudeBadge 오류:',e)}
+  try{updateNtsBadge()}catch(e){console.warn('updateNtsBadge 오류:',e)}
+  try{updatePerplexityBadge()}catch(e){console.warn('updatePerplexityBadge 오류:',e)}
+  try{updateAlphaBadge()}catch(e){console.warn('updateAlphaBadge 오류:',e)}
 });
 
 // ============================================================
@@ -6653,9 +6644,9 @@ function toggleDarkMode(){
   html.setAttribute('data-theme',isDark?'light':'dark');
   var btn=document.getElementById('dark-toggle-btn');
   btn.innerHTML=isDark?'<i class="fas fa-moon"></i>':'<i class="fas fa-sun"></i>';
-  try{localStorage.setItem('yjtax_theme',isDark?'light':'dark')}catch(e){}
+  try{localStorage.setItem('yjtax_theme',isDark?'light':'dark')}catch(e){console.warn('테마 저장 오류:',e)}
   // Update chart colors for dark mode
-  try{if(dc){dc.options.plugins.legend.labels.color=isDark?'#888':'#888';dc.update()}}catch(e){}
+  try{if(dc){dc.options.plugins.legend.labels.color=isDark?'#888':'#888';dc.update()}}catch(e){console.warn('차트 테마 업데이트 오류:',e)}
 }
 // Restore theme on load
 (function(){
@@ -6666,7 +6657,7 @@ function toggleDarkMode(){
       var btn=document.getElementById('dark-toggle-btn');
       if(btn)btn.innerHTML='<i class="fas fa-sun"></i>';
     }
-  }catch(e){}
+  }catch(e){console.warn('테마 복원 오류:',e)}
 })();
 
 // === 2. IMPROVED TOAST SYSTEM ===
@@ -6776,7 +6767,7 @@ function renderTaxTips(){
     {icon:'fa-file-invoice',bg:'#FFF8E1',color:'#F57F17',title:'전자세금계산서 발행/수취',desc:'전자세금계산서 발행 시 세액공제 2만원. 수취 시 매입세액 공제 가능.',save:'건당 세액공제 2만원'}
   ];
   var html=tips.map(function(tip){
-    return '<div class="tax-tip-item" onclick="switchTab(3)">'
+    return '<div class="tax-tip-item" onclick="sw(3)">'
       +'<div class="tax-tip-icon" style="background:'+tip.bg+';color:'+tip.color+'"><i class="fas '+tip.icon+'"></i></div>'
       +'<div class="tax-tip-text" style="flex:1"><h4>'+tip.title+'</h4><p>'+tip.desc+'</p></div>'
       +'<div class="tax-tip-save" style="color:'+tip.color+'">'+tip.save+'</div></div>';
@@ -6864,7 +6855,7 @@ function saveStateToHash(){
     var b=getBaseNumbers();
     var state={s:b.ts,e:b.te,v:b.vat,i:b.incTax};
     window.location.hash='calc='+btoa(JSON.stringify(state));
-  }catch(e){}
+  }catch(e){console.warn('해시 상태 저장 오류:',e)}
 }
 function loadStateFromHash(){
   try{
@@ -6873,7 +6864,7 @@ function loadStateFromHash(){
       var data=JSON.parse(atob(hash.substring(6)));
       if(data){showToast('URL에서 계산 결과를 복원했습니다')}
     }
-  }catch(e){}
+  }catch(e){console.warn('해시 상태 파싱 오류:',e)}
 }
 window.addEventListener('hashchange',loadStateFromHash);
 
@@ -6926,9 +6917,9 @@ document.addEventListener('keydown',function(e){
   }
   // Escape: Close modals
   if(e.key==='Escape'){
-    try{document.getElementById('mo').classList.remove('show');resetModal()}catch(e){}
-    try{closeAI()}catch(e){}
-    try{closeSettings()}catch(e){}
+    try{document.getElementById('mo').classList.remove('show');resetModal()}catch(e){console.warn('모달 닫기 오류:',e)}
+    try{closeAI()}catch(e){console.warn('AI 패널 닫기 오류:',e)}
+    try{closeSettings()}catch(e){console.warn('설정 패널 닫기 오류:',e)}
   }
   // Ctrl+1~6: Tab switching
   if(e.ctrlKey&&e.key>='1'&&e.key<='6'){
@@ -6975,21 +6966,21 @@ window.rAll=function(){
   clearTimeout(_rAllDebounceTimer);
   _rAllDebounceTimer=setTimeout(function(){
     _origRAll();
-    try{renderBracketViz()}catch(e){}
-    try{calcYoY()}catch(e){}
+    try{renderBracketViz()}catch(e){console.warn('과세구간 시각화 오류:',e)}
+    try{calcYoY()}catch(e){console.warn('전년비교 계산 오류:',e)}
   },50);
 };
 
 // === 15. INIT ENHANCEMENTS ON LOAD ===
 document.addEventListener('DOMContentLoaded',function(){
   // Render bracket visualization
-  setTimeout(function(){try{renderBracketViz()}catch(e){}},500);
+  setTimeout(function(){try{renderBracketViz()}catch(e){console.warn('과세구간 시각화 초기화 오류:',e)}},500);
   // Calculate YoY
-  setTimeout(function(){try{calcYoY()}catch(e){}},600);
+  setTimeout(function(){try{calcYoY()}catch(e){console.warn('전년비교 초기화 오류:',e)}},600);
   // Check deadlines
-  setTimeout(function(){try{checkUpcomingDeadlines()}catch(e){}},3000);
+  setTimeout(function(){try{checkUpcomingDeadlines()}catch(e){console.warn('마감일 체크 오류:',e)}},3000);
   // Load hash state
-  setTimeout(function(){try{loadStateFromHash()}catch(e){}},1000);
+  setTimeout(function(){try{loadStateFromHash()}catch(e){console.warn('해시 상태 로드 오류:',e)}},1000);
   // Load YoY data from localStorage
   try{
     var yoyData=localStorage.getItem('yjtax_yoy');
@@ -6998,7 +6989,7 @@ document.addEventListener('DOMContentLoaded',function(){
       if(d.prevSales)document.getElementById('yoy-prev-sales').value=d.prevSales;
       if(d.prevExp)document.getElementById('yoy-prev-exp').value=d.prevExp;
     }
-  }catch(e){}
+  }catch(e){console.warn('전년비교 데이터 로드 오류:',e)}
 });
 
 // Save YoY data when changed
@@ -7007,7 +6998,7 @@ document.addEventListener('input',function(e){
     try{localStorage.setItem('yjtax_yoy',JSON.stringify({
       prevSales:document.getElementById('yoy-prev-sales').value,
       prevExp:document.getElementById('yoy-prev-exp').value
-    }))}catch(e){}
+    }))}catch(e){console.warn('전년비교 데이터 저장 오류:',e)}
   }
 });
 
@@ -7472,7 +7463,7 @@ function autoFillIncFiling(){
     var et=D.tax.filter(function(r){return r.type==='매입'});
     var bizTs=st.reduce(function(a,r){return a+r.supply},0);
     var bizTe=et.reduce(function(a,r){return a+r.supply},0);
-    try{bizTs+=parseInt(document.getElementById('biz-manual-revenue').value||0)*10000;bizTe+=parseInt(document.getElementById('biz-manual-expense').value||0)*10000}catch(e){}
+    try{bizTs+=parseInt(document.getElementById('biz-manual-revenue').value||0)*10000;bizTe+=parseInt(document.getElementById('biz-manual-expense').value||0)*10000}catch(e){console.warn('수동 매출/매입 합산 오류:',e)}
 
     document.getElementById('if-biz-revenue').value=bizTs.toLocaleString('ko-KR');
     document.getElementById('if-biz-expense').value=bizTe.toLocaleString('ko-KR');
@@ -7665,10 +7656,10 @@ function exportIncFilingPDF(){
     }
     keys.sort();
     while(keys.length>7){localStorage.removeItem(keys.shift())}
-  }catch(e){}
+  }catch(e){console.warn('스냅샷 정리 오류:',e)}
 })();
 
-console.log('[YJ Tax Master v8.5 Pro] All enhancements loaded + Tax Filing Mode (세금 신고 모드) added');
+console.log('[YJ Tax Master v9.2 Pro] All enhancements loaded + Tax Filing Mode (세금 신고 모드) added');
 </script>
 </body>
 </html>
